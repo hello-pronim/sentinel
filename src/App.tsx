@@ -1,30 +1,13 @@
 import * as React from "react"
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import { Auth0Provider } from "@auth0/auth0-react"
+import { Container } from "./Container"
 
 export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Sentinel by MBG, coming soon...
-          </Text>
-
-        </VStack>
-      </Grid>
-    </Box>
-  </ChakraProvider>
+    <Auth0Provider
+    domain="mbgapps.us.auth0.com"
+    clientId="GCWUm4Czgn256oq8qnbH4XXsfEQeniEp"
+    redirectUri={window.location.origin}
+    >
+      <Container/>
+    </Auth0Provider>
 )
