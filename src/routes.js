@@ -52,9 +52,9 @@ const routes = [
   {
     path: "sales",
     element: (
-      // <AuthGuard>
-      <DashboardLayout />
-      // </AuthGuard>
+      <AuthGuard>
+        <DashboardLayout />
+      </AuthGuard>
     ),
     children: [
       {
