@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Navigate } from "react-router-dom";
 
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 // For routes that can only be accessed by authenticated users
 function AuthGuard({ children }) {

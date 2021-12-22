@@ -33,7 +33,7 @@ const Brand = styled(ListItemButton)`
   min-height: 56px;
   padding-left: ${(props) => props.theme.spacing(6)};
   padding-right: ${(props) => props.theme.spacing(6)};
-  justify-content: center;
+  // justify-content: center;
   cursor: pointer;
   flex-grow: 0;
 

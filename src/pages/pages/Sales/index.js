@@ -6,13 +6,29 @@ import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 
-import { Breadcrumbs, SalesChart } from "../../sections";
-import EnhancedTable from "../../../components/tables/EnhancedTable";
-import salesChartData from "./data";
+import { Breadcrumbs, SalesTable } from "../../sections";
+import async from "../../../components/Async";
+import data from "./data";
+
+const SalesChart = async(() => import("../../sections/SalesChart"));
 
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
+  const { salesChartData, brands: brandsTableData } = data;
+  const brandsTableColumns = [
+    { id: "id", label: "", alignment: "left" },
+    { id: "brand", label: "Brand", alignment: "left" },
+    { id: "revenue", label: "Revenue", alignment: "center" },
+    {
+      id: "comparisonRevenue",
+      label: "Comparison Revenue",
+      alignment: "center",
+    },
+    { id: "revenueChange", label: "Revenue Change", alignment: "center" },
+    { id: "actions", label: "Actions", alignment: "right" },
+  ];
+
   return (
     <React.Fragment>
       <Helmet title="Sales" />
@@ -45,7 +61,7 @@ const Sales = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <EnhancedTable />
+          <SalesTable rows={brandsTableData} columns={brandsTableColumns} />
         </Grid>
       </Grid>
     </React.Fragment>
