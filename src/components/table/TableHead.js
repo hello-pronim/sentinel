@@ -8,16 +8,16 @@ import {
   TableSortLabel,
 } from "@mui/material";
 
-const TableHead = (props) => {
-  const {
-    headColumns,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+const TableHead = ({
+  headColumns,
+  checkable = false,
+  onSelectAllClick,
+  order,
+  orderBy,
+  numSelected,
+  rowCount,
+  onRequestSort,
+}) => {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -25,14 +25,16 @@ const TableHead = (props) => {
   return (
     <MuiTableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all" }}
-          />
-        </TableCell>
+        {checkable && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{ "aria-label": "select all" }}
+            />
+          </TableCell>
+        )}
         {headColumns.map((column) => (
           <TableCell
             key={column.id}
