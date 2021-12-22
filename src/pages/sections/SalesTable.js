@@ -24,7 +24,7 @@ import {
 } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 
-import TableHead from "../../../components/table/TableHead";
+import TableHead from "../../components/table/TableHead";
 
 const Paper = styled(MuiPaper)(spacing);
 
@@ -67,7 +67,7 @@ function stableSort(array, comparator) {
 
 const SalesTableToolbar = (props) => {
   // Here was 'let'
-  const { numSelected } = props;
+  const { title, numSelected } = props;
 
   return (
     <Toolbar>
@@ -78,7 +78,7 @@ const SalesTableToolbar = (props) => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            Sales
+            {title}
           </Typography>
         )}
       </ToolbarTitle>
@@ -102,7 +102,7 @@ const SalesTableToolbar = (props) => {
   );
 };
 
-const SalesTable = ({ rows, columns, rowsPerPage = 10, ...props }) => {
+const SalesTable = ({ title, rows, columns, rowsPerPage = 10, ...props }) => {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("customer");
   const [selected, setSelected] = React.useState([]);
@@ -160,12 +160,12 @@ const SalesTable = ({ rows, columns, rowsPerPage = 10, ...props }) => {
   return (
     <div>
       <Paper>
-        <SalesTableToolbar numSelected={selected.length} />
+        <SalesTableToolbar title={title} numSelected={selected.length} />
         <TableContainer>
           <Table
             aria-labelledby="tableTitle"
             size={"medium"}
-            aria-label="Sales table"
+            aria-label={`${title} table`}
           >
             <TableHead
               headColumns={columns}

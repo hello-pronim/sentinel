@@ -13,8 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 
-import { THEMES } from "../constants";
-import useTheme from "../hooks/useTheme";
+import { THEMES } from "../../../constants";
+import useTheme from "../../../hooks/useTheme";
 
 const DemoButton = styled.div`
   cursor: pointer;

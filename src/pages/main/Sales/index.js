@@ -6,7 +6,8 @@ import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 
-import { Breadcrumbs, SalesTable } from "../../sections";
+import Breadcrumbs from "../../sections/global/Breadcrumbs";
+import SalesTable from "../../sections/SalesTable";
 import async from "../../../components/Async";
 import data from "./data";
 

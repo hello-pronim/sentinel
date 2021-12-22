@@ -4,8 +4,8 @@ import styled from "styled-components/macro";
 
 import { CssBaseline } from "@mui/material";
 
-import Settings from "./Settings";
-import GlobalStyle from "./GlobalStyle";
+import Settings from "../pages/sections/global/Settings";
+import GlobalStyle from "../pages/sections/global/GlobalStyle";
 
 const Root = styled.div`
   max-width: 520px;

@@ -10,7 +10,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 
-import { ReactComponent as Logo } from "../../vendor/logo.svg";
+import { ReactComponent as Logo } from "../../../../vendor/logo.svg";
 import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
 

@@ -7,12 +7,12 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { spacing } from "@mui/system";
 
-import Sidebar from "./sidebar/Sidebar";
-import dashboardItems from "./sidebar/dashboardItems";
-import Navbar from "./navbar/Navbar";
-import Footer from "./Footer";
-import Settings from "./Settings";
-import GlobalStyle from "./GlobalStyle";
+import Sidebar from "../pages/sections/global/sidebar/Sidebar";
+import dashboardItems from "../pages/sections/global/sidebar/dashboardItems";
+import Navbar from "../pages/sections/global/navbar/Navbar";
+import Footer from "../pages/sections/global/Footer";
+import Settings from "../pages/sections/global/Settings";
+import GlobalStyle from "../pages/sections/global/GlobalStyle";
 
 const drawerWidth = 258;
 

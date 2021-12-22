@@ -7,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import SidebarNavSection from "./SidebarNavSection";
 
-import "../../vendor/perfect-scrollbar.css";
+import "../../../../vendor/perfect-scrollbar.css";
 
 const baseScrollbar = css`
   background-color: ${(props) => props.theme.sidebar.background};

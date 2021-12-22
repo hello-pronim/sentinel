@@ -17,10 +17,10 @@ import Page404 from "./pages/auth/Page404";
 import Page500 from "./pages/auth/Page500";
 
 // Page components
-import Sales from "./pages/pages/Sales";
-import Settings from "./pages/pages/Settings";
+import Sales from "./pages/main/Sales";
+import Settings from "./pages/main/Settings";
 
-const Profile = async(() => import("./pages/pages/Profile"));
+const Profile = async(() => import("./pages/main/Profile"));
 
 const routes = [
   {

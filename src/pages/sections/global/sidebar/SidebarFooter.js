@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 
 import { Badge, Grid, Avatar, Typography } from "@mui/material";
 
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../../hooks/useAuth";
 
 const Footer = styled.div`
   background-color: ${(props) =>
