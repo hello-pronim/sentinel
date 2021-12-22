@@ -139,9 +139,9 @@ function AuthProvider({ children }) {
         });
 
         user.authenticateUser(authDetails, {
-          onSuccess: (data) => {
+          onSuccess: async (data) => {
             console.log("success");
-            getSession();
+            await getSession();
             resolve(data);
           },
           onFailure: (err) => {
