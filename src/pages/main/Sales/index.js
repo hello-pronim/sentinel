@@ -18,7 +18,7 @@ const Divider = styled(MuiDivider)(spacing);
 const Sales = () => {
   const { salesChartData, brands: brandsTableData } = data;
   const brandsTableColumns = [
-    { id: "id", label: "", alignment: "left" },
+    { id: "id", label: "#", alignment: "center" },
     { id: "brand", label: "Brand", alignment: "left" },
     { id: "revenue", label: "Revenue", alignment: "center" },
     {
@@ -62,7 +62,7 @@ const Sales = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <SalesTable rows={brandsTableData} columns={brandsTableColumns} />
+          <SalesTable data={brandsTableData} columns={brandsTableColumns} />
         </Grid>
       </Grid>
     </React.Fragment>
