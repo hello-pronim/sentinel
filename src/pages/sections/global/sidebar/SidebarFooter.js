@@ -82,7 +82,7 @@ const SidebarFooter = ({ ...rest }) => {
 
   return (
     <Footer {...rest}>
-      <Tooltip disableHoverListener>
+      <Tooltip disableHoverListener title="">
         <Item
           aria-owns={Boolean(anchorMenu) ? "menu-sidebar" : undefined}
           aria-haspopup="true"
