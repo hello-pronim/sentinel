@@ -14,7 +14,6 @@ import {
 import { spacing } from "@mui/system";
 
 import MaterialTable from "@material-table/core";
-import { FormatColorText } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -67,7 +66,7 @@ const SalesTable = ({ data, columns }) => {
               {
                 field: "revenue",
                 title: "Revenue",
-                type: " currency",
+                type: "currency",
                 currencySetting: {
                   currencyCode: "$",
                   minimumFractionDigits: 0,
