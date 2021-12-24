@@ -1,8 +1,11 @@
 import axios from "axios";
 
-const axiosInstance = axios.create();
+axios.defaults.headers.common = {
+  ...axios.defaults.headers.common,
+  "Access-Control-Allow-Origin": "*",
+};
 
-axiosInstance.interceptors.response.use(
+axios.interceptors.response.use(
   (response) => response,
   (error) =>
     Promise.reject(
@@ -10,4 +13,4 @@ axiosInstance.interceptors.response.use(
     )
 );
 
-export default axiosInstance;
+export default axios;
