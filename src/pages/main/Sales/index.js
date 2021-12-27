@@ -20,6 +20,7 @@ import Breadcrumbs from "../../sections/global/Breadcrumbs";
 import SalesTable from "../../sections/SalesTable";
 import async from "../../../components/Async";
 import DropdownMenu from "../../../components/menu/DropdownMenu";
+import DateFilterDropdownMenu from "../../../components/menu/DateFilterDropdownMenu";
 import TreeViewCheckboxGroup from "../../../components/checkbox/TreeViewCheckboxGroup";
 import data from "./data";
 
@@ -202,14 +203,7 @@ const Sales = () => {
                       <Typography variant="body2">Date</Typography>
                     </Box>
                     <Divider />
-                    <TreeViewCheckboxGroup
-                      defaultCollapseIcon={<ExpandMoreIcon />}
-                      defaultExpandIcon={<ChevronRightIcon />}
-                      data={companyFilterOptions}
-                      defaultExpanded={defaultCompanyExpandedList}
-                      defaultSelected={defaultCompanySelectedList}
-                      multiSelect
-                    />
+                    <DateFilterDropdownMenu />
                   </Grid>
                   <Grid item>
                     <Box p={2}>
