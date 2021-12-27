@@ -77,7 +77,11 @@ const TreeViewCheckboxGroup = ({ data, defaultSelected, ...props }) => {
     </TreeItem>
   );
 
-  return <TreeView {...props}>{renderTree(data)}</TreeView>;
+  return (
+    <TreeView style={{ width: "280px" }} {...props}>
+      {renderTree(data)}
+    </TreeView>
+  );
 };
 
 export default TreeViewCheckboxGroup;
