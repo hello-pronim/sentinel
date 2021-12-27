@@ -46,7 +46,6 @@ const TreeViewCheckboxGroup = ({ data, defaultSelected, ...props }) => {
       : selected.filter((value) => !allNode.includes(value));
 
     array = array.filter((v, i) => array.indexOf(v) === i);
-    console.log(array);
 
     setSelected(array);
   }
