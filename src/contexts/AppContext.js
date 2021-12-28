@@ -6,14 +6,13 @@ import { getMarkets } from "../services/MarketService";
 const AppContext = createContext();
 
 function AppProvider({ children }) {
-  const [companies, setCompanies] = useState([]);
-  const [markets, setMarkets] = useState([]);
+  const [companies, setCompanies] = useState(null);
+  const [markets, setMarkets] = useState(null);
 
   const retrieveCompaniesData = async () => {
     const response = await getCompanies()
       .then((data) => data)
       .catch((err) => err);
-    console.log("companies", response);
     setCompanies(response);
   };
 
@@ -21,7 +20,6 @@ function AppProvider({ children }) {
     const response = await getMarkets()
       .then((data) => data)
       .catch((err) => err);
-    console.log("markets", response);
     setMarkets(response);
   };
 
