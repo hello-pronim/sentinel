@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const getCompanies = () => {
+const getMarkets = () => {
   return new Promise((resolve, reject) => {
     axios
-      .get("/dev/companies")
+      .get("/dev/marketplaces")
       .then((res) => {
         const { data } = res.data.body;
         return resolve(data);
@@ -14,4 +14,4 @@ const getCompanies = () => {
   });
 };
 
-export { getCompanies };
+export { getMarkets };
