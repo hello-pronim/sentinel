@@ -5,6 +5,7 @@ import Chart from "react-chartjs-2";
 import { CardContent, Card as MuiCard, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
+import CompanyService from "../../services/CompanyService";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -17,6 +18,11 @@ const ChartWrapper = styled.div`
 
 const SalesChart = ({ title, description, data }) => {
   const colors = [red[400], green[400], blue[400]];
+
+  CompanyService.getCompanies().then((response) => {
+    console.log(response.data);
+  });
+
   const chartData = {
     labels: data.xLabels,
     datasets: data.data.map((item, index) => ({

@@ -87,5 +87,6 @@
   },
   "resolutions": {
     "jss": "10.9.0"
-  }
+  },
+  "proxy": "https://2d4hj0r9gf.execute-api.us-east-1.amazonaws.com/"
 }
