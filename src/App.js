@@ -1,6 +1,5 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import { Provider } from "react-redux";
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import { create } from "jss";
 import { ThemeProvider } from "styled-components/macro";
@@ -17,9 +16,9 @@ import createTheme from "./theme";
 import routes from "./routes";
 
 import useTheme from "./hooks/useTheme";
-import { store } from "./redux/store";
 
 import { AuthProvider } from "./contexts/CognitoContext";
+import { AppProvider } from "./contexts/AppContext";
 
 const jss = create({
   ...jssPreset(),
@@ -34,7 +33,7 @@ function App() {
   return (
     <HelmetProvider>
       <Helmet titleTemplate="%s | Sentinel UI" defaultTitle="Sentinel UI" />
-      <Provider store={store}>
+      <AppProvider>
         <StylesProvider jss={jss}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <StyledEngineProvider injectFirst>
@@ -46,7 +45,7 @@ function App() {
             </StyledEngineProvider>
           </LocalizationProvider>
         </StylesProvider>
-      </Provider>
+      </AppProvider>
     </HelmetProvider>
   );
 }
