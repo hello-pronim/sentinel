@@ -31,34 +31,25 @@ const TableWrapper = styled.div`
   max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
 `;
 
-const SalesTable = ({ data, columns }) => {
+const BrandSalesTable = ({ brand, data }) => {
   return (
     <Card mb={6}>
-      <CardHeader
-        action={
-          <IconButton aria-label="sales" size="large">
-            <MoreVertical />
-          </IconButton>
-        }
-        title="Sales"
-      />
+      <CardHeader title={`${brand} Products`} />
 
       <Paper>
         <TableWrapper>
           <MaterialTable
             columns={[
               {
-                field: "brand",
-                title: "Brand",
-                cellStyle: {
-                  width: "55%",
-                },
+                field: "name",
+                title: "Product",
+                width: "55%",
                 render: (rowData) => {
-                  const { brand } = rowData;
+                  const { name } = rowData;
 
                   return (
-                    <Link components={NavLink} to="/">
-                      {brand}
+                    <Link component={NavLink} to="#" underline="none">
+                      {name}
                     </Link>
                   );
                 },
@@ -73,8 +64,12 @@ const SalesTable = ({ data, columns }) => {
                   maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { revenue } = rowData;
@@ -85,14 +80,19 @@ const SalesTable = ({ data, columns }) => {
               {
                 field: "comparisonRevenue",
                 title: "Comparison Revenue",
+                type: "currency",
                 currencySetting: {
                   currencyCode: "$",
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
@@ -104,8 +104,12 @@ const SalesTable = ({ data, columns }) => {
                 field: "revenueChange",
                 title: "Revenue Change",
                 customSort: (a, b) => a.revenueChange - b.revenueChange,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { revenueChange } = rowData;
@@ -139,4 +143,4 @@ const SalesTable = ({ data, columns }) => {
     </Card>
   );
 };
-export default SalesTable;
+export default BrandSalesTable;

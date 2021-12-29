@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
@@ -6,7 +7,7 @@ import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 
 import Breadcrumbs from "../../sections/global/Breadcrumbs";
-import SalesTable from "../../sections/Sales/SalesTable";
+import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
 import data from "./data";
 
@@ -14,19 +15,30 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 
 const Divider = styled(MuiDivider)(spacing);
 
-const Sales = () => {
-  const { salesChartData, brands } = data;
+const BrandSalesDetail = () => {
+  const { brand } = useParams();
+  console.log(brand);
+  const [brandProducts, setBrandProducts] = useState([]);
+  const { salesChartData, products } = data;
+
+  useEffect(() => {
+    if (brand) {
+      const prodData = products.filter((item) => item.brand === brand);
+
+      setBrandProducts(prodData);
+    }
+  }, [brand, products]);
 
   return (
     <React.Fragment>
-      <Helmet title="Sales" />
+      <Helmet title={brand} />
 
       <Grid justifyContent="space-between" container spacing={10}>
         <Grid item>
           <Typography variant="h3" gutterBottom display="inline">
-            Sales
+            {brand}
           </Typography>
-          <Breadcrumbs pageTitle="Sales" aria-label="Breadcrumb" mt={2} />
+          <Breadcrumbs pageTitle={brand} aria-label="Breadcrumb" mt={2} />
         </Grid>
       </Grid>
 
@@ -35,17 +47,17 @@ const Sales = () => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <SalesChart
-            title="All companies"
-            description="Total: $123,456,789.11"
+            title={brand}
+            description="Total: $123,456.00"
             data={salesChartData}
           />
         </Grid>
         <Grid item xs={12}>
-          <SalesTable data={brands} />
+          <BrandSalesTable brand={brand} data={brandProducts} />
         </Grid>
       </Grid>
     </React.Fragment>
   );
 };
 
-export default Sales;
+export default BrandSalesDetail;
