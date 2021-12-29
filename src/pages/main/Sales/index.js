@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet-async";
 import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 
-import Breadcrumbs from "../../sections/global/Breadcrumbs";
 import SalesTable from "../../sections/Sales/SalesTable";
 import async from "../../../components/Async";
 import data from "./data";
@@ -14,7 +13,8 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 
 const Divider = styled(MuiDivider)(spacing);
 
-const Sales = () => {
+const Sales = ({ route }) => {
+  console.log(route);
   const { salesChartData, brands } = data;
 
   return (
@@ -26,7 +26,6 @@ const Sales = () => {
           <Typography variant="h3" gutterBottom display="inline">
             Sales
           </Typography>
-          <Breadcrumbs pageTitle="Sales" aria-label="Breadcrumb" mt={2} />
         </Grid>
       </Grid>
 

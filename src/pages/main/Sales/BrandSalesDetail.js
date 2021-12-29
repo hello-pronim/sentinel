@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 
-import Breadcrumbs from "../../sections/global/Breadcrumbs";
 import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
 import data from "./data";
@@ -39,7 +38,6 @@ const BrandSalesDetail = () => {
           <Typography variant="h3" gutterBottom display="inline">
             {brand}
           </Typography>
-          <Breadcrumbs pageTitle={brand} aria-label="Breadcrumb" mt={2} />
         </Grid>
       </Grid>
 
