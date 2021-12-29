@@ -11,15 +11,16 @@ import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
 import data from "./data";
 
-const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
+const BrandSalesChart = async(() =>
+  import("../../sections/Sales/BrandSalesChart")
+);
 
 const Divider = styled(MuiDivider)(spacing);
 
 const BrandSalesDetail = () => {
   const { brand } = useParams();
-  console.log(brand);
   const [brandProducts, setBrandProducts] = useState([]);
-  const { salesChartData, products } = data;
+  const { brandSalesChartData, products } = data;
 
   useEffect(() => {
     if (brand) {
@@ -46,10 +47,10 @@ const BrandSalesDetail = () => {
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <SalesChart
+          <BrandSalesChart
             title={brand}
             description="Total: $123,456.00"
-            data={salesChartData}
+            data={brandSalesChartData}
           />
         </Grid>
         <Grid item xs={12}>

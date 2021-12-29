@@ -1,13 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
-import { MoreVertical } from "react-feather";
 
 import {
   Card as MuiCard,
   CardHeader,
   Chip as MuiChip,
-  IconButton,
   Link,
   Paper,
 } from "@mui/material";
