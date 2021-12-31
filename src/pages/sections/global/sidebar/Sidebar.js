@@ -10,7 +10,6 @@ import {
   ListItemButton,
 } from "@mui/material";
 
-import { ReactComponent as Logo } from "../../../../vendor/logo.svg";
 import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
 
@@ -46,19 +45,11 @@ const Brand = styled(ListItemButton)`
   }
 `;
 
-const BrandIcon = styled(Logo)`
-  margin-right: ${(props) => props.theme.spacing(2)};
-  color: ${(props) => props.theme.sidebar.header.brand.color};
-  fill: ${(props) => props.theme.sidebar.header.brand.color};
-  width: 32px;
-  height: 32px;
-`;
-
 const Sidebar = ({ items, showFooter = true, ...rest }) => {
   return (
     <Drawer variant="permanent" {...rest}>
       <Brand component={NavLink} to="/">
-        <BrandIcon /> <Box ml={1}>Sentinel</Box>
+        <Box ml={1}>Sentinel</Box>
       </Brand>
       <SidebarNav items={items} />
       {!!showFooter && <Footer />}
