@@ -17,7 +17,14 @@ import { Divider } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 
 const DateFilterMenu = ({ title }) => {
+  const [dateRange, setDateRange] = useState("today");
   const [viewMode, setViewMode] = useState("day");
+
+  const handleDateRangeChanged = (event) => {
+    const { value } = event.target;
+
+    setDateRange(value);
+  };
 
   const handleViewModeChanged = (event, value) => {
     setViewMode(value);
@@ -38,41 +45,55 @@ const DateFilterMenu = ({ title }) => {
                   <Grid item>
                     <Typography variant="body2">Date Range</Typography>
                   </Grid>
-                  <Grid item defaultValue="custom">
+                  <Grid item>
                     <FormControl id="date-range-label" size="small" fullWidth>
-                      <Select labelId="date-range-label" defaultValue="custom">
-                        <MenuItem value="custom">Custom select</MenuItem>
+                      <Select
+                        labelId="date-range-label"
+                        value={dateRange}
+                        onChange={handleDateRangeChanged}
+                      >
+                        <MenuItem value="today">Today</MenuItem>
+                        <MenuItem value="yesterday">Yesterday</MenuItem>
+                        <MenuItem value="last_week">Last Week</MenuItem>
+                        <MenuItem value="last_month">Last Month</MenuItem>
+                        <MenuItem value="last_7_ays">Last 7 Days</MenuItem>
+                        <MenuItem value="last_30_days">Last 30 Days</MenuItem>
+                        <MenuItem value="custom">Custom</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item xs={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        size="small"
-                        label="From"
-                        value="11-01-2021"
-                        onChange={() => {}}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </LocalizationProvider>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        size="small"
-                        label="To"
-                        value="11-13-2021"
-                        onChange={() => {}}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </LocalizationProvider>
+              {dateRange === "custom" ? (
+                <Grid item xs={12}>
+                  <Grid container alignItems="center" spacing={2}>
+                    <Grid item xs={6}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                          size="small"
+                          label="From"
+                          value="11-01-2021"
+                          onChange={() => {}}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                          size="small"
+                          label="To"
+                          value="11-13-2021"
+                          onChange={() => {}}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
+              ) : (
+                <></>
+              )}
               <Grid item xs={12}>
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item>

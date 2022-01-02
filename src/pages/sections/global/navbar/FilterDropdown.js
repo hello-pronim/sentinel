@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Grid, Menu } from "@mui/material";
+import { Box, Button, Divider, Grid, Menu } from "@mui/material";
 
 import { AppContext } from "../../../../contexts/AppContext";
 
@@ -92,6 +92,9 @@ const FilterDropdown = ({ text }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleApplyFilterlicked = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <React.Fragment>
@@ -123,31 +126,55 @@ const FilterDropdown = ({ text }) => {
           horizontal: "right",
         }}
       >
-        <Grid container wrap="nowrap" spacing={1}>
-          <Grid item>
-            {companyFilterOptions !== null && (
-              <CompanyFilterMenu
-                title="Company by Category"
-                filterOptions={companyFilterOptions}
-                defaultExpanded={defaultCompanyExpandedList}
-                defaultSelected={defaultCompanySelectedList}
-              />
-            )}
+        <Box>
+          <Grid container wrap="nowrap" spacing={1}>
+            <Grid item>
+              {companyFilterOptions !== null && (
+                <CompanyFilterMenu
+                  title="Company by Category"
+                  filterOptions={companyFilterOptions}
+                  defaultExpanded={defaultCompanyExpandedList}
+                  defaultSelected={defaultCompanySelectedList}
+                />
+              )}
+            </Grid>
+            <Grid item>
+              <DateFilterMenu title="Date" />
+            </Grid>
+            <Grid item>
+              {marketFilterOptions && (
+                <MarketFilterMenu
+                  title="Markets"
+                  filterOptions={marketFilterOptions}
+                  defaultExpanded={defaultMarketExpandedList}
+                  defaultSelected={defaultMarketSelectedList}
+                />
+              )}
+            </Grid>
           </Grid>
-          <Grid item>
-            <DateFilterMenu title="Date" />
+        </Box>
+        <Divider />
+        <Box p={2}>
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="flex-end"
+            spacing={2}
+          >
+            <Grid item>
+              <Button variant="outlined">Clear</Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleApplyFilterlicked}
+              >
+                Apply
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            {marketFilterOptions && (
-              <MarketFilterMenu
-                title="Markets"
-                filterOptions={marketFilterOptions}
-                defaultExpanded={defaultMarketExpandedList}
-                defaultSelected={defaultMarketSelectedList}
-              />
-            )}
-          </Grid>
-        </Grid>
+        </Box>
       </Menu>
     </React.Fragment>
   );

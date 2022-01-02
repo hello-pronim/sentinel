@@ -13,8 +13,7 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 
 const Divider = styled(MuiDivider)(spacing);
 
-const Sales = ({ route }) => {
-  console.log(route);
+const Sales = () => {
   const { salesChartData, brands } = data;
 
   return (
