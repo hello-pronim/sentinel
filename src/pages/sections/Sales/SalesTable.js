@@ -41,9 +41,7 @@ const SalesTable = ({ data }) => {
               {
                 field: "brand",
                 title: "Brand",
-                cellStyle: {
-                  width: "55%",
-                },
+                width: "55%",
                 render: (rowData) => {
                   const { brand } = rowData;
 
@@ -68,8 +66,12 @@ const SalesTable = ({ data }) => {
                   maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { revenue } = rowData;
@@ -87,8 +89,12 @@ const SalesTable = ({ data }) => {
                   maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
@@ -100,8 +106,12 @@ const SalesTable = ({ data }) => {
                 field: "revenueChange",
                 title: "Revenue Change",
                 customSort: (a, b) => a.revenueChange - b.revenueChange,
+                width: "15%",
+                headerStyle: {
+                  textAlign: "center",
+                },
                 cellStyle: {
-                  width: "15%",
+                  textAlign: "center",
                 },
                 render: (rowData) => {
                   const { revenueChange } = rowData;
