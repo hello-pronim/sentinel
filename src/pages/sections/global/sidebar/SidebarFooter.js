@@ -1,6 +1,6 @@
 import React from "react";
-import styled from "styled-components/macro";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components/macro";
 
 import {
   Grid,
@@ -66,6 +66,10 @@ const SidebarFooter = ({ ...rest }) => {
     navigate("/auth/sign-in");
   };
 
+  const goToProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <Footer {...rest}>
       <Tooltip disableHoverListener title="">
@@ -95,7 +99,7 @@ const SidebarFooter = ({ ...rest }) => {
         open={Boolean(anchorMenu)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={closeMenu}>Profile</MenuItem>
+        <MenuItem onClick={goToProfile}>Profile</MenuItem>
         <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
       </Menu>
     </Footer>

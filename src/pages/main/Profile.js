@@ -1,509 +1,273 @@
 import React from "react";
-import styled, { withTheme } from "styled-components/macro";
-import { NavLink } from "react-router-dom";
+import styled, { css } from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
-import Chart from "react-chartjs-2";
 
 import {
-  Briefcase,
-  DollarSign,
-  ExternalLink,
-  Facebook,
-  Home,
-  Instagram,
-  MapPin,
-  ShoppingBag,
-  Twitter,
-} from "react-feather";
-
-import {
-  Avatar as MuiAvatar,
-  Box,
-  Breadcrumbs as MuiBreadcrumbs,
+  Avatar,
   Button as MuiButton,
   Card as MuiCard,
+  CardActions as MuiCardActions,
+  CardHeader as MuiCardHeader,
   CardContent,
-  Chip as MuiChip,
-  Divider as MuiDivider,
-  Grid as MuiGrid,
-  LinearProgress as MuiLinearProgress,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography as MuiTypography,
+  Grid,
+  TextField as MuiTextField,
+  Typography,
 } from "@mui/material";
+import { green, grey, indigo } from "@mui/material/colors";
+import { CloudUpload as MuiCloudUpload } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 
-const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
+import { THEMES } from "../../constants";
+import useAuth from "../../hooks/useAuth";
+import useTheme from "../../hooks/useTheme";
+
+const Card = styled(MuiCard)(spacing);
+const CardActions = styled(MuiCardActions)(spacing);
+const CardHeader = styled(MuiCardHeader)(spacing);
+
+const TextField = styled(MuiTextField)(spacing);
 
 const Button = styled(MuiButton)(spacing);
 
-const Card = styled(MuiCard)(spacing);
+const CloudUpload = styled(MuiCloudUpload)(spacing);
 
-const Chip = styled(MuiChip)(spacing);
-
-const Divider = styled(MuiDivider)(spacing);
-
-const Grid = styled(MuiGrid)(spacing);
-
-const LinearProgress = styled(MuiLinearProgress)(spacing);
-
-const Spacer = styled.div(spacing);
-
-const Typography = styled(MuiTypography)(spacing);
-
-const Centered = styled.div`
+const CenteredContent = styled.div`
   text-align: center;
 `;
 
-const Avatar = styled(MuiAvatar)`
-  display: inline-block;
-  height: 128px;
-  width: 128px;
+const BigAvatar = styled(Avatar)`
+  width: 120px;
+  height: 120px;
+  margin: 0 auto ${(props) => props.theme.spacing(2)};
 `;
 
-const AboutIcon = styled.span`
+const DemoWrapper = styled.div`
+  width: 80px;
+  margin: auto;
+`;
+
+const DemoTitle = styled(Typography)`
+  text-align: center;
+`;
+
+const DemoButton = styled.div`
+  cursor: pointer;
+  background: ${(props) => props.theme.palette.background.paper};
+  height: 80px;
+  border-radius: 0.3rem;
+  cursor: pointer;
   display: flex;
-  padding-right: ${(props) => props.theme.spacing(2)};
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-`;
-
-const ChartWrapper = styled.div`
-  height: 280px;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.825rem;
   position: relative;
+  border: 1px solid
+    ${(props) =>
+      !props.active
+        ? props.theme.palette.action.selected
+        : props.theme.palette.action.active};
 `;
 
-const StatsIcon = styled.div`
-  position: absolute;
-  right: 16px;
-  top: 32px;
+const DemoButtonInner = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px ${(props) => props.theme.palette.action.selected};
+  position: relative;
 
-  svg {
-    width: 32px;
-    height: 32px;
-    color: ${(props) => props.theme.palette.secondary.main};
-  }
+  ${(props) =>
+    props.selectedTheme === THEMES.DEFAULT &&
+    css`
+      background: linear-gradient(-45deg, #23303f 50%, ${grey[100]} 0);
+    `}
+  ${(props) =>
+    props.selectedTheme === THEMES.DARK &&
+    css`
+      background: #23303f;
+    `}
+  ${(props) =>
+    props.selectedTheme === THEMES.LIGHT &&
+    css`
+      background: ${grey[100]};
+    `}
+  ${(props) =>
+    props.selectedTheme === THEMES.BLUE &&
+    css`
+      background: linear-gradient(-45deg, #4782da 50%, ${grey[100]} 0);
+    `}
+  ${(props) =>
+    props.selectedTheme === THEMES.GREEN &&
+    css`
+      background: linear-gradient(-45deg, ${green[500]} 50%, ${grey[100]} 0);
+    `}
+  ${(props) =>
+    props.selectedTheme === THEMES.INDIGO &&
+    css`
+      background: linear-gradient(-45deg, ${indigo[500]} 50%, ${grey[100]} 0);
+    `}
 `;
 
-const ProductsChip = styled(Chip)`
-  height: 20px;
-  padding: 4px 0;
-  font-size: 90%;
-  background-color: ${(props) =>
-    props.theme.palette[props.color ? props.color : "primary"].light};
-  color: ${(props) => props.theme.palette.common.white};
-`;
-
-const TableWrapper = styled.div`
-  overflow-y: auto;
-  max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
-`;
-
-function Details() {
+const UserInfo = ({ user }) => {
   return (
     <Card mb={6}>
+      <CardHeader title="User info" />
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Profile Details
-        </Typography>
-
-        <Spacer mb={4} />
-
-        <Centered>
-          <Avatar alt="Lucy Lavender" src="/static/img/avatars/avatar-1.jpg" />
-          <Typography variant="body2" component="div" gutterBottom>
-            <Box fontWeight="fontWeightMedium">Lucy Lavender</Box>
-            <Box fontWeight="fontWeightRegular">Lead Developer</Box>
-          </Typography>
-
-          <Button mr={2} variant="contained" color="primary" size="small">
-            Follow
-          </Button>
-          <Button mr={2} variant="contained" color="primary" size="small">
-            Message
-          </Button>
-        </Centered>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Skills() {
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Skills
-        </Typography>
-
-        <Spacer mb={4} />
-
-        <Centered>
-          <Chip size="small" mr={1} mb={1} label="HTML" color="secondary" />
-          <Chip size="small" mr={1} mb={1} label="JavaScript" />
-          <Chip size="small" mr={1} mb={1} label="Sass" />
-          <Chip size="small" mr={1} mb={1} label="React" />
-          <Chip size="small" mr={1} mb={1} label="Redux" />
-          <Chip size="small" mr={1} mb={1} label="Next.js" />
-          <Chip size="small" mr={1} mb={1} label="Material UI" />
-          <Chip size="small" mr={1} mb={1} label="UI" />
-          <Chip size="small" mr={1} mb={1} label="UX" />
-        </Centered>
-      </CardContent>
-    </Card>
-  );
-}
-
-function About() {
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          About
-        </Typography>
-
-        <Spacer mb={4} />
-
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <Home />
-            </AboutIcon>
+        <Grid container spacing={12}>
+          <Grid item md={8} sm={12}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={12} sm={12}>
+                <TextField
+                  id="display-name"
+                  label="Display name"
+                  variant="outlined"
+                  value={user.displayName}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={12} sm={12}>
+                <TextField
+                  id="email"
+                  label="Email"
+                  variant="outlined"
+                  type="email"
+                  value={user.email}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={12} sm={12}>
+                <TextField
+                  id="address"
+                  label="Address"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={12} sm={12}>
+                <TextField
+                  id="address2"
+                  label="Apartment, studio, or floor"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={12} sm={12}>
+                <Grid container spacing={4}>
+                  <Grid item xs={4}>
+                    <TextField
+                      id="city"
+                      label="City"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      id="state"
+                      label="State"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      id="zip"
+                      label="Zip"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item>
-            Lives in{" "}
-            <Link href="https://material-app.bootlab.io/">
-              San Fransisco, SA
-            </Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <Briefcase />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            Works at{" "}
-            <Link href="https://material-app.bootlab.io/">Material UI</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center">
-          <Grid item>
-            <AboutIcon>
-              <MapPin />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            Lives in <Link href="https://material-app.bootlab.io/">Boston</Link>
+          <Grid item md={4} sm={12}>
+            <CenteredContent>
+              <BigAvatar alt={user.displayName} />
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="raised-button-file"
+                multiple
+                type="file"
+              />
+              <label htmlFor="raised-button-file">
+                <Button variant="contained" color="primary" component="span">
+                  <CloudUpload mr={2} /> Upload
+                </Button>
+
+                <Typography variant="caption" display="block" gutterBottom>
+                  For best results, use an image at least 128px by 128px in .jpg
+                  format
+                </Typography>
+              </label>
+            </CenteredContent>
           </Grid>
         </Grid>
       </CardContent>
+      <CardActions>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Button variant="contained" color="primary" mt={3}>
+              Save changes
+            </Button>
+          </Grid>
+        </Grid>
+      </CardActions>
     </Card>
   );
-}
+};
 
-function Elsewhere() {
+const Demo = ({ title, themeVariant }) => {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <DemoWrapper>
+      <DemoButton
+        active={themeVariant === theme}
+        onClick={() => setTheme(themeVariant)}
+      >
+        <DemoButtonInner selectedTheme={themeVariant} />
+      </DemoButton>
+      <DemoTitle variant="subtitle2" gutterBottom>
+        {title}
+      </DemoTitle>
+    </DemoWrapper>
+  );
+};
+
+const ThemeSelect = () => {
   return (
     <Card mb={6}>
+      <CardHeader title="Select your theme" />
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Elsewhere
-        </Typography>
-
-        <Spacer mb={4} />
-
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <ExternalLink />
-            </AboutIcon>
+        <Grid container spacing={4}>
+          <Grid item md={2} sm={4}>
+            <Demo title="Dark" themeVariant={THEMES.DARK} />
           </Grid>
-          <Grid item>
-            <Link href="https://material-app.bootlab.io/">lucylavender.io</Link>
+          <Grid item md={2} sm={4}>
+            <Demo title="Light" themeVariant={THEMES.LIGHT} />
           </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <Twitter />
-            </AboutIcon>
+          <Grid item md={2} sm={4}>
+            <Demo title="Default" themeVariant={THEMES.DEFAULT} />
           </Grid>
-          <Grid item>
-            <Link href="https://material-app.bootlab.io/">Twitter</Link>
+          <Grid item md={2} sm={4}>
+            <Demo title="Blue" themeVariant={THEMES.BLUE} />
           </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <Facebook />
-            </AboutIcon>
+          <Grid item md={2} sm={4}>
+            <Demo title="Green" themeVariant={THEMES.GREEN} />
           </Grid>
-          <Grid item>
-            <Link href="https://material-app.bootlab.io/">Facebook</Link>
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center">
-          <Grid item>
-            <AboutIcon>
-              <Instagram />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            <Link href="https://material-app.bootlab.io/">Instagram</Link>
+          <Grid item md={2} sm={4}>
+            <Demo title="Indigo" themeVariant={THEMES.INDIGO} />
           </Grid>
         </Grid>
       </CardContent>
     </Card>
   );
-}
+};
 
-function Earnings() {
-  return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">$ 2.405</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Total Earnings
-          </Typography>
+const Profile = () => {
+  const { user } = useAuth();
 
-          <StatsIcon>
-            <DollarSign />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={75}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
-  );
-}
-
-function Orders() {
-  return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">30</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Orders Today
-          </Typography>
-
-          <StatsIcon>
-            <ShoppingBag />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={30}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
-  );
-}
-
-function Revenue() {
-  return (
-    <Box position="relative">
-      <Card mb={6} pt={2}>
-        <CardContent>
-          <Typography variant="h2" gutterBottom>
-            <Box fontWeight="fontWeightRegular">$ 1.224</Box>
-          </Typography>
-          <Typography variant="body2" gutterBottom mt={3} mb={0}>
-            Total Revenue
-          </Typography>
-
-          <StatsIcon>
-            <DollarSign />
-          </StatsIcon>
-          <LinearProgress
-            variant="determinate"
-            value={50}
-            color="secondary"
-            mt={4}
-          />
-        </CardContent>
-      </Card>
-    </Box>
-  );
-}
-
-function Products() {
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Products
-        </Typography>
-        <TableWrapper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Tech</TableCell>
-                <TableCell>License</TableCell>
-                <TableCell>Sales</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  AppStack
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="HTML" color="primary" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>76</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Material App
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="React" color="success" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>38</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Milo
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="HTML" color="primary" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>43</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Robust UI Kit
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="Angular" color="error" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>27</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Spark
-                </TableCell>
-                <TableCell>
-                  <ProductsChip size="small" label="React" color="success" />
-                </TableCell>
-                <TableCell>Single License</TableCell>
-                <TableCell>12</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableWrapper>
-      </CardContent>
-    </Card>
-  );
-}
-
-const SalesRevenue = withTheme(({ theme }) => {
-  const data = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        label: "Sales",
-        backgroundColor: theme.palette.secondary.main,
-        borderColor: theme.palette.secondary.main,
-        hoverBackgroundColor: theme.palette.secondary.main,
-        hoverBorderColor: theme.palette.secondary.main,
-        data: [54, 67, 41, 55, 62, 45, 55, 73, 60, 76, 48, 79],
-        barPercentage: 0.625,
-        categoryPercentage: 0.5,
-      },
-      {
-        label: "Revenue",
-        backgroundColor: theme.palette.grey[200],
-        borderColor: theme.palette.grey[200],
-        hoverBackgroundColor: theme.palette.grey[200],
-        hoverBorderColor: theme.palette.grey[200],
-        data: [69, 66, 24, 48, 52, 51, 44, 53, 62, 79, 51, 68],
-        barPercentage: 0.625,
-        categoryPercentage: 0.5,
-      },
-    ],
-  };
-
-  const options = {
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        grid: {
-          display: false,
-        },
-        stacked: false,
-      },
-
-      x: {
-        stacked: false,
-        grid: {
-          color: "transparent",
-        },
-      },
-    },
-  };
-
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Sales / Revenue
-        </Typography>
-
-        <Spacer mb={6} />
-
-        <ChartWrapper>
-          <Chart type="bar" data={data} options={options} />
-        </ChartWrapper>
-      </CardContent>
-    </Card>
-  );
-});
-
-function Profile() {
   return (
     <React.Fragment>
       <Helmet title="Profile" />
@@ -512,43 +276,14 @@ function Profile() {
         Profile
       </Typography>
 
-      <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <Link component={NavLink} to="/">
-          Dashboard
-        </Link>
-        <Link component={NavLink} to="/">
-          Pages
-        </Link>
-        <Typography>Profile</Typography>
-      </Breadcrumbs>
-
-      <Divider my={6} />
-
       <Grid container spacing={6}>
-        <Grid item xs={12} lg={4} xl={3}>
-          <Details />
-          <Skills />
-          <About />
-          <Elsewhere />
-        </Grid>
-        <Grid item xs={12} lg={8} xl={9}>
-          <SalesRevenue />
-          <Grid container spacing={6}>
-            <Grid item xs={12} lg={4}>
-              <Earnings />
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <Orders />
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <Revenue />
-            </Grid>
-          </Grid>
-          <Products />
+        <Grid item xs={12}>
+          <UserInfo user={user} />
+          <ThemeSelect />
         </Grid>
       </Grid>
     </React.Fragment>
   );
-}
+};
 
 export default Profile;
