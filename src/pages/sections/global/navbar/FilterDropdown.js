@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Divider, Grid, Menu } from "@mui/material";
+import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
 
 import { AppContext } from "../../../../contexts/AppContext";
 
@@ -8,6 +8,7 @@ import DateFilterMenu from "./DateFilterMenu";
 import MarketFilterMenu from "./MarketFilterMenu";
 
 const FilterDropdown = ({ text }) => {
+  const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { companies, markets } = useContext(AppContext);
   const [companyFilterOptions, setCompanyFilterOptions] = useState(null);
   const [defaultCompanyExpandedList, setCompanyDefaultExpandedList] = useState(
@@ -127,8 +128,13 @@ const FilterDropdown = ({ text }) => {
         }}
       >
         <Box>
-          <Grid container wrap="nowrap" spacing={1}>
-            <Grid item>
+          <Grid
+            container
+            wrap="nowrap"
+            spacing={1}
+            direction={mobileScreen ? "column" : "row"}
+          >
+            <Grid item sm={12} md={4}>
               {companyFilterOptions !== null && (
                 <CompanyFilterMenu
                   title="Company by Category"
@@ -137,11 +143,13 @@ const FilterDropdown = ({ text }) => {
                   defaultSelected={defaultCompanySelectedList}
                 />
               )}
+              {mobileScreen ? <Divider /> : <></>}
             </Grid>
-            <Grid item>
+            <Grid item sm={12} md={4}>
               <DateFilterMenu title="Date" />
+              {mobileScreen ? <Divider /> : <></>}
             </Grid>
-            <Grid item>
+            <Grid item sm={12} md={4}>
               {marketFilterOptions && (
                 <MarketFilterMenu
                   title="Markets"
