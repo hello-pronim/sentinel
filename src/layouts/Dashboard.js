@@ -11,7 +11,6 @@ import Sidebar from "../pages/sections/global/sidebar/Sidebar";
 import dashboardItems from "../pages/sections/global/sidebar/dashboardItems";
 import Navbar from "../pages/sections/global/navbar/Navbar";
 import Footer from "../pages/sections/global/Footer";
-import Settings from "../pages/sections/global/Settings";
 import GlobalStyle from "../pages/sections/global/GlobalStyle";
 
 const drawerWidth = 258;
@@ -89,7 +88,6 @@ const Dashboard = ({ children }) => {
         </MainContent>
         <Footer />
       </AppContent>
-      <Settings />
     </Root>
   );
 };
