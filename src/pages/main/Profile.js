@@ -3,10 +3,10 @@ import styled, { css } from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
 import {
-  Avatar,
-  Button as MuiButton,
+  // Avatar,
+  // Button as MuiButton,
   Card as MuiCard,
-  CardActions as MuiCardActions,
+  // CardActions as MuiCardActions,
   CardHeader as MuiCardHeader,
   CardContent,
   Grid,
@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { green, grey, indigo } from "@mui/material/colors";
-import { CloudUpload as MuiCloudUpload } from "@mui/icons-material";
+// import { CloudUpload as MuiCloudUpload } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 
 import { THEMES } from "../../constants";
@@ -22,24 +22,24 @@ import useAuth from "../../hooks/useAuth";
 import useTheme from "../../hooks/useTheme";
 
 const Card = styled(MuiCard)(spacing);
-const CardActions = styled(MuiCardActions)(spacing);
+// const CardActions = styled(MuiCardActions)(spacing);
 const CardHeader = styled(MuiCardHeader)(spacing);
 
 const TextField = styled(MuiTextField)(spacing);
 
-const Button = styled(MuiButton)(spacing);
+// const Button = styled(MuiButton)(spacing);
 
-const CloudUpload = styled(MuiCloudUpload)(spacing);
+// const CloudUpload = styled(MuiCloudUpload)(spacing);
 
-const CenteredContent = styled.div`
-  text-align: center;
-`;
+// const CenteredContent = styled.div`
+//   text-align: center;
+// `;
 
-const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${(props) => props.theme.spacing(2)};
-`;
+// const BigAvatar = styled(Avatar)`
+//   width: 120px;
+//   height: 120px;
+//   margin: 0 auto ${(props) => props.theme.spacing(2)};
+// `;
 
 const DemoWrapper = styled.div`
   width: 80px;
@@ -122,6 +122,7 @@ const UserInfo = ({ user }) => {
                   variant="outlined"
                   value={user.displayName}
                   fullWidth
+                  readOnly
                 />
               </Grid>
               <Grid item xs={12} md={12} sm={12}>
@@ -132,9 +133,10 @@ const UserInfo = ({ user }) => {
                   type="email"
                   value={user.email}
                   fullWidth
+                  readOnly
                 />
               </Grid>
-              <Grid item xs={12} md={12} sm={12}>
+              {/* <Grid item xs={12} md={12} sm={12}>
                 <TextField
                   id="address"
                   label="Address"
@@ -177,10 +179,10 @@ const UserInfo = ({ user }) => {
                     />
                   </Grid>
                 </Grid>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
-          <Grid item md={4} sm={12}>
+          {/* <Grid item md={4} sm={12}>
             <CenteredContent>
               <BigAvatar alt={user.displayName} />
               <input
@@ -201,10 +203,10 @@ const UserInfo = ({ user }) => {
                 </Typography>
               </label>
             </CenteredContent>
-          </Grid>
+          </Grid> */}
         </Grid>
       </CardContent>
-      <CardActions>
+      {/* <CardActions>
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Button variant="contained" color="primary" mt={3}>
@@ -212,7 +214,7 @@ const UserInfo = ({ user }) => {
             </Button>
           </Grid>
         </Grid>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };
