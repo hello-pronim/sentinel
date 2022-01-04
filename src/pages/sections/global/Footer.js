@@ -45,7 +45,7 @@ function Footer() {
           xs={12}
           md={6}
         >
-          <List>
+          {/* <List>
             <ListItemButton component="a" href="#">
               <ListItemText primary="Support" />
             </ListItemButton>
@@ -58,7 +58,7 @@ function Footer() {
             <ListItemButton component="a" href="#">
               <ListItemText primary="Terms of Service" />
             </ListItemButton>
-          </List>
+          </List> */}
         </Grid>
         <Grid container item xs={12} md={6} justifyContent="flex-end">
           <List>
