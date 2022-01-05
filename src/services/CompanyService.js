@@ -1,17 +1,7 @@
-import axios from "axios";
+import SecureAxios from "./SecureAxios";
 
 const getCompanies = () => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("/api/dev/companies")
-      .then((res) => {
-        const { data } = res.data.body;
-        return resolve(data);
-      })
-      .catch((err) => {
-        return reject(err);
-      });
-  });
+  return SecureAxios.get("/api/dev/companies");
 };
 
 export { getCompanies };
