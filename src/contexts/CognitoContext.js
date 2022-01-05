@@ -72,6 +72,7 @@ function AuthProvider({ children }) {
     () =>
       new Promise((resolve, reject) => {
         const user = UserPool.getCurrentUser();
+
         if (user) {
           user.getSession(async (err, session) => {
             if (err) {
@@ -145,12 +146,14 @@ function AuthProvider({ children }) {
             resolve(data);
           },
           onFailure: (err) => {
-            console.log("failed");
+            console.log("failed", err);
             reject(err);
           },
-          newPasswordRequired: () => {
+          newPasswordRequired: function (userAttributes) {
             console.log("new password required");
-            resolve({ message: "New password required" });
+            delete userAttributes.email_verified;
+            userAttributes["name"] = userAttributes.email;
+            user.completeNewPasswordChallenge(password, userAttributes, this);
           },
         });
       }),
