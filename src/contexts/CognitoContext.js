@@ -185,12 +185,50 @@ function AuthProvider({ children }) {
           }
           resolve(undefined);
           // Set destination URL here
-          window.location.href = "";
+          window.location.href = "/sales";
         }
       );
     });
 
-  const resetPassword = (email) => console.log(email);
+  const resetPassword = (email) =>
+    new Promise((resolve, reject) => {
+      const user = new CognitoUser({
+        Username: email,
+        Pool: UserPool,
+      });
+      console.log(email, user);
+      user.forgotPassword({
+        onSuccess: (result) => {
+          console.log("call result: " + JSON.stringify(result));
+          resolve();
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+        inputVerificationCode() {
+          const verificationCode = prompt("Pleas input verification code", "");
+          const newPassword = prompt("Enter new password", "");
+          user.confirmPassword(verificationCode, newPassword, this);
+        },
+      });
+    });
+
+  const confirmPassword = (email, verificationCode, newPassword) => {
+    const user = new CognitoUser({
+      Username: email,
+      Pool: UserPool,
+    });
+    return new Promise((resolve, reject) => {
+      user.confirmPassword(verificationCode, newPassword, {
+        onSuccess: () => {
+          resolve();
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  };
 
   return (
     <AuthContext.Provider
@@ -206,6 +244,7 @@ function AuthProvider({ children }) {
         signUp,
         signOut,
         resetPassword,
+        confirmPassword,
       }}
     >
       {children}
