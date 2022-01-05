@@ -199,19 +199,33 @@ function AuthProvider({ children }) {
         Username: email,
         Pool: UserPool,
       });
-      console.log(email, user);
-      user.forgotPassword({
-        onSuccess: (result) => {
-          console.log("call result: " + JSON.stringify(result));
-          resolve();
+      const authDetails = new AuthenticationDetails({
+        Username: email,
+      });
+
+      user.authenticateUser(authDetails, {
+        onSuccess: async (data) => {
+          user.forgotPassword({
+            onSuccess: (result) => {
+              resolve();
+            },
+            onFailure: (err) => {
+              reject(err);
+            },
+            inputVerificationCode() {
+              const verificationCode = prompt(
+                "Pleas input verification code",
+                ""
+              );
+              const newPassword = prompt("Enter new password", "");
+              user.confirmPassword(verificationCode, newPassword, this);
+            },
+          });
+          resolve(data);
         },
         onFailure: (err) => {
+          console.log("failed", err);
           reject(err);
-        },
-        inputVerificationCode() {
-          const verificationCode = prompt("Pleas input verification code", "");
-          const newPassword = prompt("Enter new password", "");
-          user.confirmPassword(verificationCode, newPassword, this);
         },
       });
     });

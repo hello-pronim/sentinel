@@ -34,16 +34,15 @@ function ResetPasswordForm() {
           .required("Email is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          resetPassword(values.email);
-          navigate("/auth/sign-in");
-        } catch (error) {
-          const message = error.message || "Something went wrong";
+        resetPassword(values.email)
+          .then((res) => navigate("/auth/sign-in"))
+          .catch((err) => {
+            const message = "Email doesn't exist. Try again!";
 
-          setStatus({ success: false });
-          setErrors({ submit: message });
-          setSubmitting(false);
-        }
+            setStatus({ success: false });
+            setErrors({ submit: message });
+            setSubmitting(false);
+          });
       }}
     >
       {({
