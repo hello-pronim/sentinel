@@ -4,7 +4,6 @@ import styled from "styled-components/macro";
 
 import { CssBaseline } from "@mui/material";
 
-import Settings from "../pages/sections/global/Settings";
 import GlobalStyle from "../pages/sections/global/GlobalStyle";
 
 const Root = styled.div`
@@ -24,7 +23,6 @@ const Auth = ({ children }) => {
       <GlobalStyle />
       {children}
       <Outlet />
-      <Settings />
     </Root>
   );
 };
