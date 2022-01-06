@@ -5,17 +5,27 @@ import { Formik } from "formik";
 
 import {
   Alert as MuiAlert,
+  Box,
   Button,
+  Link,
   TextField as MuiTextField,
   Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
+import useAuth from "../../../hooks/useAuth";
+
 const Alert = styled(MuiAlert)(spacing);
 
 const TextField = styled(MuiTextField)(spacing);
 
-const VerificationCodeForm = ({ code, setCode, setStep }) => {
+const VerificationCodeForm = ({ code, email, setCode, setStep }) => {
+  const { forgotPassword } = useAuth();
+
+  const handleResend = () => {
+    forgotPassword(email);
+  };
+
   return (
     <>
       <Typography component="h2" variant="body1" align="center">
@@ -61,15 +71,20 @@ const VerificationCodeForm = ({ code, setCode, setStep }) => {
               onChange={handleChange}
               my={3}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
-            >
-              Next
-            </Button>
+            <Link href="#" onClick={handleResend} my={3}>
+              Resend
+            </Link>
+            <Box pt={3}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+              >
+                Next
+              </Button>
+            </Box>
           </form>
         )}
       </Formik>
