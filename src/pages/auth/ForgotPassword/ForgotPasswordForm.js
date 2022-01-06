@@ -1,14 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
-import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
 import {
   Alert as MuiAlert,
-  Checkbox,
-  FormControlLabel,
   Button,
   TextField as MuiTextField,
 } from "@mui/material";
@@ -20,17 +17,14 @@ const Alert = styled(MuiAlert)(spacing);
 
 const TextField = styled(MuiTextField)(spacing);
 
-function SignInForm() {
+function ForgotPasswordForm() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { forgotPassword } = useAuth();
 
   return (
     <Formik
       initialValues={{
-        // email: "demo@bootlab.io",
-        // password: "unsafepassword",
-        email: "test@monolithbrandsgroup.com",
-        password: "Test2021!",
+        email: "",
         submit: false,
       }}
       validationSchema={Yup.object().shape({
@@ -38,20 +32,22 @@ function SignInForm() {
           .email("Must be a valid email")
           .max(255)
           .required("Email is required"),
-        password: Yup.string().max(255).required("Password is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          await signIn(values.email, values.password);
+        forgotPassword(values.email)
+          .then((res) => {
+            const buff = new Buffer(values.email);
+            const encodedEmail = buff.toString("base64");
 
-          navigate("/sales");
-        } catch (error) {
-          const message = error.message || "Something went wrong";
+            navigate("/auth/reset-password?e=" + encodedEmail);
+          })
+          .catch((error) => {
+            const message = error.message || "Something went wrong";
 
-          setStatus({ success: false });
-          setErrors({ submit: message });
-          setSubmitting(false);
-        }
+            setStatus({ success: false });
+            setErrors({ submit: message });
+            setSubmitting(false);
+          });
       }}
     >
       {({
@@ -64,12 +60,8 @@ function SignInForm() {
         values,
       }) => (
         <form noValidate onSubmit={handleSubmit}>
-          {/* <Alert mt={3} mb={3} severity="info">
-            Use <strong>demo@bootlab.io</strong> and{" "}
-            <strong>unsafepassword</strong> to sign in
-          </Alert> */}
           {errors.submit && (
-            <Alert mt={2} mb={3} severity="warning">
+            <Alert mt={2} mb={1} severity="warning">
               {errors.submit}
             </Alert>
           )}
@@ -83,23 +75,7 @@ function SignInForm() {
             helperText={touched.email && errors.email}
             onBlur={handleBlur}
             onChange={handleChange}
-            my={2}
-          />
-          <TextField
-            type="password"
-            name="password"
-            label="Password"
-            value={values.password}
-            error={Boolean(touched.password && errors.password)}
-            fullWidth
-            helperText={touched.password && errors.password}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            my={2}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            my={3}
           />
           <Button
             type="submit"
@@ -107,14 +83,6 @@ function SignInForm() {
             variant="contained"
             color="primary"
             disabled={isSubmitting}
-          >
-            Sign in
-          </Button>
-          <Button
-            component={Link}
-            to="/auth/forgot-password"
-            fullWidth
-            color="primary"
           >
             Forgot password
           </Button>
@@ -124,4 +92,4 @@ function SignInForm() {
   );
 }
 
-export default SignInForm;
+export default ForgotPasswordForm;

@@ -12,6 +12,7 @@ import AuthGuard from "./guards/AuthGuard";
 // Auth components
 import SignIn from "./pages/auth/SignIn/index";
 import SignUp from "./pages/auth/SignUp/index";
+import ForgotPassword from "./pages/auth/ForgotPassword/index";
 import ResetPassword from "./pages/auth/ResetPassword/index";
 import Page404 from "./pages/auth/Page404";
 import Page500 from "./pages/auth/Page500";
@@ -74,6 +75,10 @@ const routes = [
       {
         path: "sign-up",
         element: <SignUp />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
       },
       {
         path: "reset-password",
