@@ -193,44 +193,24 @@ function AuthProvider({ children }) {
       );
     });
 
-  const resetPassword = (email) =>
+  const forgotPassword = (email) =>
     new Promise((resolve, reject) => {
       const user = new CognitoUser({
         Username: email,
         Pool: UserPool,
       });
-      const authDetails = new AuthenticationDetails({
-        Username: email,
-      });
 
-      user.authenticateUser(authDetails, {
-        onSuccess: async (data) => {
-          user.forgotPassword({
-            onSuccess: (result) => {
-              resolve();
-            },
-            onFailure: (err) => {
-              reject(err);
-            },
-            inputVerificationCode() {
-              const verificationCode = prompt(
-                "Pleas input verification code",
-                ""
-              );
-              const newPassword = prompt("Enter new password", "");
-              user.confirmPassword(verificationCode, newPassword, this);
-            },
-          });
-          resolve(data);
+      user.forgotPassword({
+        onSuccess: (result) => {
+          resolve();
         },
         onFailure: (err) => {
-          console.log("failed", err);
           reject(err);
         },
       });
     });
 
-  const confirmPassword = (email, verificationCode, newPassword) => {
+  const resetPassword = (email, verificationCode, newPassword) => {
     const user = new CognitoUser({
       Username: email,
       Pool: UserPool,
@@ -260,8 +240,8 @@ function AuthProvider({ children }) {
         signIn,
         signUp,
         signOut,
+        forgotPassword,
         resetPassword,
-        confirmPassword,
       }}
     >
       {children}
