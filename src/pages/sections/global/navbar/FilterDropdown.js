@@ -1,28 +1,46 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
-
-import { AppContext } from "../../../../contexts/AppContext";
 
 import CompanyFilterMenu from "./CompanyFilterMenu";
 import DateFilterMenu from "./DateFilterMenu";
 import MarketFilterMenu from "./MarketFilterMenu";
 
-const FilterDropdown = ({ text }) => {
+const FilterDropdown = ({
+  text,
+  companies,
+  markets,
+  filterOptions,
+  setFilterButtonText,
+  setFilterOptions,
+}) => {
+  const navigate = useNavigate();
   const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const { companies, markets } = useContext(AppContext);
-  const [companyFilterOptions, setCompanyFilterOptions] = useState(null);
+  // companies
+  const [companyList, setCompanyList] = useState([]);
+  const [companyFilterOptions, setCompanyFilterOptions] = useState([]);
+  const [companyFilterData, setCompanyFilterData] = useState(null);
   const [defaultCompanyExpandedList, setCompanyDefaultExpandedList] = useState(
     []
   );
-  const [defaultCompanySelectedList, setCompanyDefaultSelectedList] = useState(
-    []
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [selectedCompanyOptions, setSelectedCompanyOptions] = useState(
+    filterOptions.company.selectedOptions
   );
-  const [marketFilterOptions, setMarketFilterOptions] = useState(null);
+  // date
+  const [dateFilterOptions, setDateFilterOptions] = useState(
+    filterOptions.date
+  );
+  // markets
+  const [marketList, setMarketList] = useState([]);
+  const [marketFilterOptions, setMarketFilterOptions] = useState([]);
+  const [marketFilterData, setMarketFilterData] = useState(null);
   const [defaultMarketExpandedList, setMarketDefaultExpandedList] = useState(
     []
   );
-  const [defaultMarketSelectedList, setMarketDefaultSelectedList] = useState(
-    []
+  const [selectedMarkets, setSelectedMarkets] = useState([]);
+  const [selectedMarketOptions, setSelectedMarketOptions] = useState(
+    filterOptions.market.selectedOptions
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,14 +48,35 @@ const FilterDropdown = ({ text }) => {
 
   useEffect(() => {
     if (companies !== null) {
+      const keys = Object.keys(companies);
+      let array = [];
+
+      keys.forEach((key) => {
+        const sameCatCompanies = companies[key];
+
+        sameCatCompanies.forEach((comp) => array.push(comp));
+      });
+
+      setCompanyList(array);
+    }
+  }, [companies]);
+  useEffect(() => {
+    if (markets !== null) {
+      setMarketList(markets);
+    }
+  }, [markets]);
+
+  useEffect(() => {
+    if (companies !== null && !filterOptions.company.selected.length) {
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
+      const options = [];
       const categories = Object.keys(companies);
       const companyArray = [];
       categories.forEach((category) =>
         companies[category].forEach((company) => companyArray.push(company))
       );
-      const options = {
+      const data = {
         id: "all",
         name: "All",
         children: categories.map((category) => {
@@ -51,9 +90,10 @@ const FilterDropdown = ({ text }) => {
             id: category,
             name: category,
             children: sameCatCompanies.map((comp) => {
-              defaultSelected.push(comp.name);
+              defaultSelected.push(category + "-" + comp.name);
+              options.push({ id: category + "-" + comp.name, option: comp });
               return {
-                id: comp.name,
+                id: category + "-" + comp.name,
                 name: comp.name,
               };
             }),
@@ -61,31 +101,97 @@ const FilterDropdown = ({ text }) => {
         }),
       };
       setCompanyDefaultExpandedList(defaultExpanded);
-      setCompanyDefaultSelectedList(defaultSelected);
+      setSelectedCompanies(defaultSelected);
+      setFilterOptions({
+        ...filterOptions,
+        company: {
+          ...filterOptions.company,
+          selected: defaultSelected,
+          selectedOptions: options,
+        },
+      });
       setCompanyFilterOptions(options);
+      setCompanyFilterData(data);
     }
-  }, [companies]);
+  }, [companies, filterOptions, setFilterOptions]);
 
   useEffect(() => {
-    if (markets !== null) {
+    if (markets !== null && !filterOptions.market.selected.length) {
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
-      const options = {
+      const options = [];
+      const data = {
         id: "all",
         name: "All",
         children: markets.map((market) => {
-          defaultSelected.push(market.name);
+          defaultSelected.push("-" + market.name);
+          options.push({ id: "-" + market.name, option: market });
           return {
-            id: market.name,
+            id: "-" + market.name,
             name: market.name,
           };
         }),
       };
       setMarketDefaultExpandedList(defaultExpanded);
-      setMarketDefaultSelectedList(defaultSelected);
+      setSelectedMarkets(defaultSelected);
+      setFilterOptions({
+        ...filterOptions,
+        market: {
+          ...filterOptions.market,
+          selected: defaultSelected,
+          selectedOptions: options,
+        },
+      });
       setMarketFilterOptions(options);
+      setMarketFilterData(data);
     }
-  }, [markets]);
+  }, [markets, filterOptions, setFilterOptions]);
+
+  useEffect(() => {
+    let companyFilterButtonText = "";
+    let dateFilterButtonText =
+      dateFilterOptions.from !== dateFilterOptions.to
+        ? dateFilterOptions.from + " - " + dateFilterOptions.to
+        : dateFilterOptions.from;
+    let marketFilterButtonText = "";
+
+    if (!selectedCompanyOptions.length) companyFilterButtonText = "All Brands";
+    else {
+      if (selectedCompanyOptions.length === 1)
+        companyFilterButtonText = selectedCompanyOptions[0].option.name;
+      else if (selectedCompanyOptions.length === companyList.length)
+        companyFilterButtonText = "All Brands";
+      else companyFilterButtonText = "Multi Brands";
+    }
+    if (!selectedMarketOptions.length) marketFilterButtonText = "All Markets";
+    else {
+      if (selectedMarketOptions.length === 1)
+        marketFilterButtonText = selectedMarketOptions[0].option.name;
+      else if (selectedMarketOptions.length === marketList.length)
+        marketFilterButtonText = "All Markets";
+      else marketFilterButtonText = "Multi Markets";
+    }
+
+    setFilterButtonText(
+      companyFilterButtonText +
+        " - " +
+        dateFilterButtonText +
+        " - " +
+        marketFilterButtonText
+    );
+  }, [
+    companyList,
+    marketList,
+    selectedCompanyOptions,
+    dateFilterOptions,
+    selectedMarketOptions,
+    setFilterButtonText,
+  ]);
+
+  useEffect(() => {
+    setSelectedCompanies(filterOptions.company.selected);
+    setSelectedMarkets(filterOptions.market.selected);
+  }, [filterOptions]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -93,8 +199,32 @@ const FilterDropdown = ({ text }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleApplyFilterlicked = () => {
+  const handleApplyClicked = () => {
+    setFilterOptions({
+      ...filterOptions,
+      company: {
+        ...filterOptions.company,
+        selected: selectedCompanies,
+        selectedOptions: selectedCompanyOptions,
+      },
+      date: {
+        ...filterOptions.date,
+        dateFilterOptions,
+      },
+      market: {
+        ...filterOptions.market,
+        selected: selectedMarkets,
+        selectedOptions: selectedMarketOptions,
+      },
+    });
     setAnchorEl(null);
+    navigate("/sales?filter=true");
+  };
+  const handleClearClicked = () => {
+    const selectedCompOptions = filterOptions.company.selectedOptions;
+    const selectedMarOptions = filterOptions.market.selectedOptions;
+    setSelectedCompanies(selectedCompOptions.map((opt) => opt.id));
+    setSelectedMarkets(selectedMarOptions.map((opt) => opt.id));
   };
 
   return (
@@ -103,7 +233,7 @@ const FilterDropdown = ({ text }) => {
         id="button-filter-dropdown"
         aria-controls="menu-dropdown"
         aria-haspopup="true"
-        aira-expanded={open ? "true" : undefined}
+        aria-expanded={open ? "true" : undefined}
         disableElevation
         onClick={handleClick}
         variant="contained"
@@ -135,27 +265,37 @@ const FilterDropdown = ({ text }) => {
             direction={mobileScreen ? "column" : "row"}
           >
             <Grid item sm={12} md={4}>
-              {companyFilterOptions !== null && (
+              {companyFilterData !== null && (
                 <CompanyFilterMenu
                   title="Company by Category"
+                  filterData={companyFilterData}
                   filterOptions={companyFilterOptions}
-                  defaultExpanded={defaultCompanyExpandedList}
-                  defaultSelected={defaultCompanySelectedList}
+                  expanded={defaultCompanyExpandedList}
+                  selected={selectedCompanies}
+                  setSelected={setSelectedCompanies}
+                  setSelectedOptions={setSelectedCompanyOptions}
                 />
               )}
               {mobileScreen ? <Divider /> : <></>}
             </Grid>
             <Grid item sm={12} md={4}>
-              <DateFilterMenu title="Date" />
+              <DateFilterMenu
+                title="Date"
+                filterOptions={dateFilterOptions}
+                setFilterOptions={setDateFilterOptions}
+              />
               {mobileScreen ? <Divider /> : <></>}
             </Grid>
             <Grid item sm={12} md={4}>
-              {marketFilterOptions && (
+              {marketFilterData && (
                 <MarketFilterMenu
                   title="Markets"
+                  filterData={marketFilterData}
                   filterOptions={marketFilterOptions}
-                  defaultExpanded={defaultMarketExpandedList}
-                  defaultSelected={defaultMarketSelectedList}
+                  expanded={defaultMarketExpandedList}
+                  selected={selectedMarkets}
+                  setSelected={setSelectedMarkets}
+                  setSelectedOptions={setSelectedMarketOptions}
                 />
               )}
             </Grid>
@@ -170,13 +310,15 @@ const FilterDropdown = ({ text }) => {
             spacing={2}
           >
             <Grid item>
-              <Button variant="outlined">Clear</Button>
+              <Button variant="outlined" onClick={handleClearClicked}>
+                Clear
+              </Button>
             </Grid>
             <Grid item>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleApplyFilterlicked}
+                onClick={handleApplyClicked}
               >
                 Apply
               </Button>

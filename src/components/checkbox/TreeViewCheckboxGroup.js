@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TreeView, TreeItem } from "@mui/lab";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
@@ -6,11 +6,11 @@ const TreeViewCheckboxGroup = ({
   data,
   options,
   defaultSelected,
+  selected,
+  setSelected,
   setSelectedOptions,
   ...props
 }) => {
-  const [selected, setSelected] = useState(defaultSelected);
-
   function getChildById(node, id) {
     let array = [];
 

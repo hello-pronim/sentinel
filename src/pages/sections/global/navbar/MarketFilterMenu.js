@@ -8,7 +8,15 @@ import {
 
 import TreeViewCheckboxGroup from "../../../../components/checkbox/TreeViewCheckboxGroup";
 
-const MarketFilterMenu = ({ title, filterOptions, ...props }) => {
+const MarketFilterMenu = ({
+  title,
+  filterData,
+  filterOptions,
+  selected,
+  setSelected,
+  setSelectedOptions,
+  ...props
+}) => {
   return (
     <React.Fragment>
       <Box p={2}>
@@ -18,7 +26,11 @@ const MarketFilterMenu = ({ title, filterOptions, ...props }) => {
       <TreeViewCheckboxGroup
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
-        data={filterOptions}
+        data={filterData}
+        options={filterOptions}
+        selected={selected}
+        setSelected={setSelected} // store only option id
+        setSelectedOptions={setSelectedOptions} // store option objects
         {...props}
       />
     </React.Fragment>

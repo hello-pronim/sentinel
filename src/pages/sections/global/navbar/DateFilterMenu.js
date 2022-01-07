@@ -16,18 +16,44 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Divider } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 
-const DateFilterMenu = ({ title }) => {
-  const [dateRange, setDateRange] = useState("today");
-  const [viewMode, setViewMode] = useState("day");
+import { convertDateToMMDDYY, getPastDate } from "../../../../utils/functions";
+
+const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
+  const [dateRange, setDateRange] = useState(filterOptions.dateRange);
+  const [viewMode, setViewMode] = useState(filterOptions.viewMode);
 
   const handleDateRangeChanged = (event) => {
     const { value } = event.target;
 
+    const today = new Date();
+    let from = convertDateToMMDDYY(today);
+    let to = convertDateToMMDDYY(today);
+    if (value === "yesterday") {
+      from = convertDateToMMDDYY(getPastDate(today, 1));
+      to = convertDateToMMDDYY(getPastDate(today, 1));
+    } else if (value === "last_week") {
+    } else if (value === "last_month") {
+    } else if (value === "last_7_days") {
+      from = convertDateToMMDDYY(getPastDate(today, 6));
+    } else if (value === "last_30_days") {
+      from = convertDateToMMDDYY(getPastDate(today, 29));
+    }
+
     setDateRange(value);
+    setFilterOptions({
+      ...filterOptions,
+      dateRange: value,
+      from,
+      to,
+    });
   };
 
   const handleViewModeChanged = (event, value) => {
     setViewMode(value);
+    setFilterOptions({
+      ...filterOptions,
+      viewMode: value,
+    });
   };
 
   return (
@@ -56,7 +82,7 @@ const DateFilterMenu = ({ title }) => {
                         <MenuItem value="yesterday">Yesterday</MenuItem>
                         <MenuItem value="last_week">Last Week</MenuItem>
                         <MenuItem value="last_month">Last Month</MenuItem>
-                        <MenuItem value="last_7_ays">Last 7 Days</MenuItem>
+                        <MenuItem value="last_7_days">Last 7 Days</MenuItem>
                         <MenuItem value="last_30_days">Last 30 Days</MenuItem>
                         <MenuItem value="custom">Custom</MenuItem>
                       </Select>

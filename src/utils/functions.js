@@ -7,4 +7,8 @@ const convertDateToMMDDYY = (date) => {
   return mm + "/" + dd + "/" + yy;
 };
 
-export { convertDateToMMDDYY };
+const getPastDate = (date, days) => {
+  return new Date().setDate(date.getDate() - days);
+};
+
+export { convertDateToMMDDYY, getPastDate };
