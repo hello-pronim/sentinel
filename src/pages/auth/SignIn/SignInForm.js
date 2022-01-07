@@ -7,9 +7,10 @@ import { Formik } from "formik";
 
 import {
   Alert as MuiAlert,
-  Checkbox,
-  FormControlLabel,
   Button,
+  Checkbox,
+  Grid,
+  FormControlLabel,
   TextField as MuiTextField,
 } from "@mui/material";
 import { spacing } from "@mui/system";
@@ -27,10 +28,8 @@ function SignInForm() {
   return (
     <Formik
       initialValues={{
-        // email: "demo@bootlab.io",
-        // password: "unsafepassword",
-        email: "test@monolithbrandsgroup.com",
-        password: "Test2021!",
+        email: "",
+        password: "",
         submit: false,
       }}
       validationSchema={Yup.object().shape({
@@ -101,23 +100,29 @@ function SignInForm() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            disabled={isSubmitting}
-          >
-            Sign in
-          </Button>
-          <Button
-            component={Link}
-            to="/auth/forgot-password"
-            fullWidth
-            color="primary"
-          >
-            Forgot password
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+              >
+                Sign in
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                component={Link}
+                to="/auth/forgot-password"
+                fullWidth
+                color="primary"
+              >
+                Forgot password
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       )}
     </Formik>
