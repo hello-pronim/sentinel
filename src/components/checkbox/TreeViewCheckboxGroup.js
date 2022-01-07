@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { TreeView, TreeItem } from "@mui/lab";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
-const TreeViewCheckboxGroup = ({ data, defaultSelected, ...props }) => {
+const TreeViewCheckboxGroup = ({
+  data,
+  options,
+  defaultSelected,
+  setSelectedOptions,
+  ...props
+}) => {
   const [selected, setSelected] = useState(defaultSelected);
 
   function getChildById(node, id) {
@@ -44,10 +50,39 @@ const TreeViewCheckboxGroup = ({ data, defaultSelected, ...props }) => {
     let array = checked
       ? [...selected, ...allNode]
       : selected.filter((value) => !allNode.includes(value));
+    let selectedOptions = options;
 
     array = array.filter((v, i) => array.indexOf(v) === i);
+    // update check status for 'all' option
+    if (
+      options.length !==
+      array.filter((v) => v.includes("-") && v !== data.id).length
+    )
+      array = array.filter((v) => v !== data.id);
+    else array.push(data.id);
+
+    // update check status for parent option
+    if (nodes.id.includes("-")) {
+      const parent = nodes.id.split("-")[0]; // get parent node id
+      const family = getChildById(data, parent); //get all nodes of selected node
+      const otherChildren = family.filter(
+        (item) => item !== parent && item !== nodes.id
+      );
+      if (!checked) array = array.filter((v) => v !== parent);
+      else {
+        const allChecked = otherChildren.every((child) => {
+          return selected.includes(child);
+        });
+        if (allChecked) array.push(parent);
+      }
+    }
+
+    selectedOptions = selectedOptions.filter((option) =>
+      array.includes(option.id)
+    );
 
     setSelected(array);
+    setSelectedOptions(selectedOptions);
   }
 
   const renderTree = (nodes) => (
