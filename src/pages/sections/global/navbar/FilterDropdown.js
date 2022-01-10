@@ -217,8 +217,33 @@ const FilterDropdown = ({
         selectedOptions: selectedMarketOptions,
       },
     });
+
+    console.log(selectedCompanyOptions, selectedMarketOptions);
+
+    let url = "/sales?";
+
+    selectedCompanyOptions.forEach((opt, index) => {
+      console.log(opt);
+      url +=
+        "company_ids[]=" +
+        opt.option.id +
+        (index < selectedCompanyOptions.length - 1 ? "&" : "");
+    });
+
+    url += "&from=" + dateFilterOptions.from + "&to=" + dateFilterOptions.to;
+    url += selectedMarketOptions.length ? "&" : "";
+
+    selectedMarketOptions.forEach((opt, index) => {
+      console.log(opt);
+      url +=
+        "market_ids[]=" +
+        opt.option.id +
+        (index < selectedMarketOptions.length - 1 ? "&" : "");
+    });
+    console.log(url);
+
+    navigate(url);
     setAnchorEl(null);
-    navigate("/sales?filter=true");
   };
   const handleClearClicked = () => {
     const selectedCompOptions = filterOptions.company.selectedOptions;

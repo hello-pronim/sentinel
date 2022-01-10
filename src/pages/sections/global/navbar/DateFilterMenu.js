@@ -21,6 +21,8 @@ import { convertDateToMMDDYY, getPastDate } from "../../../../utils/functions";
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [dateRange, setDateRange] = useState(filterOptions.dateRange);
   const [viewMode, setViewMode] = useState(filterOptions.viewMode);
+  const [dateFrom, setDateFrom] = useState(convertDateToMMDDYY(new Date()));
+  const [dateTo, setDateTo] = useState(convertDateToMMDDYY(new Date()));
 
   const handleDateRangeChanged = (event) => {
     const { value } = event.target;
@@ -98,8 +100,11 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         <DatePicker
                           size="small"
                           label="From"
-                          value="11-01-2021"
-                          onChange={() => {}}
+                          defaultValue="11-01-2021"
+                          value={dateFrom}
+                          onChange={(value) => {
+                            setDateFrom(convertDateToMMDDYY(new Date(value)));
+                          }}
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
@@ -109,8 +114,11 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         <DatePicker
                           size="small"
                           label="To"
-                          value="11-13-2021"
-                          onChange={() => {}}
+                          defaultValue="11-13-2021"
+                          value={dateTo}
+                          onChange={(value) => {
+                            setDateTo(convertDateToMMDDYY(new Date(value)));
+                          }}
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
