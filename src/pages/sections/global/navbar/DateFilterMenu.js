@@ -16,7 +16,11 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Divider } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 
-import { convertDateToMMDDYY, getPastDate } from "../../../../utils/functions";
+import {
+  convertDateToMMDDYY,
+  getPastDate,
+  getDatesOfWeek,
+} from "../../../../utils/functions";
 
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [dateRange, setDateRange] = useState(filterOptions.dateRange);
@@ -34,7 +38,11 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
       from = convertDateToMMDDYY(getPastDate(today, 1));
       to = convertDateToMMDDYY(getPastDate(today, 1));
     } else if (value === "last_week") {
+      from = convertDateToMMDDYY(getDatesOfWeek(today).dateFrom);
+      to = convertDateToMMDDYY(getDatesOfWeek(today).dateTo);
     } else if (value === "last_month") {
+      from = convertDateToMMDDYY(new Date().setMonth(today.getMonth() - 1, 1));
+      to = convertDateToMMDDYY(new Date().setMonth(today.getMonth(), 0));
     } else if (value === "last_7_days") {
       from = convertDateToMMDDYY(getPastDate(today, 6));
     } else if (value === "last_30_days") {
