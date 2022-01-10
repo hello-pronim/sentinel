@@ -102,6 +102,7 @@ const FilterDropdown = ({
       };
       setCompanyDefaultExpandedList(defaultExpanded);
       setSelectedCompanies(defaultSelected);
+      setSelectedCompanyOptions(options);
       setFilterOptions({
         ...filterOptions,
         company: {
@@ -134,6 +135,7 @@ const FilterDropdown = ({
       };
       setMarketDefaultExpandedList(defaultExpanded);
       setSelectedMarkets(defaultSelected);
+      setSelectedMarketOptions(options);
       setFilterOptions({
         ...filterOptions,
         market: {
@@ -200,6 +202,7 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
+    console.log(selectedCompanyOptions, selectedMarketOptions);
     setFilterOptions({
       ...filterOptions,
       company: {
@@ -223,7 +226,6 @@ const FilterDropdown = ({
     let url = "/sales?";
 
     selectedCompanyOptions.forEach((opt, index) => {
-      console.log(opt);
       url +=
         "company_ids[]=" +
         opt.option.id +
