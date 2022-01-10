@@ -202,7 +202,6 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
-    console.log(selectedCompanyOptions, selectedMarketOptions);
     setFilterOptions({
       ...filterOptions,
       company: {
@@ -221,8 +220,6 @@ const FilterDropdown = ({
       },
     });
 
-    console.log(selectedCompanyOptions, selectedMarketOptions);
-
     let url = "/sales?";
 
     selectedCompanyOptions.forEach((opt, index) => {
@@ -236,13 +233,11 @@ const FilterDropdown = ({
     url += selectedMarketOptions.length ? "&" : "";
 
     selectedMarketOptions.forEach((opt, index) => {
-      console.log(opt);
       url +=
         "market_ids[]=" +
         opt.option.id +
         (index < selectedMarketOptions.length - 1 ? "&" : "");
     });
-    console.log(url);
 
     navigate(url);
     setAnchorEl(null);
