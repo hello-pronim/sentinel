@@ -95,10 +95,15 @@ const TreeViewCheckboxGroup = ({
             <Checkbox
               checked={
                 selected.some((item) => item === nodes.id) ||
+                // see if can check the parent item
                 (Array.isArray(nodes.children) &&
                   nodes.children
                     .map((child) => child.id)
-                    .every((childId) => selected.includes(childId)))
+                    .every((childId) => selected.includes(childId))) ||
+                // see if can check the top item
+                options.length ===
+                  selected.filter((v) => v.includes("-") && v !== data.id)
+                    .length
               }
               onChange={(event) =>
                 getOnChange(event.currentTarget.checked, nodes)

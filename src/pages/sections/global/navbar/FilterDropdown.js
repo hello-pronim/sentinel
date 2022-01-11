@@ -48,8 +48,29 @@ const FilterDropdown = ({
   const open = Boolean(anchorEl);
 
   useEffect(() => {
+    if (companies !== null) {
+      const keys = Object.keys(companies);
+      let array = [];
+
+      keys.forEach((key) => {
+        const sameCatCompanies = companies[key];
+
+        sameCatCompanies.forEach((comp) => array.push(comp));
+      });
+
+      setCompanyList(array);
+    }
+  }, [companies]);
+
+  useEffect(() => {
+    if (markets !== null) {
+      setMarketList(markets);
+    }
+  }, [markets]);
+
+  useEffect(() => {
     // pre-select filter options from url params
-    if (companyList.length && marketList.length) {
+    if (search && companyList.length && marketList.length) {
       const searchParams = new URLSearchParams(search);
       const companyIdArray = searchParams.getAll("company_ids[]").map(Number);
       const marketIdArray = searchParams.getAll("market_ids[]").map(Number);
@@ -78,6 +99,11 @@ const FilterDropdown = ({
         }
       });
 
+      setSelectedCompanies(selectedCompanies);
+      setSelectedCompanyOptions(selectedCompanyOptions);
+      setSelectedMarkets(selectedMarkets);
+      setSelectedMarketOptions(selectedMarketOptions);
+
       setFilterOptions({
         ...filterOptions,
         company: {
@@ -98,26 +124,6 @@ const FilterDropdown = ({
       });
     }
   }, [search, companyList, marketList]);
-
-  useEffect(() => {
-    if (companies !== null) {
-      const keys = Object.keys(companies);
-      let array = [];
-
-      keys.forEach((key) => {
-        const sameCatCompanies = companies[key];
-
-        sameCatCompanies.forEach((comp) => array.push(comp));
-      });
-
-      setCompanyList(array);
-    }
-  }, [companies]);
-  useEffect(() => {
-    if (markets !== null) {
-      setMarketList(markets);
-    }
-  }, [markets]);
 
   useEffect(() => {
     if (companies !== null && !filterOptions.company.selected.length) {
@@ -154,20 +160,22 @@ const FilterDropdown = ({
         }),
       };
       setCompanyDefaultExpandedList(defaultExpanded);
-      setSelectedCompanies(defaultSelected);
-      setSelectedCompanyOptions(options);
-      setFilterOptions({
-        ...filterOptions,
-        company: {
-          ...filterOptions.company,
-          selected: defaultSelected,
-          selectedOptions: options,
-        },
-      });
+      if (!search) {
+        setSelectedCompanies(defaultSelected);
+        setSelectedCompanyOptions(options);
+        setFilterOptions({
+          ...filterOptions,
+          company: {
+            ...filterOptions.company,
+            selected: defaultSelected,
+            selectedOptions: options,
+          },
+        });
+      }
       setCompanyFilterOptions(options);
       setCompanyFilterData(data);
     }
-  }, [companies, filterOptions, setFilterOptions]);
+  }, [search, companies, filterOptions, setFilterOptions]);
 
   useEffect(() => {
     if (markets !== null && !filterOptions.market.selected.length) {
@@ -187,20 +195,22 @@ const FilterDropdown = ({
         }),
       };
       setMarketDefaultExpandedList(defaultExpanded);
-      setSelectedMarkets(defaultSelected);
-      setSelectedMarketOptions(options);
-      setFilterOptions({
-        ...filterOptions,
-        market: {
-          ...filterOptions.market,
-          selected: defaultSelected,
-          selectedOptions: options,
-        },
-      });
+      if (!search) {
+        setSelectedMarkets(defaultSelected);
+        setSelectedMarketOptions(options);
+        setFilterOptions({
+          ...filterOptions,
+          market: {
+            ...filterOptions.market,
+            selected: defaultSelected,
+            selectedOptions: options,
+          },
+        });
+      }
       setMarketFilterOptions(options);
       setMarketFilterData(data);
     }
-  }, [markets, filterOptions, setFilterOptions]);
+  }, [search, markets, filterOptions, setFilterOptions]);
 
   useEffect(() => {
     let companyFilterButtonText = "";
@@ -255,6 +265,7 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
+    console.log(selectedCompanies, selectedMarkets);
     setFilterOptions({
       ...filterOptions,
       company: {
