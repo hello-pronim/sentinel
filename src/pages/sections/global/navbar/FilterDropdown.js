@@ -103,6 +103,12 @@ const FilterDropdown = ({
       setSelectedCompanyOptions(selectedCompanyOptions);
       setSelectedMarkets(selectedMarkets);
       setSelectedMarketOptions(selectedMarketOptions);
+      setDateFilterOptions({
+        ...dateFilterOptions,
+        dateRange: searchParams.get("date_range"),
+        from: searchParams.get("from"),
+        to: searchParams.get("to"),
+      });
 
       setFilterOptions({
         ...filterOptions,
@@ -113,6 +119,7 @@ const FilterDropdown = ({
         },
         date: {
           ...filterOptions.date,
+          dateRange: searchParams.get("date_range"),
           from: searchParams.get("from"),
           to: searchParams.get("to"),
         },
@@ -293,7 +300,13 @@ const FilterDropdown = ({
         (index < selectedCompanyOptions.length - 1 ? "&" : "");
     });
 
-    url += "&from=" + dateFilterOptions.from + "&to=" + dateFilterOptions.to;
+    url +=
+      "&date_range=" +
+      dateFilterOptions.dateRange +
+      "&from=" +
+      dateFilterOptions.from +
+      "&to=" +
+      dateFilterOptions.to;
     url += selectedMarketOptions.length ? "&" : "";
 
     selectedMarketOptions.forEach((opt, index) => {
