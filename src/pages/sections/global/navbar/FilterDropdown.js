@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
 
 import CompanyFilterMenu from "./CompanyFilterMenu";
@@ -15,6 +15,7 @@ const FilterDropdown = ({
   setFilterOptions,
 }) => {
   const navigate = useNavigate();
+  const search = useLocation().search;
   const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   // companies
   const [companyList, setCompanyList] = useState([]);
@@ -45,6 +46,58 @@ const FilterDropdown = ({
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    // pre-select filter options from url params
+    if (companyList.length && marketList.length) {
+      const searchParams = new URLSearchParams(search);
+      const companyIdArray = searchParams.getAll("company_ids[]").map(Number);
+      const marketIdArray = searchParams.getAll("market_ids[]").map(Number);
+
+      let selectedCompanies = [];
+      let selectedCompanyOptions = [];
+      let selectedMarkets = [];
+      let selectedMarketOptions = [];
+
+      companyList.forEach((comp) => {
+        if (companyIdArray.includes(comp.id)) {
+          selectedCompanies.push(comp.category_name + "-" + comp.name);
+          selectedCompanyOptions.push({
+            id: comp.category_name + "-" + comp.name,
+            option: comp,
+          });
+        }
+      });
+      marketList.forEach((mar) => {
+        if (marketIdArray.includes(mar.id)) {
+          selectedMarkets.push("-" + mar.name);
+          selectedMarketOptions.push({
+            id: "-" + mar.name,
+            option: mar,
+          });
+        }
+      });
+
+      setFilterOptions({
+        ...filterOptions,
+        company: {
+          ...filterOptions.company,
+          selected: selectedCompanies,
+          selectedOptions: selectedCompanyOptions,
+        },
+        date: {
+          ...filterOptions.date,
+          from: searchParams.get("from"),
+          to: searchParams.get("to"),
+        },
+        market: {
+          ...filterOptions.market,
+          selected: selectedMarkets,
+          selectedOptions: selectedMarketOptions,
+        },
+      });
+    }
+  }, [search, companyList, marketList]);
 
   useEffect(() => {
     if (companies !== null) {
