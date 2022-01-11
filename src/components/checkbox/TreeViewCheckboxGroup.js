@@ -93,7 +93,13 @@ const TreeViewCheckboxGroup = ({
         <FormControlLabel
           control={
             <Checkbox
-              checked={selected.some((item) => item === nodes.id)}
+              checked={
+                selected.some((item) => item === nodes.id) ||
+                (Array.isArray(nodes.children) &&
+                  nodes.children
+                    .map((child) => child.id)
+                    .every((childId) => selected.includes(childId)))
+              }
               onChange={(event) =>
                 getOnChange(event.currentTarget.checked, nodes)
               }
