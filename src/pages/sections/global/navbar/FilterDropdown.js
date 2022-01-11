@@ -106,6 +106,7 @@ const FilterDropdown = ({
       setDateFilterOptions({
         ...dateFilterOptions,
         dateRange: searchParams.get("date_range"),
+        viewBy: searchParams.get("view_by"),
         from: searchParams.get("from"),
         to: searchParams.get("to"),
       });
@@ -120,6 +121,7 @@ const FilterDropdown = ({
         date: {
           ...filterOptions.date,
           dateRange: searchParams.get("date_range"),
+          viewBy: searchParams.get("view_by"),
           from: searchParams.get("from"),
           to: searchParams.get("to"),
         },
@@ -303,6 +305,8 @@ const FilterDropdown = ({
     url +=
       "&date_range=" +
       dateFilterOptions.dateRange +
+      "&view_by=" +
+      dateFilterOptions.viewBy +
       "&from=" +
       dateFilterOptions.from +
       "&to=" +
