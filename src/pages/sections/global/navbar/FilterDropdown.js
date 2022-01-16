@@ -21,7 +21,10 @@ const FilterDropdown = ({
   const [companyList, setCompanyList] = useState([]);
   const [companyFilterOptions, setCompanyFilterOptions] = useState([]);
   const [companyFilterData, setCompanyFilterData] = useState(null);
-  const [defaultCompanyExpandedList, setCompanyDefaultExpandedList] = useState(
+  const [defaultCompanyExpandedList, setDefaultCompanyExpandedList] = useState(
+    []
+  );
+  const [defaultCompanySelectedList, setDefaultCompanySelectedList] = useState(
     []
   );
   const [selectedCompanies, setSelectedCompanies] = useState([]);
@@ -36,7 +39,10 @@ const FilterDropdown = ({
   const [marketList, setMarketList] = useState([]);
   const [marketFilterOptions, setMarketFilterOptions] = useState([]);
   const [marketFilterData, setMarketFilterData] = useState(null);
-  const [defaultMarketExpandedList, setMarketDefaultExpandedList] = useState(
+  const [defaultMarketExpandedList, setDefaultMarketExpandedList] = useState(
+    []
+  );
+  const [defaultMarketSelectedList, setDefaultMarketSelectedList] = useState(
     []
   );
   const [selectedMarkets, setSelectedMarkets] = useState([]);
@@ -168,7 +174,8 @@ const FilterDropdown = ({
           };
         }),
       };
-      setCompanyDefaultExpandedList(defaultExpanded);
+      setDefaultCompanyExpandedList(defaultExpanded);
+      setDefaultCompanySelectedList(defaultSelected);
       if (!search) {
         setSelectedCompanies(defaultSelected);
         setSelectedCompanyOptions(options);
@@ -203,7 +210,8 @@ const FilterDropdown = ({
           };
         }),
       };
-      setMarketDefaultExpandedList(defaultExpanded);
+      setDefaultMarketExpandedList(defaultExpanded);
+      setDefaultMarketSelectedList(defaultSelected);
       if (!search) {
         setSelectedMarkets(defaultSelected);
         setSelectedMarketOptions(options);
@@ -324,10 +332,13 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    const selectedCompOptions = filterOptions.company.selectedOptions;
-    const selectedMarOptions = filterOptions.market.selectedOptions;
-    setSelectedCompanies(selectedCompOptions.map((opt) => opt.id));
-    setSelectedMarkets(selectedMarOptions.map((opt) => opt.id));
+    setSelectedCompanies(defaultCompanySelectedList);
+    setSelectedMarkets(defaultMarketSelectedList);
+    setDateFilterOptions({
+      ...dateFilterOptions,
+      dateRange: "last_30_days",
+      viewBy: "month",
+    });
   };
 
   return (

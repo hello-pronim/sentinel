@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
 import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
+
+import { AppContext } from "../../../contexts/AppContext";
 
 import { getSales } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
@@ -16,26 +17,26 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
-  const search = useLocation().search;
+  const { companies, markets, filterOptions, setFilterOptions } =
+    useContext(AppContext);
   const { salesChartData, brands } = data;
-  const [companyIds, setCompanyIds] = useState([]);
-  const [marketIds, setMarketIds] = useState([]);
+  const [chartTitle, setChartTitle] = useState("All companies");
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(search);
+    const companyIds = filterOptions.company.selectedOptions.map(
+      (item) => item.option.id
+    );
+    const marketIds = filterOptions.market.selectedOptions.map(
+      (item) => item.option.id
+    );
 
-    setCompanyIds(searchParams.getAll("company_ids[]"));
-    setMarketIds(searchParams.getAll("market_ids[]"));
-  }, [search]);
-
-  useEffect(() => {
     getSales({
       company_ids: JSON.stringify(companyIds),
       marketIds: JSON.stringify(marketIds),
     }).then((res) => {
       console.log(res);
     });
-  }, [companyIds, marketIds]);
+  }, [filterOptions]);
 
   return (
     <React.Fragment>
@@ -54,7 +55,7 @@ const Sales = () => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <SalesChart
-            title="All companies"
+            title={chartTitle}
             description="Total: $123,456,789.11"
             data={salesChartData}
           />
