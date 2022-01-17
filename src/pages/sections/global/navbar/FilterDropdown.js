@@ -11,6 +11,7 @@ const FilterDropdown = ({
   companies,
   markets,
   filterOptions,
+  defaultFilterOptions,
   setFilterButtonText,
   setFilterOptions,
 }) => {
@@ -112,7 +113,7 @@ const FilterDropdown = ({
       setDateFilterOptions({
         ...dateFilterOptions,
         dateRange: searchParams.get("date_range"),
-        viewBy: searchParams.get("view_by"),
+        viewMode: searchParams.get("view_by"),
         from: searchParams.get("from"),
         to: searchParams.get("to"),
       });
@@ -253,6 +254,13 @@ const FilterDropdown = ({
         marketFilterButtonText = "All Markets";
       else marketFilterButtonText = "Multi Markets";
     }
+    console.log(
+      companyFilterButtonText +
+        " - " +
+        dateFilterButtonText +
+        " - " +
+        marketFilterButtonText
+    );
 
     setFilterButtonText(
       companyFilterButtonText +
@@ -282,7 +290,7 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
-    console.log(selectedCompanies, selectedMarkets);
+    console.log(dateFilterOptions);
     setFilterOptions({
       ...filterOptions,
       company: {
@@ -314,7 +322,7 @@ const FilterDropdown = ({
       "&date_range=" +
       dateFilterOptions.dateRange +
       "&view_by=" +
-      dateFilterOptions.viewBy +
+      dateFilterOptions.viewMode +
       "&from=" +
       dateFilterOptions.from +
       "&to=" +
@@ -332,13 +340,22 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    setSelectedCompanies(defaultCompanySelectedList);
-    setSelectedMarkets(defaultMarketSelectedList);
-    setDateFilterOptions({
-      ...dateFilterOptions,
-      dateRange: "last_30_days",
-      viewBy: "month",
+    setFilterOptions({
+      ...filterOptions,
+      company: {
+        ...filterOptions.company,
+        selected: defaultCompanySelectedList,
+        selectedOptions: companyFilterOptions,
+      },
+      date: defaultFilterOptions.date,
+      market: {
+        ...filterOptions.market,
+        selected: defaultMarketSelectedList,
+        selectedOptions: marketFilterOptions,
+      },
     });
+
+    navigate("/sales");
   };
 
   return (
