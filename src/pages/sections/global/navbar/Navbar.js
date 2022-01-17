@@ -25,8 +25,13 @@ const IconButton = styled(MuiIconButton)`
 `;
 
 const Navbar = ({ onDrawerToggle }) => {
-  const { companies, markets, filterOptions, setFilterOptions } =
-    useContext(AppContext);
+  const {
+    companies,
+    markets,
+    filterOptions,
+    defaultFilterOptions,
+    setFilterOptions,
+  } = useContext(AppContext);
   const [filterButtonText, setFilterButtonText] = useState(
     `All Brands - ${filterOptions.date.from} - ${filterOptions.date.to} - All Markets`
   );
@@ -53,6 +58,7 @@ const Navbar = ({ onDrawerToggle }) => {
                 companies={companies}
                 markets={markets}
                 filterOptions={filterOptions}
+                defaultFilterOptions={defaultFilterOptions}
                 setFilterButtonText={setFilterButtonText}
                 setFilterOptions={setFilterOptions}
               />

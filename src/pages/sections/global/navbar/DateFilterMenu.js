@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -27,6 +27,14 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [viewMode, setViewMode] = useState(filterOptions.viewMode);
   const [dateFrom, setDateFrom] = useState(convertDateToMMDDYY(new Date()));
   const [dateTo, setDateTo] = useState(convertDateToMMDDYY(new Date()));
+
+  useEffect(() => {
+    const { from, to, viewMode, dateRange } = filterOptions;
+    setDateFrom(from);
+    setDateTo(to);
+    setViewMode(viewMode);
+    setDateRange(dateRange);
+  }, [filterOptions]);
 
   const handleDateRangeChanged = (event) => {
     const { value } = event.target;

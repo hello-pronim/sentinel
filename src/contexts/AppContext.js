@@ -47,13 +47,12 @@ function AppProvider({ children }) {
     retrieveMarketsData();
   }, []);
 
-  useEffect(() => {}, [filterOptions]);
-
   return (
     <AppContext.Provider
       value={{
         companies,
         markets,
+        defaultFilterOptions,
         filterOptions,
         setFilterOptions,
       }}

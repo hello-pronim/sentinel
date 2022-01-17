@@ -13,6 +13,7 @@ class SecureAxios {
           return resolve(data);
         })
         .catch((err) => {
+          console.log(err);
           return reject(err);
         });
     });

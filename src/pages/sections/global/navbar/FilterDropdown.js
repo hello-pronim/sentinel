@@ -195,6 +195,12 @@ const FilterDropdown = ({
   }, [search, companies, filterOptions, setFilterOptions]);
 
   useEffect(() => {
+    const { date } = filterOptions;
+
+    setDateFilterOptions(date);
+  }, [filterOptions]);
+
+  useEffect(() => {
     if (markets !== null && !filterOptions.market.selected.length) {
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
@@ -254,13 +260,6 @@ const FilterDropdown = ({
         marketFilterButtonText = "All Markets";
       else marketFilterButtonText = "Multi Markets";
     }
-    console.log(
-      companyFilterButtonText +
-        " - " +
-        dateFilterButtonText +
-        " - " +
-        marketFilterButtonText
-    );
 
     setFilterButtonText(
       companyFilterButtonText +
@@ -290,7 +289,6 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
-    console.log(dateFilterOptions);
     setFilterOptions({
       ...filterOptions,
       company: {
@@ -347,13 +345,16 @@ const FilterDropdown = ({
         selected: defaultCompanySelectedList,
         selectedOptions: companyFilterOptions,
       },
-      date: defaultFilterOptions.date,
+      date: { ...defaultFilterOptions.date },
       market: {
         ...filterOptions.market,
         selected: defaultMarketSelectedList,
         selectedOptions: marketFilterOptions,
       },
     });
+    setSelectedCompanyOptions(companyFilterOptions);
+    setDateFilterOptions(defaultFilterOptions.date);
+    setSelectedMarketOptions(marketFilterOptions);
 
     navigate("/sales");
   };
