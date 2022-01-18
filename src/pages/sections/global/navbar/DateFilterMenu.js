@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
   MenuItem,
   Select,
@@ -152,11 +150,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
               <Grid item xs={12}>
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item>
-                    <FormControlLabel
-                      style={{ marginRight: 0 }}
-                      control={<Checkbox defaultChecked />}
-                      label="Compared to: "
-                    />
+                    <Typography>Compared to</Typography>
                   </Grid>
                   <Grid item defaultValue="custom">
                     <FormControl id="compared-to-label" size="small" fullWidth>
