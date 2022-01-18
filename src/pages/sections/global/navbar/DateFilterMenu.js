@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
   MenuItem,
   Select,
@@ -40,7 +38,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
     const { value } = event.target;
 
     const today = new Date();
-    let from = convertDateToMMDDYY(today);
+    let from = convertDateToMMDDYY(getPastDate(today, 29));
     let to = convertDateToMMDDYY(today);
     if (value === "yesterday") {
       from = convertDateToMMDDYY(getPastDate(today, 1));
@@ -53,8 +51,13 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
       to = convertDateToMMDDYY(new Date().setMonth(today.getMonth(), 0));
     } else if (value === "last_7_days") {
       from = convertDateToMMDDYY(getPastDate(today, 6));
+      to = convertDateToMMDDYY(today);
     } else if (value === "last_30_days") {
       from = convertDateToMMDDYY(getPastDate(today, 29));
+      to = convertDateToMMDDYY(today);
+    } else if (value === "this_year") {
+      from = convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1));
+      to = convertDateToMMDDYY(today);
     }
 
     setDateRange(value);
@@ -96,12 +99,12 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         value={dateRange}
                         onChange={handleDateRangeChanged}
                       >
-                        <MenuItem value="today">Today</MenuItem>
                         <MenuItem value="yesterday">Yesterday</MenuItem>
                         <MenuItem value="last_week">Last Week</MenuItem>
                         <MenuItem value="last_month">Last Month</MenuItem>
                         <MenuItem value="last_7_days">Last 7 Days</MenuItem>
                         <MenuItem value="last_30_days">Last 30 Days</MenuItem>
+                        <MenuItem value="this_year">This year</MenuItem>
                         <MenuItem value="custom">Custom</MenuItem>
                       </Select>
                     </FormControl>
@@ -147,11 +150,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
               <Grid item xs={12}>
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item>
-                    <FormControlLabel
-                      style={{ marginRight: 0 }}
-                      control={<Checkbox defaultChecked />}
-                      label="Compared to: "
-                    />
+                    <Typography>Compared to</Typography>
                   </Grid>
                   <Grid item defaultValue="custom">
                     <FormControl id="compared-to-label" size="small" fullWidth>
@@ -213,7 +212,6 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                 >
                   <ToggleButton value="day">Day</ToggleButton>
                   <ToggleButton value="month">Month</ToggleButton>
-                  <ToggleButton value="year">Year</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
             </Grid>
