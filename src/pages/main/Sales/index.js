@@ -1,41 +1,66 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
 import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 
+import { AppContext } from "../../../contexts/AppContext";
+
 import { getSales } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
+import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
 import data from "./data";
 
 const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
-
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
-  const search = useLocation().search;
-  const { salesChartData, brands } = data;
-  const [companyIds, setCompanyIds] = useState([]);
-  const [marketIds, setMarketIds] = useState([]);
+  const { companies, filterOptions } = useContext(AppContext);
+  const { salesChartData, brands, products } = data;
+  const [chartTitle, setChartTitle] = useState("All companies");
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(search);
+    const selectedCompanyIds = filterOptions.company.selectedOptions.map(
+      (item) => item.option.id
+    );
+    const selectedMarketIds = filterOptions.market.selectedOptions.map(
+      (item) => item.option.id
+    );
+    const selectedCompanyList = filterOptions.company.selectedOptions.map(
+      (item) => item.option
+    );
 
-    setCompanyIds(searchParams.getAll("company_ids[]"));
-    setMarketIds(searchParams.getAll("market_ids[]"));
-  }, [search]);
+    setSelectedCompanies(selectedCompanyList);
 
-  useEffect(() => {
     getSales({
-      company_ids: JSON.stringify(companyIds),
-      marketIds: JSON.stringify(marketIds),
+      company_ids: JSON.stringify(selectedCompanyIds),
+      marketIds: JSON.stringify(selectedMarketIds),
     }).then((res) => {
       console.log(res);
     });
-  }, [companyIds, marketIds]);
+
+    if (companies) {
+      const companyCategories = Object.keys(companies);
+      const allCompanies = [];
+
+      companyCategories.forEach((category) => {
+        companies[category].forEach((company) => allCompanies.push(company));
+      });
+
+      if (selectedCompanyIds.length === allCompanies.length)
+        setChartTitle("All companies");
+      else if (selectedCompanyIds.length === 1) {
+        const selectedCompany = allCompanies.find(
+          (company) => company.id === selectedCompanyIds[0]
+        );
+        setChartTitle(selectedCompany.name);
+      } else setChartTitle("Multi companies");
+    }
+    // .catch((err) => signOut());
+  }, [filterOptions, companies]);
 
   return (
     <React.Fragment>
@@ -54,13 +79,24 @@ const Sales = () => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <SalesChart
-            title="All companies"
+            title={chartTitle}
             description="Total: $123,456,789.11"
             data={salesChartData}
           />
         </Grid>
         <Grid item xs={12}>
-          <SalesTable data={brands} />
+          {selectedCompanies.length !== 1 ? (
+            <SalesTable
+              data={brands.filter((brand) =>
+                selectedCompanies.some((comp) => comp.name === brand.brand)
+              )}
+            />
+          ) : (
+            <BrandSalesTable
+              brand={selectedCompanies[0].name}
+              data={products}
+            />
+          )}
         </Grid>
       </Grid>
     </React.Fragment>

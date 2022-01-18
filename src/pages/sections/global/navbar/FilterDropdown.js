@@ -11,6 +11,7 @@ const FilterDropdown = ({
   companies,
   markets,
   filterOptions,
+  defaultFilterOptions,
   setFilterButtonText,
   setFilterOptions,
 }) => {
@@ -21,7 +22,10 @@ const FilterDropdown = ({
   const [companyList, setCompanyList] = useState([]);
   const [companyFilterOptions, setCompanyFilterOptions] = useState([]);
   const [companyFilterData, setCompanyFilterData] = useState(null);
-  const [defaultCompanyExpandedList, setCompanyDefaultExpandedList] = useState(
+  const [defaultCompanyExpandedList, setDefaultCompanyExpandedList] = useState(
+    []
+  );
+  const [defaultCompanySelectedList, setDefaultCompanySelectedList] = useState(
     []
   );
   const [selectedCompanies, setSelectedCompanies] = useState([]);
@@ -36,7 +40,10 @@ const FilterDropdown = ({
   const [marketList, setMarketList] = useState([]);
   const [marketFilterOptions, setMarketFilterOptions] = useState([]);
   const [marketFilterData, setMarketFilterData] = useState(null);
-  const [defaultMarketExpandedList, setMarketDefaultExpandedList] = useState(
+  const [defaultMarketExpandedList, setDefaultMarketExpandedList] = useState(
+    []
+  );
+  const [defaultMarketSelectedList, setDefaultMarketSelectedList] = useState(
     []
   );
   const [selectedMarkets, setSelectedMarkets] = useState([]);
@@ -106,7 +113,7 @@ const FilterDropdown = ({
       setDateFilterOptions({
         ...dateFilterOptions,
         dateRange: searchParams.get("date_range"),
-        viewBy: searchParams.get("view_by"),
+        viewMode: searchParams.get("view_by"),
         from: searchParams.get("from"),
         to: searchParams.get("to"),
       });
@@ -168,7 +175,8 @@ const FilterDropdown = ({
           };
         }),
       };
-      setCompanyDefaultExpandedList(defaultExpanded);
+      setDefaultCompanyExpandedList(defaultExpanded);
+      setDefaultCompanySelectedList(defaultSelected);
       if (!search) {
         setSelectedCompanies(defaultSelected);
         setSelectedCompanyOptions(options);
@@ -187,6 +195,12 @@ const FilterDropdown = ({
   }, [search, companies, filterOptions, setFilterOptions]);
 
   useEffect(() => {
+    const { date } = filterOptions;
+
+    setDateFilterOptions(date);
+  }, [filterOptions]);
+
+  useEffect(() => {
     if (markets !== null && !filterOptions.market.selected.length) {
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
@@ -203,7 +217,8 @@ const FilterDropdown = ({
           };
         }),
       };
-      setMarketDefaultExpandedList(defaultExpanded);
+      setDefaultMarketExpandedList(defaultExpanded);
+      setDefaultMarketSelectedList(defaultSelected);
       if (!search) {
         setSelectedMarkets(defaultSelected);
         setSelectedMarketOptions(options);
@@ -274,7 +289,6 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleApplyClicked = () => {
-    console.log(selectedCompanies, selectedMarkets);
     setFilterOptions({
       ...filterOptions,
       company: {
@@ -306,7 +320,7 @@ const FilterDropdown = ({
       "&date_range=" +
       dateFilterOptions.dateRange +
       "&view_by=" +
-      dateFilterOptions.viewBy +
+      dateFilterOptions.viewMode +
       "&from=" +
       dateFilterOptions.from +
       "&to=" +
@@ -324,10 +338,25 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    const selectedCompOptions = filterOptions.company.selectedOptions;
-    const selectedMarOptions = filterOptions.market.selectedOptions;
-    setSelectedCompanies(selectedCompOptions.map((opt) => opt.id));
-    setSelectedMarkets(selectedMarOptions.map((opt) => opt.id));
+    setFilterOptions({
+      ...filterOptions,
+      company: {
+        ...filterOptions.company,
+        selected: defaultCompanySelectedList,
+        selectedOptions: companyFilterOptions,
+      },
+      date: { ...defaultFilterOptions.date },
+      market: {
+        ...filterOptions.market,
+        selected: defaultMarketSelectedList,
+        selectedOptions: marketFilterOptions,
+      },
+    });
+    setSelectedCompanyOptions(companyFilterOptions);
+    setDateFilterOptions(defaultFilterOptions.date);
+    setSelectedMarketOptions(marketFilterOptions);
+
+    navigate("/sales");
   };
 
   return (
