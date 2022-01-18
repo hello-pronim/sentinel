@@ -218,7 +218,6 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                 >
                   <ToggleButton value="day">Day</ToggleButton>
                   <ToggleButton value="month">Month</ToggleButton>
-                  <ToggleButton value="year">Year</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
             </Grid>
