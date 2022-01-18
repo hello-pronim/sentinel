@@ -123,6 +123,10 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                           value={dateFrom}
                           onChange={(value) => {
                             setDateFrom(convertDateToMMDDYY(new Date(value)));
+                            setFilterOptions({
+                              ...filterOptions,
+                              from: convertDateToMMDDYY(new Date(value)),
+                            });
                           }}
                           renderInput={(params) => <TextField {...params} />}
                         />
@@ -137,6 +141,10 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                           value={dateTo}
                           onChange={(value) => {
                             setDateTo(convertDateToMMDDYY(new Date(value)));
+                            setFilterOptions({
+                              ...filterOptions,
+                              to: convertDateToMMDDYY(new Date(value)),
+                            });
                           }}
                           renderInput={(params) => <TextField {...params} />}
                         />
