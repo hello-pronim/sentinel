@@ -23,15 +23,22 @@ import {
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [dateRange, setDateRange] = useState(filterOptions.dateRange);
   const [viewMode, setViewMode] = useState(filterOptions.viewMode);
-  const [dateFrom, setDateFrom] = useState(convertDateToMMDDYY(new Date()));
-  const [dateTo, setDateTo] = useState(convertDateToMMDDYY(new Date()));
+  const [dateFrom, setDateFrom] = useState(filterOptions.from);
+  const [dateTo, setDateTo] = useState(filterOptions.to);
+  const [compDateFrom, setCompDateFrom] = useState(filterOptions.compFrom);
+  const [compDateTo, setCompDateTo] = useState(filterOptions.compTo);
 
   useEffect(() => {
-    const { from, to, viewMode, dateRange } = filterOptions;
+    const { from, to, viewMode, dateRange, compFrom, compTo } = filterOptions;
+
     setDateFrom(from);
     setDateTo(to);
     setViewMode(viewMode);
     setDateRange(dateRange);
+    if (dateRange === "custom") {
+      setCompDateFrom(compFrom);
+      setCompDateTo(compTo);
+    }
   }, [filterOptions]);
 
   const handleDateRangeChanged = (event) => {
@@ -119,7 +126,6 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         <DatePicker
                           size="small"
                           label="From"
-                          defaultValue="11-01-2021"
                           value={dateFrom}
                           onChange={(value) => {
                             setDateFrom(convertDateToMMDDYY(new Date(value)));
@@ -137,7 +143,6 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         <DatePicker
                           size="small"
                           label="To"
-                          defaultValue="11-13-2021"
                           value={dateTo}
                           onChange={(value) => {
                             setDateTo(convertDateToMMDDYY(new Date(value)));
@@ -172,34 +177,50 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item xs={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        size="small"
-                        label="From"
-                        value="11-01-2021"
-                        onChange={() => {}}
-                        renderInput={(params) => <TextField {...params} />}
-                        disabled
-                      />
-                    </LocalizationProvider>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        size="small"
-                        label="To"
-                        value="11-13-2021"
-                        onChange={() => {}}
-                        renderInput={(params) => <TextField {...params} />}
-                        disabled
-                      />
-                    </LocalizationProvider>
+              {dateRange === "custom" ? (
+                <Grid item xs={12}>
+                  <Grid container alignItems="center" spacing={2}>
+                    <Grid item xs={6}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                          size="small"
+                          label="From"
+                          value={compDateFrom}
+                          onChange={(value) => {
+                            setCompDateFrom(
+                              convertDateToMMDDYY(new Date(value))
+                            );
+                            setFilterOptions({
+                              ...filterOptions,
+                              compFrom: convertDateToMMDDYY(new Date(value)),
+                            });
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                          size="small"
+                          label="To"
+                          value={compDateTo}
+                          onChange={(value) => {
+                            setCompDateTo(convertDateToMMDDYY(new Date(value)));
+                            setFilterOptions({
+                              ...filterOptions,
+                              compTo: convertDateToMMDDYY(new Date(value)),
+                            });
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
           </Grid>
           <Grid item xs={12}>

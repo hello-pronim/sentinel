@@ -116,6 +116,14 @@ const FilterDropdown = ({
         viewMode: searchParams.get("view_by"),
         from: searchParams.get("from"),
         to: searchParams.get("to"),
+        compFrom:
+          searchParams.get("comp_from") !== undefined
+            ? searchParams.get("comp_from")
+            : dateFilterOptions.date.compFrom,
+        compTo:
+          searchParams.get("comp_to") !== undefined
+            ? searchParams.get("comp_to")
+            : dateFilterOptions.date.compTo,
       });
 
       setFilterOptions({
@@ -131,6 +139,14 @@ const FilterDropdown = ({
           viewBy: searchParams.get("view_by"),
           from: searchParams.get("from"),
           to: searchParams.get("to"),
+          compFrom:
+            searchParams.get("comp_from") !== undefined
+              ? searchParams.get("comp_from")
+              : defaultFilterOptions.date.compFrom,
+          compTo:
+            searchParams.get("comp_to") !== undefined
+              ? searchParams.get("comp_to")
+              : defaultFilterOptions.date.compTo,
         },
         market: {
           ...filterOptions.market,
@@ -325,6 +341,12 @@ const FilterDropdown = ({
       dateFilterOptions.from +
       "&to=" +
       dateFilterOptions.to;
+    if (dateFilterOptions.dateRange === "custom")
+      url +=
+        "&comp_from=" +
+        dateFilterOptions.compFrom +
+        "&comp_to=" +
+        dateFilterOptions.compTo;
     url += selectedMarketOptions.length ? "&" : "";
 
     selectedMarketOptions.forEach((opt, index) => {
