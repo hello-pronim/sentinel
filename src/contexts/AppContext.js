@@ -19,6 +19,8 @@ function AppProvider({ children }) {
       from: convertDateToMMDDYY(getPastDate(new Date(), 29)),
       to: convertDateToMMDDYY(new Date()),
       compare: false,
+      compFrom: convertDateToMMDDYY(getPastDate(new Date(), 29)),
+      compTo: convertDateToMMDDYY(new Date()),
       viewMode: "month",
     },
     market: {
@@ -46,6 +48,10 @@ function AppProvider({ children }) {
     retrieveCompaniesData();
     retrieveMarketsData();
   }, []);
+
+  useEffect(() => {
+    console.log(filterOptions);
+  }, [filterOptions]);
 
   return (
     <AppContext.Provider

@@ -36,7 +36,7 @@ const Sales = () => {
     setSelectedCompanies(selectedCompanyList);
 
     getSales({
-      company_ids: JSON.stringify(selectedCompanyIds),
+      companyIds: JSON.stringify(selectedCompanyIds),
       marketIds: JSON.stringify(selectedMarketIds),
     }).then((res) => {
       console.log(res);
