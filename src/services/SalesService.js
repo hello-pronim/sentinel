@@ -4,4 +4,8 @@ const getSales = (params) => {
   return SecureAxios.get("/api/dev/sales", params);
 };
 
-export { getSales };
+const getSalesData = (params) => {
+  return SecureAxios.get("/api/dev/sales/data", params);
+};
+
+export { getSales, getSalesData };

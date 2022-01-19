@@ -7,7 +7,7 @@ import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
 
-import { getSales } from "../../../services/SalesService";
+import { getSales, getSalesData } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
 import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
@@ -38,6 +38,14 @@ const Sales = () => {
     getSales({
       companyIds: JSON.stringify(selectedCompanyIds),
       marketIds: JSON.stringify(selectedMarketIds),
+    }).then((res) => {
+      console.log(res);
+    });
+    //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
+
+    //call to get the table data
+    getSalesData({
+      //use router URL params here too.
     }).then((res) => {
       console.log(res);
     });
