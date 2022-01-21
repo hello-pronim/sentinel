@@ -29,4 +29,22 @@ const getDatesOfWeek = (date) => {
   return { dateFrom: first, dateTo: last };
 };
 
-export { convertDateToMMDDYY, getPastDate, getWeekNumber, getDatesOfWeek };
+const convertPriceFormat = (value, prefix = "") => {
+  // $123.46 -> value: 123.46, prefix: $
+  let valueString = value.toString();
+  const decimal = valueString.split(".")[1] ?? "";
+  let result = valueString.split(".")[0];
+  result = result.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  result = decimal !== "" ? result + "." + decimal : result;
+  result = prefix + result;
+
+  return result;
+};
+
+export {
+  convertDateToMMDDYY,
+  convertPriceFormat,
+  getPastDate,
+  getWeekNumber,
+  getDatesOfWeek,
+};
