@@ -2,10 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Divider as MuiDivider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
+import { convertPriceFormat } from "../../../utils/functions";
 
 import { getSales, getSalesData } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
@@ -18,9 +24,13 @@ const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
   const { companies, filterOptions } = useContext(AppContext);
-  const { salesChartData, brands, products } = data;
+  const { salesChartData: staticSalesChartData, brands, products } = data;
   const [chartTitle, setChartTitle] = useState("All companies");
   const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [salesChartData, setSalesChartData] = useState(null);
+  const [salesTableData, setSalesTableData] = useState(null);
+  const [loadingSalesChartData, setLoadingSalesChartData] = useState(false);
+  const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
 
   useEffect(() => {
     const selectedCompanyIds = filterOptions.company.selectedOptions.map(
@@ -35,19 +45,44 @@ const Sales = () => {
 
     setSelectedCompanies(selectedCompanyList);
 
+    setLoadingSalesChartData(true);
     getSales({
       companyIds: JSON.stringify(selectedCompanyIds),
       marketIds: JSON.stringify(selectedMarketIds),
     }).then((res) => {
       console.log(res);
+      setLoadingSalesChartData(false);
+      if (res) {
+        const chartData = {
+          comparisonSeries: res.comparisonSeries,
+          revenueSeries: res.revenue_series,
+          stats: res.stats,
+        };
+
+        setSalesChartData(chartData);
+      }
     });
     //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
 
     //call to get the table data
+    setLoadingSalesTableData(true);
     getSalesData({
-      //use router URL params here too.
+      companyIds: JSON.stringify(selectedCompanyIds),
+      marketIds: JSON.stringify(selectedMarketIds),
     }).then((res) => {
       console.log(res);
+      setLoadingSalesTableData(false);
+      if (res) {
+        const tableData = res.map((item) => ({
+          id: item.id,
+          name: item.name,
+          revenue: item.revenue,
+          comparisonRevenue: item.comparison_revenue,
+          revenueChange: item.revenue_change,
+        }));
+
+        setSalesTableData(tableData);
+      }
     });
 
     if (companies) {
@@ -70,6 +105,16 @@ const Sales = () => {
     // .catch((err) => signOut());
   }, [filterOptions, companies]);
 
+  const calculateTotalRevenue = () => {
+    const { stats } = salesChartData;
+    let total = 0;
+
+    Object.keys(stats).forEach((key) => (total += stats[key]));
+    console.log(total);
+
+    return "Total: " + convertPriceFormat(total, "$");
+  };
+
   return (
     <React.Fragment>
       <Helmet title="Sales" />
@@ -86,24 +131,40 @@ const Sales = () => {
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <SalesChart
-            title={chartTitle}
-            description="Total: $123,456,789.11"
-            data={salesChartData}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {selectedCompanies.length !== 1 ? (
-            <SalesTable
-              data={brands.filter((brand) =>
-                selectedCompanies.some((comp) => comp.name === brand.brand)
-              )}
+          {!loadingSalesChartData && salesChartData !== null ? (
+            <SalesChart
+              title={chartTitle}
+              description={calculateTotalRevenue()}
+              data={staticSalesChartData}
             />
           ) : (
-            <BrandSalesTable
-              brand={selectedCompanies[0].name}
-              data={products}
-            />
+            <Grid container justifyContent="center">
+              <Grid item>
+                <CircularProgress />
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          {!loadingSalesTableData && salesTableData !== null ? (
+            selectedCompanies.length !== 1 ? (
+              <SalesTable
+                data={brands.filter((brand) =>
+                  selectedCompanies.some((comp) => comp.name === brand.brand)
+                )}
+              />
+            ) : (
+              <BrandSalesTable
+                brand={selectedCompanies[0].name}
+                data={products}
+              />
+            )
+          ) : (
+            <Grid container justifyContent="center">
+              <Grid item>
+                <CircularProgress />
+              </Grid>
+            </Grid>
           )}
         </Grid>
       </Grid>
