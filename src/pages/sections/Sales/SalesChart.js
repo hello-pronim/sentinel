@@ -101,9 +101,11 @@ const SalesChart = ({ title, description, data }) => {
 
         <Spacer mb={6} />
 
-        <ChartWrapper>
-          <Chart type="line" data={chartData} options={options} />
-        </ChartWrapper>
+        {chartData !== null && (
+          <ChartWrapper>
+            <Chart type="line" data={chartData} options={options} />
+          </ChartWrapper>
+        )}
       </CardContent>
     </Card>
   );
