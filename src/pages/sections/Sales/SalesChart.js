@@ -43,17 +43,11 @@ const SalesChart = ({ title, description, data }) => {
   };
 
   useEffect(() => {
-    console.log("AAAAA");
-  }, []);
-
-  useEffect(() => {
     if (data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
       let dates = [];
       let xAxis = [];
-
-      console.log(data);
 
       comparisonSeriesDates = comparisonSeriesDates.sort(
         (a, b) => new Date(a) - new Date(b)
@@ -63,7 +57,6 @@ const SalesChart = ({ title, description, data }) => {
       );
       dates = [...comparisonSeriesDates, ...revenueSeriesDates];
       xAxis = [...new Set(dates)]; // available dates for revenue and comparison chart
-      console.log(xAxis);
 
       setChartData({
         labels: xAxis,

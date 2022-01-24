@@ -147,11 +147,7 @@ const Sales = () => {
         <Grid item xs={12}>
           {!loadingSalesTableData && salesTableData !== null ? (
             selectedCompanies.length !== 1 ? (
-              <SalesTable
-                data={brands.filter((brand) =>
-                  selectedCompanies.some((comp) => comp.name === brand.brand)
-                )}
-              />
+              <SalesTable data={salesTableData} />
             ) : (
               <BrandSalesTable
                 brand={selectedCompanies[0].name}
