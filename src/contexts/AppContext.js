@@ -49,10 +49,6 @@ function AppProvider({ children }) {
     retrieveMarketsData();
   }, []);
 
-  useEffect(() => {
-    console.log(filterOptions);
-  }, [filterOptions]);
-
   return (
     <AppContext.Provider
       value={{

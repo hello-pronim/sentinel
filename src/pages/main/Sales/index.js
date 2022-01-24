@@ -54,7 +54,7 @@ const Sales = () => {
       setLoadingSalesChartData(false);
       if (res) {
         const chartData = {
-          comparisonSeries: res.comparisonSeries,
+          comparisonSeries: res.comparison_series,
           revenueSeries: res.revenue_series,
           stats: res.stats,
         };
@@ -110,7 +110,6 @@ const Sales = () => {
     let total = 0;
 
     Object.keys(stats).forEach((key) => (total += stats[key]));
-    console.log(total);
 
     return "Total: " + convertPriceFormat(total, "$");
   };
@@ -135,7 +134,7 @@ const Sales = () => {
             <SalesChart
               title={chartTitle}
               description={calculateTotalRevenue()}
-              data={staticSalesChartData}
+              data={salesChartData}
             />
           ) : (
             <Grid container justifyContent="center">
