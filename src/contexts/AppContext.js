@@ -21,7 +21,7 @@ function AppProvider({ children }) {
       compare: false,
       compFrom: convertDateToMMDDYY(getPastDate(new Date(), 29)),
       compTo: convertDateToMMDDYY(new Date()),
-      viewMode: "month",
+      viewMode: "day",
     },
     market: {
       selected: [],
@@ -48,10 +48,6 @@ function AppProvider({ children }) {
     retrieveCompaniesData();
     retrieveMarketsData();
   }, []);
-
-  useEffect(() => {
-    console.log(filterOptions);
-  }, [filterOptions]);
 
   return (
     <AppContext.Provider

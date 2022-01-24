@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
@@ -16,21 +16,8 @@ const ChartWrapper = styled.div`
 `;
 
 const SalesChart = ({ title, description, data }) => {
+  const [chartData, setChartData] = useState(null);
   const colors = [red[400], green[400], blue[400]];
-
-  const chartData = {
-    labels: data.xLabels,
-    datasets: data.data.map((item, index) => ({
-      label: item.label,
-      fill: true,
-      backgroundColor: "transparent",
-      borderColor: colors[index],
-      borderDash: [4, 4],
-      tension: 0.4,
-      data: item.values,
-    })),
-  };
-
   const options = {
     maintainAspectRatio: false,
     plugins: {
@@ -55,6 +42,46 @@ const SalesChart = ({ title, description, data }) => {
     },
   };
 
+  useEffect(() => {
+    if (data.comparisonSeries && data.revenueSeries) {
+      let comparisonSeriesDates = Object.keys(data.comparisonSeries);
+      let revenueSeriesDates = Object.keys(data.revenueSeries);
+      let dates = [];
+      let xAxis = [];
+
+      comparisonSeriesDates = comparisonSeriesDates.sort(
+        (a, b) => new Date(a) - new Date(b)
+      );
+      revenueSeriesDates = revenueSeriesDates.sort(
+        (a, b) => new Date(a) - new Date(b)
+      );
+      dates = [...comparisonSeriesDates, ...revenueSeriesDates];
+      xAxis = [...new Set(dates)]; // available dates for revenue and comparison chart
+
+      setChartData({
+        labels: xAxis,
+        datasets: [
+          {
+            label: "Revenue",
+            fill: true,
+            backgroundColor: "transparent",
+            borderColor: colors[0],
+            tension: 0.4,
+            data: xAxis.map((x) => data.revenueSeries[x] ?? 0),
+          },
+          {
+            label: "Comparison Revenue",
+            fill: true,
+            backgroundColor: "transparent",
+            borderColor: colors[1],
+            tension: 0.4,
+            data: xAxis.map((x) => data.comparisonSeries[x] ?? 0),
+          },
+        ],
+      });
+    }
+  }, [data]);
+
   return (
     <Card mb={1}>
       <CardContent>
@@ -67,9 +94,11 @@ const SalesChart = ({ title, description, data }) => {
 
         <Spacer mb={6} />
 
-        <ChartWrapper>
-          <Chart type="line" data={chartData} options={options} />
-        </ChartWrapper>
+        {chartData !== null && (
+          <ChartWrapper>
+            <Chart type="line" data={chartData} options={options} />
+          </ChartWrapper>
+        )}
       </CardContent>
     </Card>
   );

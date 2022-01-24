@@ -10,8 +10,9 @@ import {
   Paper,
 } from "@mui/material";
 import { spacing } from "@mui/system";
-
 import MaterialTable from "@material-table/core";
+
+import { convertPriceFormat } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -39,19 +40,19 @@ const SalesTable = ({ data }) => {
           <MaterialTable
             columns={[
               {
-                field: "brand",
+                field: "name",
                 title: "Brand",
                 width: "55%",
                 render: (rowData) => {
-                  const { brand } = rowData;
+                  const { name } = rowData;
 
                   return (
                     <Link
                       component={NavLink}
-                      to={`/sales/${brand}`}
+                      to={`/sales/${name}`}
                       underline="none"
                     >
-                      {brand}
+                      {name}
                     </Link>
                   );
                 },
@@ -76,7 +77,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { revenue } = rowData;
 
-                  return `$${revenue}`;
+                  return `$${convertPriceFormat(revenue.toFixed(2))}`;
                 },
               },
               {
@@ -99,7 +100,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
 
-                  return `$${comparisonRevenue}`;
+                  return `$${convertPriceFormat(comparisonRevenue.toFixed(2))}`;
                 },
               },
               {
@@ -118,7 +119,7 @@ const SalesTable = ({ data }) => {
 
                   return (
                     <Chip
-                      label={`${revenueChange}%`}
+                      label={`${convertPriceFormat(revenueChange.toFixed(2))}%`}
                       color={
                         revenueChange > 75
                           ? "success"
