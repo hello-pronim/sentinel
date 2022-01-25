@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
-import { CardContent, Card as MuiCard, Typography } from "@mui/material";
+import { CardContent, Card as MuiCard, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
+
+import { convertPriceFormat } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -15,7 +17,7 @@ const ChartWrapper = styled.div`
   height: 300px;
 `;
 
-const SalesChart = ({ title, description, data }) => {
+const SalesChart = ({ title, data }) => {
   const [chartData, setChartData] = useState(null);
   const colors = [red[400], green[400], blue[400]];
   const options = {
@@ -85,19 +87,52 @@ const SalesChart = ({ title, description, data }) => {
   return (
     <Card mb={1}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {title}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          {description}
-        </Typography>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              {title}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item>
+                <Typography style={{ color: colors[0] }}>
+                  Total Revenue:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {convertPriceFormat(data.stats.total_revenue)}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item>
+                <Typography style={{ color: colors[1] }}>
+                  Previous Revenue:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  {convertPriceFormat(data.stats.total_comparison_revenue)}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
 
         <Spacer mb={6} />
 
         {chartData !== null && (
-          <ChartWrapper>
-            <Chart type="line" data={chartData} options={options} />
-          </ChartWrapper>
+          <Grid container>
+            <Grid item xs={12}>
+              <ChartWrapper>
+                <Chart type="line" data={chartData} options={options} />
+              </ChartWrapper>
+            </Grid>
+          </Grid>
         )}
       </CardContent>
     </Card>
