@@ -23,8 +23,9 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
+  const queryParamsString = window.location.search;
   const { companies, filterOptions } = useContext(AppContext);
-  const { salesChartData: staticSalesChartData, brands, products } = data;
+  const { products } = data;
   const [chartTitle, setChartTitle] = useState("All companies");
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [salesChartData, setSalesChartData] = useState(null);
@@ -46,10 +47,7 @@ const Sales = () => {
     setSelectedCompanies(selectedCompanyList);
 
     setLoadingSalesChartData(true);
-    getSales({
-      companyIds: JSON.stringify(selectedCompanyIds),
-      marketIds: JSON.stringify(selectedMarketIds),
-    }).then((res) => {
+    getSales(queryParamsString).then((res) => {
       console.log(res);
       setLoadingSalesChartData(false);
       if (res) {
@@ -66,10 +64,7 @@ const Sales = () => {
 
     //call to get the table data
     setLoadingSalesTableData(true);
-    getSalesData({
-      companyIds: JSON.stringify(selectedCompanyIds),
-      marketIds: JSON.stringify(selectedMarketIds),
-    }).then((res) => {
+    getSalesData(queryParamsString).then((res) => {
       console.log(res);
       setLoadingSalesTableData(false);
       if (res) {

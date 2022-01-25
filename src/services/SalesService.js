@@ -1,11 +1,11 @@
 import SecureAxios from "./SecureAxios";
 
-const getSales = (params) => {
-  return SecureAxios.get("/api/dev/sales", params);
+const getSales = (paramsString) => {
+  return SecureAxios.get("/api/dev/sales" + paramsString);
 };
 
-const getSalesData = (params) => {
-  return SecureAxios.get("/api/dev/sales/data", params);
+const getSalesData = (paramsString) => {
+  return SecureAxios.get("/api/dev/sales/data" + paramsString);
 };
 
 export { getSales, getSalesData };
