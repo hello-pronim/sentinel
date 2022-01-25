@@ -77,7 +77,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { revenue } = rowData;
 
-                  return `$${convertPriceFormat(revenue.toFixed(2))}`;
+                  return `$${convertPriceFormat(revenue)}`;
                 },
               },
               {
@@ -100,7 +100,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
 
-                  return `$${convertPriceFormat(comparisonRevenue.toFixed(2))}`;
+                  return `$${convertPriceFormat(comparisonRevenue)}`;
                 },
               },
               {
@@ -119,7 +119,7 @@ const SalesTable = ({ data }) => {
 
                   return (
                     <Chip
-                      label={`${convertPriceFormat(revenueChange.toFixed(2))}%`}
+                      label={`${convertPriceFormat(revenueChange)}%`}
                       color={
                         revenueChange > 75
                           ? "success"

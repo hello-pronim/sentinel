@@ -100,15 +100,6 @@ const Sales = () => {
     // .catch((err) => signOut());
   }, [filterOptions, companies]);
 
-  const calculateTotalRevenue = () => {
-    const { stats } = salesChartData;
-    let total = 0;
-
-    Object.keys(stats).forEach((key) => (total += stats[key]));
-
-    return "Total: " + convertPriceFormat(total, "$");
-  };
-
   return (
     <React.Fragment>
       <Helmet title="Sales" />
@@ -128,7 +119,24 @@ const Sales = () => {
           {!loadingSalesChartData && salesChartData !== null ? (
             <SalesChart
               title={chartTitle}
-              description={calculateTotalRevenue()}
+              description={
+                <>
+                  <Typography>
+                    {"Total Revenue: " +
+                      convertPriceFormat(
+                        salesChartData.stats.total_revenue,
+                        "$"
+                      )}
+                  </Typography>
+                  <Typography>
+                    {"Previous Revenue: " +
+                      convertPriceFormat(
+                        salesChartData.stats.total_comparison_revenue,
+                        "$"
+                      )}
+                  </Typography>
+                </>
+              }
               data={salesChartData}
             />
           ) : (
