@@ -19,7 +19,7 @@ const ChartWrapper = styled.div`
 
 const SalesChart = ({ title, data }) => {
   const [chartData, setChartData] = useState(null);
-  const colors = [red[400], green[400], blue[400]];
+  const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
     plugins: {
@@ -69,7 +69,7 @@ const SalesChart = ({ title, data }) => {
             backgroundColor: "transparent",
             borderColor: colors[0],
             tension: 0.4,
-            data: xAxis.map((x) => data.revenueSeries[x] ?? 0),
+            data: xAxis.map((x) => data.revenueSeries[x]),
           },
           {
             label: "Comparison Revenue",
@@ -77,7 +77,7 @@ const SalesChart = ({ title, data }) => {
             backgroundColor: "transparent",
             borderColor: colors[1],
             tension: 0.4,
-            data: xAxis.map((x) => data.comparisonSeries[x] ?? 0),
+            data: xAxis.map((x) => data.comparisonSeries[x]),
           },
         ],
       });
