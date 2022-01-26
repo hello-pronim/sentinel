@@ -11,7 +11,6 @@ import {
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
-import { convertPriceFormat } from "../../../utils/functions";
 
 import { getSales, getSalesData } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
@@ -23,8 +22,9 @@ const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
+  const queryParamsString = window.location.search;
   const { companies, filterOptions } = useContext(AppContext);
-  const { salesChartData: staticSalesChartData, brands, products } = data;
+  const { products } = data;
   const [chartTitle, setChartTitle] = useState("All companies");
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [salesChartData, setSalesChartData] = useState(null);
@@ -33,12 +33,6 @@ const Sales = () => {
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
 
   useEffect(() => {
-    const selectedCompanyIds = filterOptions.company.selectedOptions.map(
-      (item) => item.option.id
-    );
-    const selectedMarketIds = filterOptions.market.selectedOptions.map(
-      (item) => item.option.id
-    );
     const selectedCompanyList = filterOptions.company.selectedOptions.map(
       (item) => item.option
     );
@@ -46,10 +40,7 @@ const Sales = () => {
     setSelectedCompanies(selectedCompanyList);
 
     setLoadingSalesChartData(true);
-    getSales({
-      companyIds: JSON.stringify(selectedCompanyIds),
-      marketIds: JSON.stringify(selectedMarketIds),
-    }).then((res) => {
+    getSales(queryParamsString).then((res) => {
       console.log(res);
       setLoadingSalesChartData(false);
       if (res) {
@@ -66,10 +57,7 @@ const Sales = () => {
 
     //call to get the table data
     setLoadingSalesTableData(true);
-    getSalesData({
-      companyIds: JSON.stringify(selectedCompanyIds),
-      marketIds: JSON.stringify(selectedMarketIds),
-    }).then((res) => {
+    getSalesData(queryParamsString).then((res) => {
       console.log(res);
       setLoadingSalesTableData(false);
       if (res) {
@@ -93,26 +81,17 @@ const Sales = () => {
         companies[category].forEach((company) => allCompanies.push(company));
       });
 
-      if (selectedCompanyIds.length === allCompanies.length)
+      if (selectedCompanyList.length === allCompanies.length)
         setChartTitle("All companies");
-      else if (selectedCompanyIds.length === 1) {
+      else if (selectedCompanyList.length === 1) {
         const selectedCompany = allCompanies.find(
-          (company) => company.id === selectedCompanyIds[0]
+          (company) => company.id === selectedCompanyList[0].id
         );
         setChartTitle(selectedCompany.name);
       } else setChartTitle("Multi companies");
     }
     // .catch((err) => signOut());
-  }, [filterOptions, companies]);
-
-  const calculateTotalRevenue = () => {
-    const { stats } = salesChartData;
-    let total = 0;
-
-    Object.keys(stats).forEach((key) => (total += stats[key]));
-
-    return "Total: " + convertPriceFormat(total, "$");
-  };
+  }, [filterOptions, companies, queryParamsString]);
 
   return (
     <React.Fragment>
@@ -131,11 +110,7 @@ const Sales = () => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           {!loadingSalesChartData && salesChartData !== null ? (
-            <SalesChart
-              title={chartTitle}
-              description={calculateTotalRevenue()}
-              data={salesChartData}
-            />
+            <SalesChart title={chartTitle} data={salesChartData} />
           ) : (
             <Grid container justifyContent="center">
               <Grid item>

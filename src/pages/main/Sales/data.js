@@ -149,7 +149,7 @@ const data = {
       revenueChange: 50,
     },
     {
-      id: 6,
+      id: 5,
       brand: "Blooming Bath",
       name: "Product 5",
       revenue: 1700,

@@ -29,21 +29,25 @@ const getDatesOfWeek = (date) => {
   return { dateFrom: first, dateTo: last };
 };
 
-const convertPriceFormat = (value, prefix = "") => {
-  // $123.46 -> value: 123.46, prefix: $
-  let valueString = value.toString();
-  const decimal = valueString.split(".")[1] ?? "";
-  let result = valueString.split(".")[0];
-  result = result.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  result = decimal !== "" ? result + "." + decimal : result;
-  result = prefix + result;
+const convertPriceFormat = (value, decimals = 2) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: decimals,
+  }).format(value);
+};
 
-  return result;
+const convertPercentFormat = (value, decimals = 2) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "percent",
+    minimumFractionDigits: decimals,
+  }).format(value);
 };
 
 export {
   convertDateToMMDDYY,
   convertPriceFormat,
+  convertPercentFormat,
   getPastDate,
   getWeekNumber,
   getDatesOfWeek,

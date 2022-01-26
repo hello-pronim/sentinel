@@ -10,8 +10,12 @@ import {
   Paper,
 } from "@mui/material";
 import { spacing } from "@mui/system";
-
 import MaterialTable from "@material-table/core";
+
+import {
+  convertPriceFormat,
+  convertPercentFormat,
+} from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -42,15 +46,6 @@ const BrandSalesTable = ({ brand, data }) => {
                 field: "name",
                 title: "Product",
                 width: "55%",
-                render: (rowData) => {
-                  const { name } = rowData;
-
-                  return (
-                    <Link component={NavLink} to="#" underline="none">
-                      {name}
-                    </Link>
-                  );
-                },
               },
               {
                 field: "revenue",
@@ -72,7 +67,7 @@ const BrandSalesTable = ({ brand, data }) => {
                 render: (rowData) => {
                   const { revenue } = rowData;
 
-                  return `$${revenue}`;
+                  return `${convertPriceFormat(revenue)}`;
                 },
               },
               {
@@ -95,7 +90,7 @@ const BrandSalesTable = ({ brand, data }) => {
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
 
-                  return `$${comparisonRevenue}`;
+                  return `${convertPriceFormat(comparisonRevenue)}`;
                 },
               },
               {
@@ -114,7 +109,7 @@ const BrandSalesTable = ({ brand, data }) => {
 
                   return (
                     <Chip
-                      label={`${revenueChange}%`}
+                      label={`${convertPercentFormat(revenueChange)}`}
                       color={
                         revenueChange > 75
                           ? "success"

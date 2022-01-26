@@ -12,7 +12,10 @@ import {
 import { spacing } from "@mui/system";
 import MaterialTable from "@material-table/core";
 
-import { convertPriceFormat } from "../../../utils/functions";
+import {
+  convertPriceFormat,
+  convertPercentFormat,
+} from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -63,8 +66,6 @@ const SalesTable = ({ data }) => {
                 type: "currency",
                 currencySetting: {
                   currencyCode: "$",
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
                 width: "15%",
@@ -77,7 +78,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { revenue } = rowData;
 
-                  return `$${convertPriceFormat(revenue.toFixed(2))}`;
+                  return `${convertPriceFormat(revenue)}`;
                 },
               },
               {
@@ -86,8 +87,6 @@ const SalesTable = ({ data }) => {
                 type: "currency",
                 currencySetting: {
                   currencyCode: "$",
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
                 },
                 customSort: (a, b) => a.revenue - b.revenue,
                 width: "15%",
@@ -100,7 +99,7 @@ const SalesTable = ({ data }) => {
                 render: (rowData) => {
                   const { comparisonRevenue } = rowData;
 
-                  return `$${convertPriceFormat(comparisonRevenue.toFixed(2))}`;
+                  return `${convertPriceFormat(comparisonRevenue)}`;
                 },
               },
               {
@@ -119,7 +118,7 @@ const SalesTable = ({ data }) => {
 
                   return (
                     <Chip
-                      label={`${convertPriceFormat(revenueChange.toFixed(2))}%`}
+                      label={`${convertPercentFormat(revenueChange)}`}
                       color={
                         revenueChange > 75
                           ? "success"
