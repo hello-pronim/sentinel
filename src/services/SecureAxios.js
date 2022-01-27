@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/axios";
 
 class SecureAxios {
   get(url, params = {}) {
