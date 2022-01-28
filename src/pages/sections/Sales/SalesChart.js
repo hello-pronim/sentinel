@@ -22,6 +22,10 @@ const SalesChart = ({ title, data }) => {
   const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
     plugins: {
       legend: {
         display: false,
