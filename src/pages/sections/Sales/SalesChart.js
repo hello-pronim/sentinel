@@ -30,6 +30,19 @@ const SalesChart = ({ title, data }) => {
       legend: {
         display: false,
       },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            var label = context.dataset.label || "";
+
+            if (label) label += ": ";
+            if (context.parsed.y !== null)
+              label += convertPriceFormat(context.parsed.y);
+
+            return label;
+          },
+        },
+      },
     },
     scales: {
       x: {
@@ -68,7 +81,7 @@ const SalesChart = ({ title, data }) => {
         labels: xAxis,
         datasets: [
           {
-            label: "Revenue",
+            label: "Current revenue",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[0],
@@ -76,7 +89,7 @@ const SalesChart = ({ title, data }) => {
             data: xAxis.map((x) => data.revenueSeries[x]),
           },
           {
-            label: "Comparison Revenue",
+            label: "Previous Revenue",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[1],
