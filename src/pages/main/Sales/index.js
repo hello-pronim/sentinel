@@ -14,9 +14,7 @@ import { AppContext } from "../../../contexts/AppContext";
 
 import { getSales, getSalesData } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
-import BrandSalesTable from "../../sections/Sales/BrandSalesTable";
 import async from "../../../components/Async";
-import data from "./data";
 
 const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 const Divider = styled(MuiDivider)(spacing);
@@ -24,11 +22,11 @@ const Divider = styled(MuiDivider)(spacing);
 const Sales = () => {
   const queryParamsString = window.location.search;
   const { companies, filterOptions } = useContext(AppContext);
-  const { products } = data;
   const [chartTitle, setChartTitle] = useState("All companies");
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [tableTitle, setTableTitle] = useState("Sales");
   const [salesChartData, setSalesChartData] = useState(null);
   const [salesTableData, setSalesTableData] = useState(null);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [loadingSalesChartData, setLoadingSalesChartData] = useState(false);
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
 
@@ -67,6 +65,7 @@ const Sales = () => {
           revenue: item.revenue,
           comparisonRevenue: item.comparison_revenue,
           revenueChange: item.revenue_change,
+          type: item.type,
         }));
 
         setSalesTableData(tableData);
@@ -81,14 +80,19 @@ const Sales = () => {
         companies[category].forEach((company) => allCompanies.push(company));
       });
 
-      if (selectedCompanyList.length === allCompanies.length)
+      if (selectedCompanyList.length === allCompanies.length) {
         setChartTitle("All companies");
-      else if (selectedCompanyList.length === 1) {
+        setTableTitle("Sales");
+      } else if (selectedCompanyList.length === 1) {
         const selectedCompany = allCompanies.find(
           (company) => company.id === selectedCompanyList[0].id
         );
         setChartTitle(selectedCompany.name);
-      } else setChartTitle("Multi companies");
+        setTableTitle(selectedCompany.name);
+      } else {
+        setChartTitle("Multi companies");
+        setTableTitle("Sales");
+      }
     }
     // .catch((err) => signOut());
   }, [filterOptions, companies, queryParamsString]);
@@ -121,14 +125,11 @@ const Sales = () => {
         </Grid>
         <Grid item xs={12}>
           {!loadingSalesTableData && salesTableData !== null ? (
-            selectedCompanies.length !== 1 ? (
-              <SalesTable data={salesTableData} />
-            ) : (
-              <BrandSalesTable
-                brand={selectedCompanies[0].name}
-                data={products}
-              />
-            )
+            <SalesTable
+              title={tableTitle}
+              data={salesTableData}
+              salesType={selectedCompanies.length === 1 ? "product" : "brand"}
+            />
           ) : (
             <Grid container justifyContent="center">
               <Grid item>

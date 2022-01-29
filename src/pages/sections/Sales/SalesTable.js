@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
 
@@ -12,6 +12,7 @@ import {
 import { spacing } from "@mui/system";
 import MaterialTable from "@material-table/core";
 
+import { AppContext } from "../../../contexts/AppContext";
 import {
   convertPriceFormat,
   convertPercentFormat,
@@ -33,10 +34,44 @@ const TableWrapper = styled.div`
   max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
 `;
 
-const SalesTable = ({ data }) => {
+const SalesTable = ({ title, data, salesType }) => {
+  const { filterOptions } = useContext(AppContext);
+
+  const generateUrl = (companyId) => {
+    let url = "/sales?";
+    const dateFilterOptions = filterOptions.date;
+    const marketFilterOptions = filterOptions.market.selectedOptions;
+
+    url += "company_ids[]=" + companyId;
+    url +=
+      "&date_range=" +
+      dateFilterOptions.dateRange +
+      "&view_by=" +
+      dateFilterOptions.viewMode +
+      "&from=" +
+      dateFilterOptions.from +
+      "&to=" +
+      dateFilterOptions.to;
+    if (dateFilterOptions.dateRange === "custom")
+      url +=
+        "&comp_from=" +
+        dateFilterOptions.compFrom +
+        "&comp_to=" +
+        dateFilterOptions.compTo;
+    url += marketFilterOptions.length ? "&" : "";
+
+    marketFilterOptions.forEach((opt, index) => {
+      url +=
+        "market_ids[]=" +
+        opt.option.id +
+        (index < marketFilterOptions.length - 1 ? "&" : "");
+    });
+
+    return url;
+  };
   return (
     <Card mb={6}>
-      <CardHeader title="Sales" />
+      <CardHeader title={title} />
 
       <Paper>
         <TableWrapper>
@@ -44,19 +79,23 @@ const SalesTable = ({ data }) => {
             columns={[
               {
                 field: "name",
-                title: "Brand",
+                title: salesType === "product" ? "Product" : "Brand",
                 width: "55%",
                 render: (rowData) => {
-                  const { name } = rowData;
+                  const { id, name, type } = rowData;
 
-                  return (
+                  return type === "brand" ? (
                     <Link
+                      to={generateUrl(id)}
                       component={NavLink}
-                      to={`/sales/${name}`}
                       underline="none"
                     >
                       {name}
                     </Link>
+                  ) : type === "product" ? (
+                    name
+                  ) : (
+                    <></>
                   );
                 },
               },
