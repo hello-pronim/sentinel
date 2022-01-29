@@ -82,11 +82,11 @@ const SalesTable = ({ title, data, salesType }) => {
                 title: salesType === "product" ? "Product" : "Brand",
                 width: "55%",
                 render: (rowData) => {
-                  const { id, name, type } = rowData;
+                  const { companyId, name, type } = rowData;
 
                   return type === "brand" ? (
                     <Link
-                      to={generateUrl(id)}
+                      to={generateUrl(companyId)}
                       component={NavLink}
                       underline="none"
                     >
