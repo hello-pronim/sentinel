@@ -1,7 +1,7 @@
 import SecureAxios from "./SecureAxios";
 
 const getCompanies = () => {
-  return SecureAxios.get("/api/dev/companies");
+  return SecureAxios.get("/api/companies");
 };
 
 export { getCompanies };
