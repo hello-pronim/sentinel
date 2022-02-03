@@ -6,7 +6,7 @@ module.exports = function (app) {
             target: "https://2d4hj0r9gf.execute-api.us-east-1.amazonaws.com/dev/",
             changeOrigin: true,
             pathRewrite: {
-                "^/api": "",
+                "^/api/dev": "",
             },
         })
     );
