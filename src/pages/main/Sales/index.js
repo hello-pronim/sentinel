@@ -60,12 +60,13 @@ const Sales = () => {
       setLoadingSalesTableData(false);
       if (res) {
         const tableData = res.map((item) => ({
-          id: item.id,
           name: item.name,
           revenue: item.revenue,
           comparisonRevenue: item.comparison_revenue,
           revenueChange: item.revenue_change,
           type: item.type,
+          companyId: item?.company_id,
+          productId: item?.product_id,
         }));
 
         setSalesTableData(tableData);
