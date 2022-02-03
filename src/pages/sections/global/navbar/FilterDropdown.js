@@ -71,7 +71,15 @@ const FilterDropdown = ({
 
   useEffect(() => {
     if (markets !== null) {
-      setMarketList(markets);
+      const keys = Object.keys(markets);
+      let array = [];
+
+      keys.forEach((key) => {
+        const sameCatMarkets = markets[key];
+        sameCatMarkets.forEach((mar) => array.push(mar));
+      });
+
+      setMarketList(array);
     }
   }, [markets]);
 
@@ -98,9 +106,9 @@ const FilterDropdown = ({
       });
       marketList.forEach((mar) => {
         if (marketIdArray.includes(mar.id)) {
-          selectedMarkets.push("-" + mar.name);
+          selectedMarkets.push(mar.marketplace_category_id + "-" + mar.name);
           selectedMarketOptions.push({
-            id: "-" + mar.name,
+            id: mar.marketplace_category_id + "-" + mar.name,
             option: mar,
           });
         }
@@ -221,15 +229,32 @@ const FilterDropdown = ({
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
       const options = [];
+      const categories = Object.keys(markets);
+      const marketArray = [];
+      categories.forEach((category) =>
+        markets[category].forEach((market) => marketArray.push(market))
+      );
       const data = {
         id: "all",
         name: "All",
-        children: markets.map((market) => {
-          defaultSelected.push("-" + market.name);
-          options.push({ id: "-" + market.name, option: market });
+        children: categories.map((category) => {
+          const sameCatMarkets = marketArray.filter(
+            (mar) => mar.category_name === category
+          );
+          defaultExpanded.push(category);
+          defaultSelected.push(category);
+          // options.push({ id: "-" + market.name, option: market });
           return {
-            id: "-" + market.name,
-            name: market.name,
+            id: category,
+            name: category,
+            children: sameCatMarkets.map((mar) => {
+              defaultSelected.push(category + "-" + mar.name);
+              options.push({ id: category + "-" + mar.name, option: mar });
+              return {
+                id: category + "-" + mar.name,
+                name: mar.name,
+              };
+            }),
           };
         }),
       };
@@ -278,11 +303,7 @@ const FilterDropdown = ({
     }
 
     setFilterButtonText(
-      companyFilterButtonText +
-        " - " +
-        dateFilterButtonText +
-        " - " +
-        marketFilterButtonText
+      `${companyFilterButtonText} - ${dateFilterButtonText} - ${marketFilterButtonText}`
     );
   }, [
     companyList,
@@ -443,7 +464,7 @@ const FilterDropdown = ({
             <Grid item sm={12} md={4}>
               {marketFilterData && (
                 <MarketFilterMenu
-                  title="Markets"
+                  title="Markets by Category"
                   filterData={marketFilterData}
                   filterOptions={marketFilterOptions}
                   expanded={defaultMarketExpandedList}
