@@ -4,7 +4,7 @@ class SecureAxios {
   get(url, params = {}) {
     return new Promise((resolve, reject) => {
       axios
-        .get(url, {
+        .get(`/api/${process.env.REACT_APP_API_ENV || "dev"}${url}`, {
           ...params,
           headers: { Authorization: "Bearer " + this.getToken() },
         })
