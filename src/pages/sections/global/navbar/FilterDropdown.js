@@ -106,9 +106,9 @@ const FilterDropdown = ({
       });
       marketList.forEach((mar) => {
         if (marketIdArray.includes(mar.id)) {
-          selectedMarkets.push(mar.marketplace_category_id + "-" + mar.name);
+          selectedMarkets.push(mar.category_name + "-" + mar.name);
           selectedMarketOptions.push({
-            id: mar.marketplace_category_id + "-" + mar.name,
+            id: mar.category_name + "-" + mar.name,
             option: mar,
           });
         }
