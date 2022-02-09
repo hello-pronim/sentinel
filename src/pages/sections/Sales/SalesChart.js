@@ -119,11 +119,37 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
+    let url = "";
+    filterOptions.company.selectedOptions.forEach((opt, index) => {
+      url +=
+        "company_ids[]=" +
+        opt.option.id +
+        (index < filterOptions.company.selectedOptions.length - 1 ? "&" : "");
+    });
+
+    url +=
+      "&date_range=" +
+      filterOptions.date.dateRange +
+      "&view_by=" +
+      filterOptions.date.viewMode +
+      "&from=" +
+      filterOptions.date.from +
+      "&to=" +
+      filterOptions.date.to;
+    url += "&";
+    filterOptions.market.selectedOptions.forEach((opt, index) => {
+      url +=
+        "market_ids[]=" +
+        opt.option.id +
+        (index < filterOptions.market.selectedOptions.length - 1 ? "&" : "");
+    });
+    url += "&show_returns=" + value;
+
     const new_url =
       "/sales" +
       (search.length !== 0
         ? search.replace(/show_returns=(true|false)/, "show_returns=" + value)
-        : "?show_returns=" + value);
+        : "?" + url);
 
     setShowReturns(value);
     setFilterOptions({
