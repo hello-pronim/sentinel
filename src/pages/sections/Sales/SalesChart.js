@@ -119,7 +119,6 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
-    console.log(filterOptions);
     let url = "";
     filterOptions.company.selectedOptions.forEach((opt, index) => {
       url +=
