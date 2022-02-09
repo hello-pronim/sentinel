@@ -21,7 +21,7 @@ const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
   const queryParamsString = window.location.search;
-  const { companies, filterOptions } = useContext(AppContext);
+  const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
   const [salesChartData, setSalesChartData] = useState(null);
@@ -115,7 +115,12 @@ const Sales = () => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           {!loadingSalesChartData && salesChartData !== null ? (
-            <SalesChart title={chartTitle} data={salesChartData} />
+            <SalesChart
+              title={chartTitle}
+              data={salesChartData}
+              filterOptions={filterOptions}
+              setFilterOptions={setFilterOptions}
+            />
           ) : (
             <Grid container justifyContent="center">
               <Grid item>

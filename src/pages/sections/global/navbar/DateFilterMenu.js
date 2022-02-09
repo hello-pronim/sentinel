@@ -23,17 +23,20 @@ import {
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [dateRange, setDateRange] = useState(filterOptions.dateRange);
   const [viewMode, setViewMode] = useState(filterOptions.viewMode);
+  const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
   const [dateFrom, setDateFrom] = useState(filterOptions.from);
   const [dateTo, setDateTo] = useState(filterOptions.to);
   const [compDateFrom, setCompDateFrom] = useState(filterOptions.compFrom);
   const [compDateTo, setCompDateTo] = useState(filterOptions.compTo);
 
   useEffect(() => {
-    const { from, to, viewMode, dateRange, compFrom, compTo } = filterOptions;
+    const { from, to, viewMode, dateRange, compFrom, compTo, showReturns } =
+      filterOptions;
 
     setDateFrom(from);
     setDateTo(to);
     setViewMode(viewMode);
+    setShowReturns(showReturns);
     setDateRange(dateRange);
     if (dateRange === "custom") {
       setCompDateFrom(compFrom);
@@ -83,6 +86,13 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
       viewMode: value,
     });
   };
+  // const handleShowReturnsChanged = (event, value) => {
+  //   setShowReturns(value);
+  //   setFilterOptions({
+  //     ...filterOptions,
+  //     showReturns: value,
+  //   });
+  // };
 
   return (
     <React.Fragment>
@@ -243,6 +253,18 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                   <ToggleButton value="month">Month</ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
+              {/* <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      value={showReturns}
+                      onChange={handleShowReturnsChanged}
+                      defaultChecked
+                    ></Checkbox>
+                  }
+                  label="Show Returns"
+                />
+              </Grid> */}
             </Grid>
           </Grid>
         </Grid>

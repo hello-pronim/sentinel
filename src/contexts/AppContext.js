@@ -22,6 +22,7 @@ function AppProvider({ children }) {
       compFrom: convertDateToMMDDYY(getPastDate(new Date(), 29)),
       compTo: convertDateToMMDDYY(new Date()),
       viewMode: "day",
+      showReturns: true,
     },
     market: {
       selected: [],
