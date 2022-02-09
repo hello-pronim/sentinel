@@ -192,7 +192,7 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
                 onChange={handleShowReturnsChanged}
               />
             }
-            label="Show Refunded Orders"
+            label="Include: Returned, Partial, and Pending Orders"
           />
         </Grid>
       </CardContent>
