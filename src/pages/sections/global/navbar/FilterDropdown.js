@@ -122,7 +122,6 @@ const FilterDropdown = ({
         ...dateFilterOptions,
         dateRange: searchParams.get("date_range"),
         viewMode: searchParams.get("view_by"),
-        showReturns: searchParams.get("show_returns"),
         from: searchParams.get("from"),
         to: searchParams.get("to"),
         compFrom:
@@ -162,6 +161,10 @@ const FilterDropdown = ({
           selected: selectedMarkets,
           selectedOptions: selectedMarketOptions,
         },
+        showReturns:
+          searchParams.get("show_returns") !== undefined
+            ? searchParams.get("show_returns") === "true" // convert boolean string to boolean
+            : defaultFilterOptions.showReturns,
       });
     }
   }, [search, companyList, marketList]);
@@ -359,8 +362,6 @@ const FilterDropdown = ({
       dateFilterOptions.dateRange +
       "&view_by=" +
       dateFilterOptions.viewMode +
-      "&show_returns=" +
-      dateFilterOptions.showReturns +
       "&from=" +
       dateFilterOptions.from +
       "&to=" +
@@ -379,6 +380,7 @@ const FilterDropdown = ({
         opt.option.id +
         (index < selectedMarketOptions.length - 1 ? "&" : "");
     });
+    url += "&show_returns=" + filterOptions.showReturns;
 
     navigate(url);
     setAnchorEl(null);

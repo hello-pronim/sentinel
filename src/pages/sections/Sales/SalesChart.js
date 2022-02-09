@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
-import { FilterDropdown } from "../global/navbar/FilterDropdown";
-import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   CardContent,
@@ -16,7 +15,6 @@ import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
 import { convertPriceFormat } from "../../../utils/functions";
-import { Filter } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(spacing);
 
@@ -28,118 +26,10 @@ const ChartWrapper = styled.div`
 `;
 
 const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [chartData, setChartData] = useState(null);
   const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
-
-  // companies
-  const [companyList, setCompanyList] = useState([]);
-  const [companyFilterOptions, setCompanyFilterOptions] = useState([]);
-  const [companyFilterData, setCompanyFilterData] = useState(null);
-  const [defaultCompanyExpandedList, setDefaultCompanyExpandedList] = useState(
-    []
-  );
-  const [defaultCompanySelectedList, setDefaultCompanySelectedList] = useState(
-    []
-  );
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [selectedCompanyOptions, setSelectedCompanyOptions] = useState(
-    filterOptions.company.selectedOptions
-  );
-  // date
-  const [dateFilterOptions, setDateFilterOptions] = useState(
-    filterOptions.date
-  );
-  // markets
-  const [marketList, setMarketList] = useState([]);
-  const [marketFilterOptions, setMarketFilterOptions] = useState([]);
-  const [marketFilterData, setMarketFilterData] = useState(null);
-  const [defaultMarketExpandedList, setDefaultMarketExpandedList] = useState(
-    []
-  );
-  const [defaultMarketSelectedList, setDefaultMarketSelectedList] = useState(
-    []
-  );
-  const [selectedMarkets, setSelectedMarkets] = useState([]);
-  const [selectedMarketOptions, setSelectedMarketOptions] = useState(
-    filterOptions.market.selectedOptions
-  );
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const { from, to, viewMode, dateRange, compFrom, compTo, showReturns } =
-      filterOptions;
-    setShowReturns(showReturns);
-  }, [filterOptions]);
-
-  const handleShowReturnsChanged = (event, value) => {
-    setShowReturns(value);
-    setFilterOptions({
-      ...filterOptions,
-      showReturns: value,
-    });
-    console.log(filterOptions.showReturns);
-    // handleApplyClicked();
-  };
-  const handleApplyClicked = () => {
-    setFilterOptions({
-      ...filterOptions,
-      company: {
-        ...filterOptions.company,
-        selected: selectedCompanies,
-        selectedOptions: selectedCompanyOptions,
-      },
-      date: {
-        ...filterOptions.date,
-        dateFilterOptions,
-      },
-      market: {
-        ...filterOptions.market,
-        selected: selectedMarkets,
-        selectedOptions: selectedMarketOptions,
-      },
-    });
-
-    let url = "/sales?";
-
-    selectedCompanyOptions.forEach((opt, index) => {
-      url +=
-        "company_ids[]=" +
-        opt.option.id +
-        (index < selectedCompanyOptions.length - 1 ? "&" : "");
-    });
-
-    url +=
-      "&date_range=" +
-      dateFilterOptions.dateRange +
-      "&view_by=" +
-      dateFilterOptions.viewMode +
-      "&show_returns=" +
-      dateFilterOptions.showReturns +
-      "&from=" +
-      dateFilterOptions.from +
-      "&to=" +
-      dateFilterOptions.to;
-    if (dateFilterOptions.dateRange === "custom")
-      url +=
-        "&comp_from=" +
-        dateFilterOptions.compFrom +
-        "&comp_to=" +
-        dateFilterOptions.compTo;
-    url += selectedMarketOptions.length ? "&" : "";
-
-    selectedMarketOptions.forEach((opt, index) => {
-      url +=
-        "market_ids[]=" +
-        opt.option.id +
-        (index < selectedMarketOptions.length - 1 ? "&" : "");
-    });
-
-    navigate(url);
-    setAnchorEl(null);
-  };
   const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
@@ -183,6 +73,11 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
   };
 
   useEffect(() => {
+    console.log(filterOptions);
+    setShowReturns(filterOptions.showReturns);
+  }, [filterOptions]);
+
+  useEffect(() => {
     if (data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
@@ -221,6 +116,23 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
       });
     }
   }, [data]);
+
+  const handleShowReturnsChanged = (event, value) => {
+    const search = location.search;
+    const new_url =
+      "/sales" +
+      (search.length !== 0
+        ? search.replace(/show_returns=(true|false)/, "show_returns=" + value)
+        : "?show_returns=" + value);
+
+    setShowReturns(value);
+    setFilterOptions({
+      ...filterOptions,
+      showReturns: value,
+    });
+
+    navigate(new_url);
+  };
 
   return (
     <Card mb={1}>
@@ -276,7 +188,7 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
           <FormControlLabel
             control={
               <Switch
-                checked={showReturns}
+                checked={Boolean(showReturns)}
                 onChange={handleShowReturnsChanged}
               />
             }
