@@ -161,6 +161,10 @@ const FilterDropdown = ({
           selected: selectedMarkets,
           selectedOptions: selectedMarketOptions,
         },
+        showReturns:
+          searchParams.get("show_returns") !== undefined
+            ? searchParams.get("show_returns") === "true" // convert boolean string to boolean
+            : defaultFilterOptions.showReturns,
       });
     }
   }, [search, companyList, marketList]);
@@ -376,6 +380,7 @@ const FilterDropdown = ({
         opt.option.id +
         (index < selectedMarketOptions.length - 1 ? "&" : "");
     });
+    url += "&show_returns=" + filterOptions.showReturns;
 
     navigate(url);
     setAnchorEl(null);
