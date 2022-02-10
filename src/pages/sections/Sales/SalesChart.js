@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
-import { CardContent, Card as MuiCard, Grid, Typography } from "@mui/material";
+import {
+  CardContent,
+  Card as MuiCard,
+  Grid,
+  Typography,
+  Switch,
+  FormControlLabel,
+} from "@mui/material";
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
@@ -17,8 +25,11 @@ const ChartWrapper = styled.div`
   height: 300px;
 `;
 
-const SalesChart = ({ title, data }) => {
+const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [chartData, setChartData] = useState(null);
+  const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
   const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
@@ -62,6 +73,11 @@ const SalesChart = ({ title, data }) => {
   };
 
   useEffect(() => {
+    console.log(filterOptions);
+    setShowReturns(filterOptions.showReturns);
+  }, [filterOptions]);
+
+  useEffect(() => {
     if (data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
@@ -100,6 +116,49 @@ const SalesChart = ({ title, data }) => {
       });
     }
   }, [data]);
+
+  const handleShowReturnsChanged = (event, value) => {
+    const search = location.search;
+    let url = "";
+    filterOptions.company.selectedOptions.forEach((opt, index) => {
+      url +=
+        "company_ids[]=" +
+        opt.option.id +
+        (index < filterOptions.company.selectedOptions.length - 1 ? "&" : "");
+    });
+
+    url +=
+      "&date_range=" +
+      filterOptions.date.dateRange +
+      "&view_by=" +
+      filterOptions.date.viewMode +
+      "&from=" +
+      filterOptions.date.from +
+      "&to=" +
+      filterOptions.date.to;
+    url += "&";
+    filterOptions.market.selectedOptions.forEach((opt, index) => {
+      url +=
+        "market_ids[]=" +
+        opt.option.id +
+        (index < filterOptions.market.selectedOptions.length - 1 ? "&" : "");
+    });
+    url += "&show_returns=" + value;
+
+    const new_url =
+      "/sales" +
+      (search.length !== 0
+        ? search.replace(/show_returns=(true|false)/, "show_returns=" + value)
+        : "?" + url);
+
+    setShowReturns(value);
+    setFilterOptions({
+      ...filterOptions,
+      showReturns: value,
+    });
+
+    navigate(new_url);
+  };
 
   return (
     <Card mb={1}>
@@ -151,6 +210,17 @@ const SalesChart = ({ title, data }) => {
             </Grid>
           </Grid>
         )}
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={Boolean(showReturns)}
+                onChange={handleShowReturnsChanged}
+              />
+            }
+            label="Include: Returned, Partial, and Pending Orders"
+          />
+        </Grid>
       </CardContent>
     </Card>
   );

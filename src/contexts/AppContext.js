@@ -27,6 +27,7 @@ function AppProvider({ children }) {
       selected: [],
       selectedOptions: [],
     },
+    showReturns: true,
   };
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
