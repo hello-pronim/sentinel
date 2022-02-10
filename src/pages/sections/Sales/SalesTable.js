@@ -66,6 +66,7 @@ const SalesTable = ({ title, data, salesType }) => {
         opt.option.id +
         (index < marketFilterOptions.length - 1 ? "&" : "");
     });
+    url += "&show_returns=" + filterOptions.showReturns;
 
     return url;
   };
@@ -162,10 +163,10 @@ const SalesTable = ({ title, data, salesType }) => {
                         revenueChange > 75
                           ? "success"
                           : revenueChange > 50
-                          ? "info"
-                          : revenueChange > 25
-                          ? "warning"
-                          : "error"
+                            ? "info"
+                            : revenueChange > 25
+                              ? "warning"
+                              : "error"
                       }
                     />
                   );
