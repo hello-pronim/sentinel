@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components/macro";
 import {
   Box,
   FormControl,
@@ -19,6 +20,12 @@ import {
   getPastDate,
   getDatesOfWeek,
 } from "../../../../utils/functions";
+
+const DateFilterDropdown = styled(Box)`
+  width: 280px;
+  height: calc(100vh - 200px);
+  overflow-y: scroll;
+`;
 
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
   const [dateRange, setDateRange] = useState(filterOptions.dateRange);
@@ -90,7 +97,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
         <Typography variant="body2">{title}</Typography>
       </Box>
       <Divider />
-      <Box p={2} sx={{ width: "280px" }}>
+      <DateFilterDropdown p={2} sx={{ width: "280px" }}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container spacing={4}>
@@ -246,7 +253,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </DateFilterDropdown>
     </React.Fragment>
   );
 };
