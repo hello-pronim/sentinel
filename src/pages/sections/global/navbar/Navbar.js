@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled, { withTheme } from "styled-components/macro";
 import {
   Grid,
@@ -9,6 +9,9 @@ import {
 import { Menu as MenuIcon } from "@mui/icons-material";
 
 import { AppContext } from "../../../../contexts/AppContext";
+
+import { getCompanies } from "../../../../services/CompanyService";
+import { getMarkets } from "../../../../services/MarketService";
 
 import FilterDropdown from "./FilterDropdown";
 
@@ -30,11 +33,38 @@ const Navbar = ({ onDrawerToggle }) => {
     markets,
     filterOptions,
     defaultFilterOptions,
+    setCompanies,
+    setMarkets,
     setFilterOptions,
   } = useContext(AppContext);
   const [filterButtonText, setFilterButtonText] = useState(
     `All Brands - ${filterOptions.date.from} - ${filterOptions.date.to} - All Markets`
   );
+
+  const retrieveCompaniesData = () => {
+    getCompanies()
+      .then((res) => {
+        const { data } = res.data.body;
+
+        setCompanies(data);
+      })
+      .catch((err) => err);
+  };
+
+  const retrieveMarketsData = () => {
+    getMarkets()
+      .then((res) => {
+        const { data } = res.data.body;
+
+        setMarkets(data);
+      })
+      .catch((err) => err);
+  };
+
+  useEffect(() => {
+    retrieveCompaniesData();
+    retrieveMarketsData();
+  }, []);
 
   return (
     <React.Fragment>
