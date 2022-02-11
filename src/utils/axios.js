@@ -1,16 +1,26 @@
 import axios from "axios";
 
-axios.defaults.headers.common = {
-  ...axios.defaults.headers.common,
-  "Access-Control-Allow-Origin": "*",
-};
+import { getRefreshToken, refreshToken } from "../services/AuthService";
 
-axios.interceptors.response.use(
+const axiosApiInstance = axios.create();
+
+axiosApiInstance.interceptors.response.use(
   (response) => response,
-  (error) =>
-    Promise.reject(
-      (error.response && error.response.data) || "Something went wrong"
-    )
+  async (error) => {
+    const originalRequest = error.response.config;
+
+    if (error.response.status === 403 && !originalRequest._retry) {
+      const token = await getRefreshToken();
+
+      if (token) await refreshToken(token);
+
+      originalRequest._retry = true;
+
+      return axiosApiInstance(originalRequest);
+    }
+
+    return Promise.reject(error);
+  }
 );
 
-export default axios;
+export default axiosApiInstance;
