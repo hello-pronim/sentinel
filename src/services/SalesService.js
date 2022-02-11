@@ -1,11 +1,11 @@
-import SecureAxios from "./SecureAxios";
+import axios from "../utils/axios";
 
 const getSales = (paramsString) => {
-  return SecureAxios.get(`/sales${paramsString}`);
+  return axios.get(`/api/dev/sales${paramsString}`);
 };
 
 const getSalesData = (paramsString) => {
-  return SecureAxios.get(`/sales/data${paramsString}`);
+  return axios.get(`/api/dev/sales/data${paramsString}`);
 };
 
 export { getSales, getSalesData };
