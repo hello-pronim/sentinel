@@ -163,10 +163,10 @@ const SalesTable = ({ title, data, salesType }) => {
                         revenueChange > 75
                           ? "success"
                           : revenueChange > 50
-                            ? "info"
-                            : revenueChange > 25
-                              ? "warning"
-                              : "error"
+                          ? "info"
+                          : revenueChange > 25
+                          ? "warning"
+                          : "error"
                       }
                     />
                   );

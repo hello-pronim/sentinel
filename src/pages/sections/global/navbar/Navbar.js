@@ -9,6 +9,7 @@ import {
 import { Menu as MenuIcon } from "@mui/icons-material";
 
 import { AppContext } from "../../../../contexts/AppContext";
+import { AuthContext } from "../../../../contexts/CognitoContext";
 
 import { getCompanies } from "../../../../services/CompanyService";
 import { getMarkets } from "../../../../services/MarketService";
@@ -37,6 +38,7 @@ const Navbar = ({ onDrawerToggle }) => {
     setMarkets,
     setFilterOptions,
   } = useContext(AppContext);
+  const { isAuthenticated, isInitialized } = useContext(AuthContext);
   const [filterButtonText, setFilterButtonText] = useState(
     `All Brands - ${filterOptions.date.from} - ${filterOptions.date.to} - All Markets`
   );
@@ -62,9 +64,11 @@ const Navbar = ({ onDrawerToggle }) => {
   };
 
   useEffect(() => {
-    retrieveCompaniesData();
-    retrieveMarketsData();
-  }, []);
+    if (isAuthenticated && isInitialized) {
+      retrieveCompaniesData();
+      retrieveMarketsData();
+    }
+  }, [isAuthenticated, isInitialized]);
 
   return (
     <React.Fragment>

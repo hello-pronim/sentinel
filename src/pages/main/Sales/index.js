@@ -11,6 +11,7 @@ import {
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
+import { AuthContext } from "../../../contexts/CognitoContext";
 
 import { getSales, getSalesData } from "../../../services/SalesService";
 import SalesTable from "../../sections/Sales/SalesTable";
@@ -22,6 +23,8 @@ const Divider = styled(MuiDivider)(spacing);
 const Sales = () => {
   const queryParamsString = window.location.search;
   const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
   const [salesChartData, setSalesChartData] = useState(null);
@@ -31,49 +34,15 @@ const Sales = () => {
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
 
   useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
     const selectedCompanyList = filterOptions.company.selectedOptions.map(
       (item) => item.option
     );
 
     setSelectedCompanies(selectedCompanyList);
-
-    setLoadingSalesChartData(true);
-    getSales(queryParamsString).then((res) => {
-      const { data } = res.data.body;
-      console.log(data);
-      setLoadingSalesChartData(false);
-      if (data) {
-        const chartData = {
-          comparisonSeries: data.comparison_series,
-          revenueSeries: data.revenue_series,
-          stats: data.stats,
-        };
-
-        setSalesChartData(chartData);
-      }
-    });
-    //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
-
-    //call to get the table data
-    setLoadingSalesTableData(true);
-    getSalesData(queryParamsString).then((res) => {
-      const { data } = res.data.body;
-      console.log(data);
-      setLoadingSalesTableData(false);
-      if (data) {
-        const tableData = data.map((item) => ({
-          name: item.name,
-          revenue: item.revenue,
-          comparisonRevenue: item.comparison_revenue,
-          revenueChange: item.revenue_change,
-          type: item.type,
-          companyId: item?.company_id,
-          productId: item?.product_id,
-        }));
-
-        setSalesTableData(tableData);
-      }
-    });
 
     if (companies) {
       const companyCategories = Object.keys(companies);
@@ -98,7 +67,49 @@ const Sales = () => {
       }
     }
     // .catch((err) => signOut());
-  }, [filterOptions, companies, queryParamsString]);
+  }, [filterOptions, companies]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      setLoadingSalesChartData(true);
+      getSales(queryParamsString).then((res) => {
+        const { data } = res.data.body;
+        console.log(data);
+        setLoadingSalesChartData(false);
+        if (data) {
+          const chartData = {
+            comparisonSeries: data.comparison_series,
+            revenueSeries: data.revenue_series,
+            stats: data.stats,
+          };
+
+          setSalesChartData(chartData);
+        }
+      });
+      //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
+
+      //call to get the table data
+      setLoadingSalesTableData(true);
+      getSalesData(queryParamsString).then((res) => {
+        const { data } = res.data.body;
+        console.log(data);
+        setLoadingSalesTableData(false);
+        if (data) {
+          const tableData = data.map((item) => ({
+            name: item.name,
+            revenue: item.revenue,
+            comparisonRevenue: item.comparison_revenue,
+            revenueChange: item.revenue_change,
+            type: item.type,
+            companyId: item?.company_id,
+            productId: item?.product_id,
+          }));
+
+          setSalesTableData(tableData);
+        }
+      });
+    }
+  }, [isInitialized, isAuthenticated, queryParamsString]);
 
   return (
     <React.Fragment>

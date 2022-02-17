@@ -1,24 +1,15 @@
 import axios from "axios";
 
-import { getRefreshToken, refreshToken } from "../services/AuthService";
+import { userSignOut } from "../services/AuthService";
 
 const axiosApiInstance = axios.create();
 
 axiosApiInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.response.config;
-
-    if (error.response.status === 403 && !originalRequest._retry) {
-      const token = await getRefreshToken();
-
-      if (token) await refreshToken(token);
-
-      originalRequest._retry = true;
-
-      return axiosApiInstance(originalRequest);
+    if (error.response.status === 403) {
+      userSignOut();
     }
-
     return Promise.reject(error);
   }
 );
