@@ -1,6 +1,13 @@
 import React from "react";
-import { TreeView, TreeItem } from "@mui/lab";
+import styled from "styled-components/macro";
+import { TreeView as MuiTreeView, TreeItem } from "@mui/lab";
 import { Checkbox, FormControlLabel } from "@mui/material";
+
+const TreeView = styled(MuiTreeView)`
+  width: 280px;
+  height: calc(100vh - 200px);
+  overflow-y: scroll;
+`;
 
 const TreeViewCheckboxGroup = ({
   data,
@@ -122,11 +129,7 @@ const TreeViewCheckboxGroup = ({
     </TreeItem>
   );
 
-  return (
-    <TreeView style={{ width: "280px" }} {...props}>
-      {renderTree(data)}
-    </TreeView>
-  );
+  return <TreeView {...props}>{renderTree(data)}</TreeView>;
 };
 
 export default TreeViewCheckboxGroup;
