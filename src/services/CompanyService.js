@@ -1,7 +1,7 @@
-import SecureAxios from "./SecureAxios";
+import axios from "../utils/axios";
 
 const getCompanies = () => {
-  return SecureAxios.get("/companies");
+  return axios.get(`/api/${process.env.REACT_APP_API_ENV || "dev"}/companies`);
 };
 
 export { getCompanies };

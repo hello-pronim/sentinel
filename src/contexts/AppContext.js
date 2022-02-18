@@ -1,7 +1,4 @@
-import { createContext, useEffect, useState } from "react";
-
-import { getCompanies } from "../services/CompanyService";
-import { getMarkets } from "../services/MarketService";
+import { createContext, useState } from "react";
 import { convertDateToMMDDYY, getPastDate } from "../utils/functions";
 
 const AppContext = createContext();
@@ -31,25 +28,6 @@ function AppProvider({ children }) {
   };
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
-  const retrieveCompaniesData = async () => {
-    const response = await getCompanies()
-      .then((data) => data)
-      .catch((err) => err);
-    setCompanies(response);
-  };
-
-  const retrieveMarketsData = async () => {
-    const response = await getMarkets()
-      .then((data) => data)
-      .catch((err) => err);
-    setMarkets(response);
-  };
-
-  useEffect(() => {
-    retrieveCompaniesData();
-    retrieveMarketsData();
-  }, []);
-
   return (
     <AppContext.Provider
       value={{
@@ -57,6 +35,8 @@ function AppProvider({ children }) {
         markets,
         defaultFilterOptions,
         filterOptions,
+        setCompanies,
+        setMarkets,
         setFilterOptions,
       }}
     >

@@ -66,6 +66,7 @@ const SalesTable = ({ title, data, salesType }) => {
         opt.option.id +
         (index < marketFilterOptions.length - 1 ? "&" : "");
     });
+    url += "&show_returns=" + filterOptions.showReturns;
 
     return url;
   };

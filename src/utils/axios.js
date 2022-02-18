@@ -1,16 +1,17 @@
 import axios from "axios";
 
-axios.defaults.headers.common = {
-  ...axios.defaults.headers.common,
-  "Access-Control-Allow-Origin": "*",
-};
+import { userSignOut } from "../services/AuthService";
 
-axios.interceptors.response.use(
+const axiosApiInstance = axios.create();
+
+axiosApiInstance.interceptors.response.use(
   (response) => response,
-  (error) =>
-    Promise.reject(
-      (error.response && error.response.data) || "Something went wrong"
-    )
+  async (error) => {
+    if (error.response.status === 403) {
+      userSignOut();
+    }
+    return Promise.reject(error);
+  }
 );
 
-export default axios;
+export default axiosApiInstance;

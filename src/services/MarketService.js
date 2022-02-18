@@ -1,7 +1,9 @@
-import SecureAxios from "./SecureAxios";
+import axios from "../utils/axios";
 
 const getMarkets = () => {
-  return SecureAxios.get("/v2/marketplaces");
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/v2/marketplaces`
+  );
 };
 
 export { getMarkets };

@@ -1,5 +1,7 @@
 import { createContext, useCallback, useEffect, useReducer } from "react";
 
+import { getRefreshToken, refreshToken } from "../services/AuthService";
+
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -81,7 +83,15 @@ function AuthProvider({ children }) {
               const attributes = await getUserAttributes(user);
               const token = session?.getIdToken().getJwtToken();
 
-              axios.defaults.headers.common.Authorization = token;
+              if (!session.isValid()) {
+                this.signOut();
+                // const refreshTokenValue = await getRefreshToken();
+
+                // if (refreshTokenValue) await refreshToken(refreshTokenValue);
+                // axios.defaults.headers.common.Authorization =
+                //   "Bearer " + refreshTokenValue;
+              } else
+                axios.defaults.headers.common.Authorization = "Bearer " + token;
 
               dispatch({
                 type: INITIALIZE,
@@ -123,7 +133,10 @@ function AuthProvider({ children }) {
   }, [getSession]);
 
   useEffect(() => {
-    initialize();
+    const interval = setInterval(() => {
+      initialize();
+    }, 10000);
+    return () => clearInterval(interval);
   }, [initialize]);
 
   const signIn = useCallback(
@@ -237,6 +250,7 @@ function AuthProvider({ children }) {
           role: "user",
           ...state.user,
         },
+        initialize,
         signIn,
         signUp,
         signOut,
