@@ -42,4 +42,18 @@ const refreshToken = (refreshToken) => {
   });
 };
 
-export { getRefreshToken, refreshToken };
+const userSignOut = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      const user = UserPool.getCurrentUser();
+      console.log(user);
+
+      if (user) user.signOut();
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export { getRefreshToken, refreshToken, userSignOut };
