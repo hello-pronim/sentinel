@@ -144,7 +144,7 @@ const FilterDropdown = ({
         date: {
           ...filterOptions.date,
           dateRange: searchParams.get("date_range"),
-          viewBy: searchParams.get("view_by"),
+          viewMode: searchParams.get("view_by"),
           from: searchParams.get("from"),
           to: searchParams.get("to"),
           compFrom:
