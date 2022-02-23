@@ -46,7 +46,6 @@ const userSignOut = () => {
   return new Promise((resolve, reject) => {
     try {
       const user = UserPool.getCurrentUser();
-      console.log(user);
 
       if (user) user.signOut();
       resolve();
