@@ -44,7 +44,6 @@ const SalesTable = ({ title, data, salesType }) => {
   );
 
   useEffect(() => {
-    console.log(filterOptions);
     setDateFilterOptions(filterOptions.date);
     setSelectedMarketOptions(filterOptions.market.selectedOptions);
   }, [filterOptions]);
