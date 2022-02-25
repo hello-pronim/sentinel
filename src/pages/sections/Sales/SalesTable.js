@@ -170,11 +170,11 @@ const SalesTable = ({ title, data, salesType }) => {
                     <Chip
                       label={`${convertPercentFormat(revenueChange)}`}
                       color={
-                        revenueChange > 75
+                        revenueChange > 0.75
                           ? "success"
-                          : revenueChange > 50
+                          : revenueChange > 0.5
                           ? "info"
-                          : revenueChange > 25
+                          : revenueChange > 0.25
                           ? "warning"
                           : "error"
                       }
