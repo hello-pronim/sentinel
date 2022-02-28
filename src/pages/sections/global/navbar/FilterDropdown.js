@@ -386,20 +386,7 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    setFilterOptions({
-      ...filterOptions,
-      company: {
-        ...filterOptions.company,
-        selected: defaultCompanySelectedList,
-        selectedOptions: companyFilterOptions,
-      },
-      date: { ...defaultFilterOptions.date },
-      market: {
-        ...filterOptions.market,
-        selected: defaultMarketSelectedList,
-        selectedOptions: marketFilterOptions,
-      },
-    });
+    setFilterOptions(defaultFilterOptions);
     setSelectedCompanyOptions(companyFilterOptions);
     setDateFilterOptions(defaultFilterOptions.date);
     setSelectedMarketOptions(marketFilterOptions);
