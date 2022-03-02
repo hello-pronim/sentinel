@@ -12,7 +12,7 @@ function AppProvider({ children }) {
       selectedOptions: [],
     },
     date: {
-      dateRange: "last_30_days",
+      dateRange: "this_year",
       from: convertDateToMMDDYY(getPastDate(new Date(), 29)),
       to: convertDateToMMDDYY(new Date()),
       compare: false,
@@ -24,7 +24,7 @@ function AppProvider({ children }) {
       selected: [],
       selectedOptions: [],
     },
-    showReturns: true,
+    showReturns: false,
   };
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 

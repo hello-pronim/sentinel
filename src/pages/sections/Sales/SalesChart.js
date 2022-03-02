@@ -73,7 +73,6 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
   };
 
   useEffect(() => {
-    console.log(filterOptions);
     setShowReturns(filterOptions.showReturns);
   }, [filterOptions]);
 

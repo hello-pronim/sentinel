@@ -74,7 +74,7 @@ const Sales = () => {
       setLoadingSalesChartData(true);
       getSales(queryParamsString).then((res) => {
         const { data } = res.data.body;
-        console.log(data);
+
         setLoadingSalesChartData(false);
         if (data) {
           const chartData = {
@@ -92,7 +92,7 @@ const Sales = () => {
       setLoadingSalesTableData(true);
       getSalesData(queryParamsString).then((res) => {
         const { data } = res.data.body;
-        console.log(data);
+
         setLoadingSalesTableData(false);
         if (data) {
           const tableData = data.map((item) => ({

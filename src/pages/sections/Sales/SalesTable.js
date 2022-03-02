@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
 
@@ -36,11 +36,20 @@ const TableWrapper = styled.div`
 
 const SalesTable = ({ title, data, salesType }) => {
   const { filterOptions } = useContext(AppContext);
+  const [dateFilterOptions, setDateFilterOptions] = useState(
+    filterOptions.date
+  );
+  const [selectedMarketOptions, setSelectedMarketOptions] = useState(
+    filterOptions.market.selectedOptions
+  );
+
+  useEffect(() => {
+    setDateFilterOptions(filterOptions.date);
+    setSelectedMarketOptions(filterOptions.market.selectedOptions);
+  }, [filterOptions]);
 
   const generateUrl = (companyId) => {
     let url = "/sales?";
-    const dateFilterOptions = filterOptions.date;
-    const marketFilterOptions = filterOptions.market.selectedOptions;
 
     url += "company_ids[]=" + companyId;
     url +=
@@ -58,18 +67,19 @@ const SalesTable = ({ title, data, salesType }) => {
         dateFilterOptions.compFrom +
         "&comp_to=" +
         dateFilterOptions.compTo;
-    url += marketFilterOptions.length ? "&" : "";
+    url += selectedMarketOptions.length ? "&" : "";
 
-    marketFilterOptions.forEach((opt, index) => {
+    selectedMarketOptions.forEach((opt, index) => {
       url +=
         "market_ids[]=" +
         opt.option.id +
-        (index < marketFilterOptions.length - 1 ? "&" : "");
+        (index < selectedMarketOptions.length - 1 ? "&" : "");
     });
     url += "&show_returns=" + filterOptions.showReturns;
 
     return url;
   };
+
   return (
     <Card mb={6}>
       <CardHeader title={title} />
@@ -160,11 +170,11 @@ const SalesTable = ({ title, data, salesType }) => {
                     <Chip
                       label={`${convertPercentFormat(revenueChange)}`}
                       color={
-                        revenueChange > 75
+                        revenueChange > 0.75
                           ? "success"
-                          : revenueChange > 50
+                          : revenueChange > 0.5
                           ? "info"
-                          : revenueChange > 25
+                          : revenueChange > 0.25
                           ? "warning"
                           : "error"
                       }
