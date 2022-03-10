@@ -12,7 +12,7 @@ function AppProvider({ children }) {
       selectedOptions: [],
     },
     date: {
-      dateRange: "this_year",
+      dateRange: "year_to_date",
       from: convertDateToMMDDYY(getPastDate(new Date(), 29)),
       to: convertDateToMMDDYY(new Date()),
       compare: false,

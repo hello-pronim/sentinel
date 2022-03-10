@@ -74,6 +74,7 @@ const Sales = () => {
       setLoadingSalesChartData(true);
       getSales(queryParamsString).then((res) => {
         const { data, parameters } = res.data.body;
+        console.log(parameters);
 
         setLoadingSalesChartData(false);
         if (data) {
