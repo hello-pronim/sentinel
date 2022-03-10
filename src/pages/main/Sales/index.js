@@ -73,14 +73,18 @@ const Sales = () => {
     if (isAuthenticated && isInitialized) {
       setLoadingSalesChartData(true);
       getSales(queryParamsString).then((res) => {
-        const { data } = res.data.body;
+        const { data, parameters } = res.data.body;
+        console.log(parameters);
 
         setLoadingSalesChartData(false);
         if (data) {
+          console.log(data);
           const chartData = {
             comparisonSeries: data.comparison_series,
             revenueSeries: data.revenue_series,
+            forecastSeries: data?.revenue_forecast || {},
             stats: data.stats,
+            forecast48h: parameters?.forecast_48h || false,
           };
 
           setSalesChartData(chartData);
@@ -95,6 +99,7 @@ const Sales = () => {
 
         setLoadingSalesTableData(false);
         if (data) {
+          console.log(data);
           const tableData = data.map((item) => ({
             name: item.name,
             revenue: item.revenue,

@@ -69,9 +69,12 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
     } else if (value === "last_30_days") {
       from = convertDateToMMDDYY(getPastDate(today, 29));
       to = convertDateToMMDDYY(today);
-    } else if (value === "this_year") {
+    } else if (value === "year_to_date") {
       from = convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1));
       to = convertDateToMMDDYY(today);
+    } else if (value === "this_year") {
+      from = convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1));
+      to = convertDateToMMDDYY(new Date(today.getFullYear(), 11, 31));
     }
 
     setDateRange(value);
@@ -118,6 +121,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                         <MenuItem value="last_month">Last Month</MenuItem>
                         <MenuItem value="last_7_days">Last 7 Days</MenuItem>
                         <MenuItem value="last_30_days">Last 30 Days</MenuItem>
+                        <MenuItem value="year_to_date">Year to Date</MenuItem>
                         <MenuItem value="this_year">This year</MenuItem>
                         <MenuItem value="custom">Custom</MenuItem>
                       </Select>
