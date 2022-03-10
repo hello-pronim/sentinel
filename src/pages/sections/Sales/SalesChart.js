@@ -80,6 +80,7 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
     if (data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
+      let forecastSeriesDates = Object.keys(data?.forecastSeries);
       let dates = [];
       let xAxis = [];
 
@@ -89,8 +90,16 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
       revenueSeriesDates = revenueSeriesDates.sort(
         (a, b) => new Date(a) - new Date(b)
       );
-      dates = [...comparisonSeriesDates, ...revenueSeriesDates];
-      xAxis = [...new Set(dates)]; // available dates for revenue and comparison chart
+      forecastSeriesDates = forecastSeriesDates.sort(
+        (a, b) => new Date(a) - new Date(b)
+      );
+
+      dates = [
+        ...comparisonSeriesDates,
+        ...revenueSeriesDates,
+        ...forecastSeriesDates,
+      ];
+      xAxis = [...new Set(dates)]; // available dates for revenue, forecast and comparison chart
 
       setChartData({
         labels: xAxis,
@@ -110,6 +119,14 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             borderColor: colors[1],
             tension: 0.4,
             data: xAxis.map((x) => data.comparisonSeries[x]),
+          },
+          {
+            label: "Forecast Revenue",
+            fill: true,
+            backgroundColor: "transparent",
+            borderColor: colors[2],
+            tension: 0.4,
+            data: xAxis.map((x) => data.forecastSeries[x]),
           },
         ],
       });
@@ -196,6 +213,20 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
               </Grid>
             </Grid>
           </Grid>
+
+          {data.forecast48h ? (
+            <Grid item xs={12}>
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item>
+                  <Typography style={{ color: colors[2] }}>
+                    Forecast Revenue
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          ) : (
+            <></>
+          )}
         </Grid>
 
         <Spacer mb={6} />
