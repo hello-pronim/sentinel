@@ -183,7 +183,7 @@ const SalesTable = ({ title, data, salesType }) => {
             ]}
             data={data}
             options={{
-              pageSize: 10,
+              pageSize: 20,
               search: true,
               showTitle: false,
             }}
