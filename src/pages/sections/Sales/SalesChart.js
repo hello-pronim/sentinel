@@ -24,13 +24,20 @@ const ChartWrapper = styled.div`
   width: 100%;
   height: 300px;
 `;
+const LinkText = styled(Typography)`
+  cursor: pointer;
+`;
+
+const colors = [green[400], red[400], blue[400]];
 
 const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [chartData, setChartData] = useState(null);
+  const [showCurrentRevenue, setShowCurrentRevenue] = useState(true);
+  const [showPreviousRevenue, setShowPreviousRevenue] = useState(true);
+  const [showForecastRevenue, setShowForecastRevenue] = useState(true);
   const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
-  const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
     interaction: {
@@ -110,7 +117,9 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[0],
             tension: 0.4,
-            data: xAxis.map((x) => data.revenueSeries[x]),
+            data: showCurrentRevenue
+              ? xAxis.map((x) => data.revenueSeries[x])
+              : [],
           },
           {
             label: "Previous Revenue",
@@ -118,7 +127,9 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[1],
             tension: 0.4,
-            data: xAxis.map((x) => data.comparisonSeries[x]),
+            data: showPreviousRevenue
+              ? xAxis.map((x) => data.comparisonSeries[x])
+              : [],
           },
           {
             label: "Forecast Revenue",
@@ -126,12 +137,14 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[2],
             tension: 0.4,
-            data: xAxis.map((x) => data.forecastSeries[x]),
+            data: showForecastRevenue
+              ? xAxis.map((x) => data.forecastSeries[x])
+              : [],
           },
         ],
       });
     }
-  }, [data]);
+  }, [data, showCurrentRevenue, showPreviousRevenue, showForecastRevenue]);
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
@@ -176,6 +189,18 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
     navigate(new_url);
   };
 
+  const handleCurrentRevenueLabelClicked = () => {
+    setShowCurrentRevenue(!showCurrentRevenue);
+  };
+
+  const handlePreviousRevenueLabelClicked = () => {
+    setShowPreviousRevenue(!showPreviousRevenue);
+  };
+
+  const handleForecastRevenueLabelClicked = () => {
+    setShowForecastRevenue(!showForecastRevenue);
+  };
+
   return (
     <Card mb={1}>
       <CardContent>
@@ -188,9 +213,15 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
           <Grid item xs={12}>
             <Grid container alignItems="center" spacing={1}>
               <Grid item>
-                <Typography style={{ color: colors[0] }}>
+                <LinkText
+                  onClick={handleCurrentRevenueLabelClicked}
+                  style={{
+                    color: colors[0],
+                    "text-decoration": !showCurrentRevenue && "line-through",
+                  }}
+                >
                   Total Revenue:
-                </Typography>
+                </LinkText>
               </Grid>
               <Grid item>
                 <Typography>
@@ -202,9 +233,15 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
           <Grid item xs={12}>
             <Grid container alignItems="center" spacing={1}>
               <Grid item>
-                <Typography style={{ color: colors[1] }}>
+                <LinkText
+                  onClick={handlePreviousRevenueLabelClicked}
+                  style={{
+                    color: colors[1],
+                    "text-decoration": !showPreviousRevenue && "line-through",
+                  }}
+                >
                   Previous Revenue:
-                </Typography>
+                </LinkText>
               </Grid>
               <Grid item>
                 <Typography>
@@ -218,9 +255,15 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             <Grid item xs={12}>
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>
-                  <Typography style={{ color: colors[2] }}>
+                  <LinkText
+                    onClick={handleForecastRevenueLabelClicked}
+                    style={{
+                      color: colors[2],
+                      "text-decoration": !showForecastRevenue && "line-through",
+                    }}
+                  >
                     Forecast Revenue
-                  </Typography>
+                  </LinkText>
                 </Grid>
               </Grid>
             </Grid>
