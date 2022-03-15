@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
@@ -66,49 +67,11 @@ const Sales = () => {
 
   useEffect(() => {
     if (isAuthenticated && isInitialized) {
-      setLoadingSalesChartData(true);
-      getSales(queryParamsString).then((res) => {
-        const { data, parameters } = res.data.body;
-
-        setLoadingSalesChartData(false);
-        if (data) {
-          const chartData = {
-            comparisonSeries: data.comparison_series,
-            revenueSeries: data.revenue_series,
-            forecastSeries: data?.revenue_forecast || {},
-            stats: data.stats,
-            forecast48h: parameters?.forecast_48h || false,
-          };
-
-          setSalesChartData(chartData);
-        }
-      });
-      //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
-
-      //call to get the table data
-      setLoadingSalesTableData(true);
-      getSalesData(queryParamsString).then((res) => {
-        const { data } = res.data.body;
-
-        setLoadingSalesTableData(false);
-        if (data) {
-          const tableData = data.map((item) => ({
-            name: item.name,
-            revenue: item.revenue,
-            comparisonRevenue: item.comparison_revenue,
-            revenueChange: item.revenue_change,
-            type: item.type,
-            companyId: item?.company_id,
-            productId: item?.product_id,
-          }));
-
-          setSalesTableData(tableData);
-        }
-      });
+      refreshSalesData();
     }
-  }, [isInitialized, isAuthenticated, queryParamsString]);
+  }, [isInitialized, isAuthenticated]);
 
-  const handleRefreshClicked = () => {
+  const refreshSalesData = () => {
     setLoadingSalesChartData(true);
     getSales(queryParamsString).then((res) => {
       const { data, parameters } = res.data.body;
@@ -126,6 +89,28 @@ const Sales = () => {
         setSalesChartData(chartData);
       }
     });
+    //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
+
+    //call to get the table data
+    setLoadingSalesTableData(true);
+    getSalesData(queryParamsString).then((res) => {
+      const { data } = res.data.body;
+
+      setLoadingSalesTableData(false);
+      if (data) {
+        const tableData = data.map((item) => ({
+          name: item.name,
+          revenue: item.revenue,
+          comparisonRevenue: item.comparison_revenue,
+          revenueChange: item.revenue_change,
+          type: item.type,
+          companyId: item?.company_id,
+          productId: item?.product_id,
+        }));
+
+        setSalesTableData(tableData);
+      }
+    });
   };
 
   return (
@@ -137,6 +122,15 @@ const Sales = () => {
           <Typography variant="h3" gutterBottom display="inline">
             Sales
           </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            onClick={refreshSalesData}
+            disabled={loadingSalesChartData || loadingSalesTableData}
+          >
+            <RefreshIcon />
+          </Button>
         </Grid>
       </Grid>
 
@@ -150,7 +144,6 @@ const Sales = () => {
             filterOptions={filterOptions}
             loading={loadingSalesChartData}
             setFilterOptions={setFilterOptions}
-            handleRefreshClicked={handleRefreshClicked}
           />
         </Grid>
         <Grid item xs={12}>

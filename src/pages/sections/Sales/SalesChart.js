@@ -4,7 +4,6 @@ import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
 import {
-  Button,
   CardContent,
   CardHeader,
   Card as MuiCard,
@@ -17,7 +16,6 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
-import RefreshIcon from "@mui/icons-material/Refresh";
 
 import { convertPriceFormat } from "../../../utils/functions";
 
@@ -41,7 +39,6 @@ const SalesChart = ({
   filterOptions,
   loading,
   setFilterOptions,
-  handleRefreshClicked,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -215,24 +212,7 @@ const SalesChart = ({
 
   return (
     <Card mb={1}>
-      <CardHeader
-        title={
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <Typography variant="h6">{title}</Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                onClick={handleRefreshClicked}
-                disabled={loading}
-              >
-                <RefreshIcon />
-              </Button>
-            </Grid>
-          </Grid>
-        }
-      />
+      <CardHeader title={title} />
       <Divider />
       <CardContent>
         {data !== null && !loading ? (
