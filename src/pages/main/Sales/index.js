@@ -2,12 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import {
-  CircularProgress,
-  Divider as MuiDivider,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Divider as MuiDivider, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
@@ -74,11 +69,9 @@ const Sales = () => {
       setLoadingSalesChartData(true);
       getSales(queryParamsString).then((res) => {
         const { data, parameters } = res.data.body;
-        console.log(parameters);
 
         setLoadingSalesChartData(false);
         if (data) {
-          console.log(data);
           const chartData = {
             comparisonSeries: data.comparison_series,
             revenueSeries: data.revenue_series,
@@ -99,7 +92,6 @@ const Sales = () => {
 
         setLoadingSalesTableData(false);
         if (data) {
-          console.log(data);
           const tableData = data.map((item) => ({
             name: item.name,
             revenue: item.revenue,
@@ -115,6 +107,26 @@ const Sales = () => {
       });
     }
   }, [isInitialized, isAuthenticated, queryParamsString]);
+
+  const handleRefreshClicked = () => {
+    setLoadingSalesChartData(true);
+    getSales(queryParamsString).then((res) => {
+      const { data, parameters } = res.data.body;
+
+      setLoadingSalesChartData(false);
+      if (data) {
+        const chartData = {
+          comparisonSeries: data.comparison_series,
+          revenueSeries: data.revenue_series,
+          forecastSeries: data?.revenue_forecast || {},
+          stats: data.stats,
+          forecast48h: parameters?.forecast_48h || false,
+        };
+
+        setSalesChartData(chartData);
+      }
+    });
+  };
 
   return (
     <React.Fragment>
@@ -132,35 +144,22 @@ const Sales = () => {
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          {!loadingSalesChartData && salesChartData !== null ? (
-            <SalesChart
-              title={chartTitle}
-              data={salesChartData}
-              filterOptions={filterOptions}
-              setFilterOptions={setFilterOptions}
-            />
-          ) : (
-            <Grid container justifyContent="center">
-              <Grid item>
-                <CircularProgress />
-              </Grid>
-            </Grid>
-          )}
+          <SalesChart
+            title={chartTitle}
+            data={salesChartData}
+            filterOptions={filterOptions}
+            loading={loadingSalesChartData}
+            setFilterOptions={setFilterOptions}
+            handleRefreshClicked={handleRefreshClicked}
+          />
         </Grid>
         <Grid item xs={12}>
-          {!loadingSalesTableData && salesTableData !== null ? (
-            <SalesTable
-              title={tableTitle}
-              data={salesTableData}
-              salesType={selectedCompanies.length === 1 ? "product" : "brand"}
-            />
-          ) : (
-            <Grid container justifyContent="center">
-              <Grid item>
-                <CircularProgress />
-              </Grid>
-            </Grid>
-          )}
+          <SalesTable
+            title={tableTitle}
+            data={salesTableData}
+            salesType={selectedCompanies.length === 1 ? "product" : "brand"}
+            loading={loadingSalesTableData}
+          />
         </Grid>
       </Grid>
     </React.Fragment>

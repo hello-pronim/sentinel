@@ -5,9 +5,12 @@ import styled from "styled-components/macro";
 import {
   Card as MuiCard,
   CardHeader,
+  CardContent,
+  CircularProgress,
+  Divider as MuiDivider,
   Chip as MuiChip,
+  Grid,
   Link,
-  Paper,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import MaterialTable from "@material-table/core";
@@ -19,7 +22,7 @@ import {
 } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
-
+const Divider = styled(MuiDivider)(spacing);
 const Chip = styled(MuiChip)`
   height: 20px;
   padding: 4px 0;
@@ -34,7 +37,7 @@ const TableWrapper = styled.div`
   max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
 `;
 
-const SalesTable = ({ title, data, salesType }) => {
+const SalesTable = ({ title, data, salesType, loading }) => {
   const { filterOptions } = useContext(AppContext);
   const [dateFilterOptions, setDateFilterOptions] = useState(
     filterOptions.date
@@ -83,113 +86,121 @@ const SalesTable = ({ title, data, salesType }) => {
   return (
     <Card mb={6}>
       <CardHeader title={title} />
+      <Divider />
+      <CardContent>
+        {data !== null && !loading ? (
+          <TableWrapper>
+            <MaterialTable
+              columns={[
+                {
+                  field: "name",
+                  title: salesType === "product" ? "Product" : "Brand",
+                  width: "55%",
+                  render: (rowData) => {
+                    const { companyId, name, type } = rowData;
 
-      <Paper>
-        <TableWrapper>
-          <MaterialTable
-            columns={[
-              {
-                field: "name",
-                title: salesType === "product" ? "Product" : "Brand",
-                width: "55%",
-                render: (rowData) => {
-                  const { companyId, name, type } = rowData;
+                    return type === "brand" ? (
+                      <Link
+                        to={generateUrl(companyId)}
+                        component={NavLink}
+                        underline="none"
+                      >
+                        {name}
+                      </Link>
+                    ) : type === "product" ? (
+                      name
+                    ) : (
+                      <></>
+                    );
+                  },
+                },
+                {
+                  field: "revenue",
+                  title: "Revenue",
+                  type: "currency",
+                  currencySetting: {
+                    currencyCode: "$",
+                  },
+                  customSort: (a, b) => a.revenue - b.revenue,
+                  width: "15%",
+                  headerStyle: {
+                    textAlign: "center",
+                  },
+                  cellStyle: {
+                    textAlign: "center",
+                  },
+                  render: (rowData) => {
+                    const { revenue } = rowData;
 
-                  return type === "brand" ? (
-                    <Link
-                      to={generateUrl(companyId)}
-                      component={NavLink}
-                      underline="none"
-                    >
-                      {name}
-                    </Link>
-                  ) : type === "product" ? (
-                    name
-                  ) : (
-                    <></>
-                  );
+                    return `${convertPriceFormat(revenue)}`;
+                  },
                 },
-              },
-              {
-                field: "revenue",
-                title: "Revenue",
-                type: "currency",
-                currencySetting: {
-                  currencyCode: "$",
-                },
-                customSort: (a, b) => a.revenue - b.revenue,
-                width: "15%",
-                headerStyle: {
-                  textAlign: "center",
-                },
-                cellStyle: {
-                  textAlign: "center",
-                },
-                render: (rowData) => {
-                  const { revenue } = rowData;
+                {
+                  field: "comparisonRevenue",
+                  title: "Comparison Revenue",
+                  type: "currency",
+                  currencySetting: {
+                    currencyCode: "$",
+                  },
+                  customSort: (a, b) => a.revenue - b.revenue,
+                  width: "15%",
+                  headerStyle: {
+                    textAlign: "center",
+                  },
+                  cellStyle: {
+                    textAlign: "center",
+                  },
+                  render: (rowData) => {
+                    const { comparisonRevenue } = rowData;
 
-                  return `${convertPriceFormat(revenue)}`;
+                    return `${convertPriceFormat(comparisonRevenue)}`;
+                  },
                 },
-              },
-              {
-                field: "comparisonRevenue",
-                title: "Comparison Revenue",
-                type: "currency",
-                currencySetting: {
-                  currencyCode: "$",
-                },
-                customSort: (a, b) => a.revenue - b.revenue,
-                width: "15%",
-                headerStyle: {
-                  textAlign: "center",
-                },
-                cellStyle: {
-                  textAlign: "center",
-                },
-                render: (rowData) => {
-                  const { comparisonRevenue } = rowData;
+                {
+                  field: "revenueChange",
+                  title: "Revenue Change",
+                  customSort: (a, b) => a.revenueChange - b.revenueChange,
+                  width: "15%",
+                  headerStyle: {
+                    textAlign: "center",
+                  },
+                  cellStyle: {
+                    textAlign: "center",
+                  },
+                  render: (rowData) => {
+                    const { revenueChange } = rowData;
 
-                  return `${convertPriceFormat(comparisonRevenue)}`;
+                    return (
+                      <Chip
+                        label={`${convertPercentFormat(revenueChange)}`}
+                        color={
+                          revenueChange > 0
+                            ? "success"
+                            : revenueChange === 0
+                            ? "warning"
+                            : "error"
+                        }
+                      />
+                    );
+                  },
                 },
-              },
-              {
-                field: "revenueChange",
-                title: "Revenue Change",
-                customSort: (a, b) => a.revenueChange - b.revenueChange,
-                width: "15%",
-                headerStyle: {
-                  textAlign: "center",
-                },
-                cellStyle: {
-                  textAlign: "center",
-                },
-                render: (rowData) => {
-                  const { revenueChange } = rowData;
-
-                  return (
-                    <Chip
-                      label={`${convertPercentFormat(revenueChange)}`}
-                      color={
-                        revenueChange > 0
-                          ? "success"
-                          : revenueChange === 0
-                          ? "warning"
-                          : "error"
-                      }
-                    />
-                  );
-                },
-              },
-            ]}
-            data={data}
-            options={{
-              pageSize: 20,
-              search: true,
-              showTitle: false,
-            }}
-          />
-        </TableWrapper>
-      </Paper>
+              ]}
+              data={data}
+              options={{
+                pageSize: 20,
+                search: true,
+                showTitle: false,
+              }}
+            />
+          </TableWrapper>
+        ) : (
+          <Grid container justifyContent="center">
+            <Grid item>
+              <CircularProgress />
+            </Grid>
+          </Grid>
+        )}
+      </CardContent>
     </Card>
   );
 };

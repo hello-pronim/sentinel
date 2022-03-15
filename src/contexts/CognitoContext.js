@@ -154,16 +154,13 @@ function AuthProvider({ children }) {
 
         user.authenticateUser(authDetails, {
           onSuccess: async (data) => {
-            console.log("success");
             await getSession();
             resolve(data);
           },
           onFailure: (err) => {
-            console.log("failed", err);
             reject(err);
           },
           newPasswordRequired: function (userAttributes) {
-            console.log("new password required");
             delete userAttributes.email_verified;
             userAttributes["name"] = userAttributes.email;
             user.completeNewPasswordChallenge(password, userAttributes, this);

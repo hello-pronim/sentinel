@@ -4,8 +4,12 @@ import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
 import {
+  Button,
   CardContent,
+  CardHeader,
   Card as MuiCard,
+  CircularProgress,
+  Divider as MuiDivider,
   Grid,
   Typography,
   Switch,
@@ -13,11 +17,12 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 import { convertPriceFormat } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
-
+const Divider = styled(MuiDivider)(spacing);
 const Spacer = styled.div(spacing);
 
 const ChartWrapper = styled.div`
@@ -30,7 +35,14 @@ const LinkText = styled(Typography)`
 
 const colors = [green[400], red[400], blue[400]];
 
-const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
+const SalesChart = ({
+  title,
+  data,
+  filterOptions,
+  loading,
+  setFilterOptions,
+  handleRefreshClicked,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [chartData, setChartData] = useState(null);
@@ -84,7 +96,7 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
   }, [filterOptions]);
 
   useEffect(() => {
-    if (data.comparisonSeries && data.revenueSeries) {
+    if (data !== null && data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
       let forecastSeriesDates = Object.keys(data?.forecastSeries);
@@ -203,97 +215,122 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
 
   return (
     <Card mb={1}>
+      <CardHeader
+        title={
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Typography variant="h6">{title}</Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={handleRefreshClicked}
+                disabled={loading}
+              >
+                <RefreshIcon />
+              </Button>
+            </Grid>
+          </Grid>
+        }
+      />
+      <Divider />
       <CardContent>
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={1}>
-              <Grid item>
-                <LinkText
-                  onClick={handleCurrentRevenueLabelClicked}
-                  style={{
-                    color: colors[0],
-                    "text-decoration": !showCurrentRevenue && "line-through",
-                  }}
-                >
-                  Total Revenue:
-                </LinkText>
-              </Grid>
-              <Grid item>
-                <Typography>
-                  {convertPriceFormat(data.stats.total_revenue)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={1}>
-              <Grid item>
-                <LinkText
-                  onClick={handlePreviousRevenueLabelClicked}
-                  style={{
-                    color: colors[1],
-                    "text-decoration": !showPreviousRevenue && "line-through",
-                  }}
-                >
-                  Previous Revenue:
-                </LinkText>
-              </Grid>
-              <Grid item>
-                <Typography>
-                  {convertPriceFormat(data.stats.total_comparison_revenue)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-
-          {data.forecast48h ? (
-            <Grid item xs={12}>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>
-                  <LinkText
-                    onClick={handleForecastRevenueLabelClicked}
-                    style={{
-                      color: colors[2],
-                      "text-decoration": !showForecastRevenue && "line-through",
-                    }}
-                  >
-                    Forecast Revenue
-                  </LinkText>
+        {data !== null && !loading ? (
+          <>
+            <Grid container>
+              <Grid item xs={12}>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>
+                    <LinkText
+                      onClick={handleCurrentRevenueLabelClicked}
+                      style={{
+                        color: colors[0],
+                        textDecoration: !showCurrentRevenue && "line-through",
+                      }}
+                    >
+                      Total Revenue:
+                    </LinkText>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {convertPriceFormat(data.stats.total_revenue)}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>
+                    <LinkText
+                      onClick={handlePreviousRevenueLabelClicked}
+                      style={{
+                        color: colors[1],
+                        textDecoration: !showPreviousRevenue && "line-through",
+                      }}
+                    >
+                      Previous Revenue:
+                    </LinkText>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {convertPriceFormat(data.stats.total_comparison_revenue)}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {data.forecast48h ? (
+                <Grid item xs={12}>
+                  <Grid container alignItems="center" spacing={1}>
+                    <Grid item>
+                      <LinkText
+                        onClick={handleForecastRevenueLabelClicked}
+                        style={{
+                          color: colors[2],
+                          textDecoration:
+                            !showForecastRevenue && "line-through",
+                        }}
+                      >
+                        Forecast Revenue
+                      </LinkText>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
-          ) : (
-            <></>
-          )}
-        </Grid>
 
-        <Spacer mb={6} />
+            <Spacer mb={6} />
 
-        {chartData !== null && (
-          <Grid container>
+            {chartData !== null && (
+              <Grid container>
+                <Grid item xs={12}>
+                  <ChartWrapper>
+                    <Chart type="line" data={chartData} options={options} />
+                  </ChartWrapper>
+                </Grid>
+              </Grid>
+            )}
             <Grid item xs={12}>
-              <ChartWrapper>
-                <Chart type="line" data={chartData} options={options} />
-              </ChartWrapper>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={Boolean(showReturns)}
+                    onChange={handleShowReturnsChanged}
+                  />
+                }
+                label="Include: Returned, Partial, and Pending Orders"
+              />
+            </Grid>
+          </>
+        ) : (
+          <Grid container justifyContent="center">
+            <Grid item>
+              <CircularProgress />
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={Boolean(showReturns)}
-                onChange={handleShowReturnsChanged}
-              />
-            }
-            label="Include: Returned, Partial, and Pending Orders"
-          />
-        </Grid>
       </CardContent>
     </Card>
   );
