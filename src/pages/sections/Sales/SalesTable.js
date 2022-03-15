@@ -82,6 +82,10 @@ const SalesTable = ({ title, data, salesType, loading }) => {
 
     return url;
   };
+  const customSortingAlgorithm = {
+    ascending: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
+    descending: (a, b) => b.comparisonRevenue - a.comparisonRevenue,
+  };
 
   return (
     <Card mb={6}>
@@ -142,7 +146,8 @@ const SalesTable = ({ title, data, salesType, loading }) => {
                   currencySetting: {
                     currencyCode: "$",
                   },
-                  customSort: (a, b) => a.revenue - b.revenue,
+                  customSort: (a, b) =>
+                    a.comparisonRevenue - b.comparisonRevenue,
                   width: "15%",
                   headerStyle: {
                     textAlign: "center",
@@ -185,7 +190,11 @@ const SalesTable = ({ title, data, salesType, loading }) => {
                   },
                 },
               ]}
-              data={data}
+              data={
+                salesType === "product"
+                  ? data.sort(customSortingAlgorithm.descending)
+                  : data
+              }
               options={{
                 pageSize: 20,
                 search: true,
