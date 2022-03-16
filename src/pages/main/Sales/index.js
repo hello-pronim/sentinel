@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
@@ -65,13 +65,7 @@ const Sales = () => {
     // .catch((err) => signOut());
   }, [filterOptions, companies]);
 
-  useEffect(() => {
-    if (isAuthenticated && isInitialized) {
-      refreshSalesData();
-    }
-  }, [isInitialized, isAuthenticated]);
-
-  const refreshSalesData = () => {
+  const refreshSalesData = useCallback(() => {
     setLoadingSalesChartData(true);
     getSales(queryParamsString).then((res) => {
       const { data, parameters } = res.data.body;
@@ -111,7 +105,13 @@ const Sales = () => {
         setSalesTableData(tableData);
       }
     });
-  };
+  }, [queryParamsString]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      refreshSalesData();
+    }
+  }, [isInitialized, isAuthenticated, queryParamsString, refreshSalesData]);
 
   return (
     <React.Fragment>
