@@ -46,6 +46,180 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     filterOptions.market.selectedOptions
   );
 
+  const brandsTableColumns = [
+    {
+      field: "name",
+      title: "Brand",
+      width: "55%",
+      render: (rowData) => {
+        const { companyId, name } = rowData;
+
+        return (
+          <Link
+            to={generateUrl(companyId)}
+            component={NavLink}
+            underline="none"
+          >
+            {name}
+          </Link>
+        );
+      },
+    },
+    {
+      field: "revenue",
+      title: "Revenue",
+      type: "currency",
+      currencySetting: {
+        currencyCode: "$",
+      },
+      customSort: (a, b) => a.revenue - b.revenue,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { revenue } = rowData;
+
+        return `${convertPriceFormat(revenue)}`;
+      },
+    },
+    {
+      field: "comparisonRevenue",
+      title: "Comparison Revenue",
+      type: "currency",
+      currencySetting: {
+        currencyCode: "$",
+      },
+      customSort: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { comparisonRevenue } = rowData;
+
+        return `${convertPriceFormat(comparisonRevenue)}`;
+      },
+    },
+    {
+      field: "revenueChange",
+      title: "Revenue Change",
+      customSort: (a, b) => a.revenueChange - b.revenueChange,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { revenueChange } = rowData;
+
+        return (
+          <Chip
+            label={`${convertPercentFormat(revenueChange)}`}
+            color={
+              revenueChange > 0
+                ? "success"
+                : revenueChange === 0
+                ? "warning"
+                : "error"
+            }
+          />
+        );
+      },
+    },
+  ];
+  const productsTableColumns = [
+    {
+      field: "name",
+      title: "Brand",
+      width: "55%",
+      render: (rowData) => {
+        const { name } = rowData;
+
+        return name;
+      },
+    },
+    {
+      field: "revenue",
+      title: "Revenue",
+      type: "currency",
+      currencySetting: {
+        currencyCode: "$",
+      },
+      customSort: (a, b) => a.revenue - b.revenue,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { revenue } = rowData;
+
+        return `${convertPriceFormat(revenue)}`;
+      },
+    },
+    {
+      field: "comparisonRevenue",
+      title: "Comparison Revenue",
+      type: "currency",
+      currencySetting: {
+        currencyCode: "$",
+      },
+      customSort: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      defaultSort: "desc",
+      render: (rowData) => {
+        const { comparisonRevenue } = rowData;
+
+        return `${convertPriceFormat(comparisonRevenue)}`;
+      },
+    },
+    {
+      field: "revenueChange",
+      title: "Revenue Change",
+      customSort: (a, b) => a.revenueChange - b.revenueChange,
+      width: "15%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { revenueChange } = rowData;
+
+        return (
+          <Chip
+            label={`${convertPercentFormat(revenueChange)}`}
+            color={
+              revenueChange > 0
+                ? "success"
+                : revenueChange === 0
+                ? "warning"
+                : "error"
+            }
+          />
+        );
+      },
+    },
+  ];
+
   useEffect(() => {
     setDateFilterOptions(filterOptions.date);
     setSelectedMarketOptions(filterOptions.market.selectedOptions);
@@ -82,10 +256,6 @@ const SalesTable = ({ title, data, salesType, loading }) => {
 
     return url;
   };
-  const customSortingAlgorithm = {
-    ascending: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
-    descending: (a, b) => b.comparisonRevenue - a.comparisonRevenue,
-  };
 
   return (
     <Card mb={6}>
@@ -95,106 +265,12 @@ const SalesTable = ({ title, data, salesType, loading }) => {
         {data !== null && !loading ? (
           <TableWrapper>
             <MaterialTable
-              columns={[
-                {
-                  field: "name",
-                  title: salesType === "product" ? "Product" : "Brand",
-                  width: "55%",
-                  render: (rowData) => {
-                    const { companyId, name, type } = rowData;
-
-                    return type === "brand" ? (
-                      <Link
-                        to={generateUrl(companyId)}
-                        component={NavLink}
-                        underline="none"
-                      >
-                        {name}
-                      </Link>
-                    ) : type === "product" ? (
-                      name
-                    ) : (
-                      <></>
-                    );
-                  },
-                },
-                {
-                  field: "revenue",
-                  title: "Revenue",
-                  type: "currency",
-                  currencySetting: {
-                    currencyCode: "$",
-                  },
-                  customSort: (a, b) => a.revenue - b.revenue,
-                  width: "15%",
-                  headerStyle: {
-                    textAlign: "center",
-                  },
-                  cellStyle: {
-                    textAlign: "center",
-                  },
-                  render: (rowData) => {
-                    const { revenue } = rowData;
-
-                    return `${convertPriceFormat(revenue)}`;
-                  },
-                },
-                {
-                  field: "comparisonRevenue",
-                  title: "Comparison Revenue",
-                  type: "currency",
-                  currencySetting: {
-                    currencyCode: "$",
-                  },
-                  customSort: (a, b) =>
-                    a.comparisonRevenue - b.comparisonRevenue,
-                  width: "15%",
-                  headerStyle: {
-                    textAlign: "center",
-                  },
-                  cellStyle: {
-                    textAlign: "center",
-                  },
-                  render: (rowData) => {
-                    const { comparisonRevenue } = rowData;
-
-                    return `${convertPriceFormat(comparisonRevenue)}`;
-                  },
-                },
-                {
-                  field: "revenueChange",
-                  title: "Revenue Change",
-                  customSort: (a, b) => a.revenueChange - b.revenueChange,
-                  width: "15%",
-                  headerStyle: {
-                    textAlign: "center",
-                  },
-                  cellStyle: {
-                    textAlign: "center",
-                  },
-                  render: (rowData) => {
-                    const { revenueChange } = rowData;
-
-                    return (
-                      <Chip
-                        label={`${convertPercentFormat(revenueChange)}`}
-                        color={
-                          revenueChange > 0
-                            ? "success"
-                            : revenueChange === 0
-                            ? "warning"
-                            : "error"
-                        }
-                      />
-                    );
-                  },
-                },
-              ]}
-              data={
+              columns={
                 salesType === "product"
-                  ? data.sort(customSortingAlgorithm.descending)
-                  : data
+                  ? productsTableColumns
+                  : brandsTableColumns
               }
+              data={data}
               options={{
                 pageSize: 20,
                 search: true,
