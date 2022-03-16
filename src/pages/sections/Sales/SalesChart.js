@@ -5,7 +5,10 @@ import Chart from "react-chartjs-2";
 
 import {
   CardContent,
+  CardHeader,
   Card as MuiCard,
+  CircularProgress,
+  Divider as MuiDivider,
   Grid,
   Typography,
   Switch,
@@ -17,20 +20,33 @@ import { red, green, blue } from "@mui/material/colors";
 import { convertPriceFormat } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
-
+const Divider = styled(MuiDivider)(spacing);
 const Spacer = styled.div(spacing);
 
 const ChartWrapper = styled.div`
   width: 100%;
   height: 300px;
 `;
+const LinkText = styled(Typography)`
+  cursor: pointer;
+`;
 
-const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
+const colors = [green[400], red[400], blue[400]];
+
+const SalesChart = ({
+  title,
+  data,
+  filterOptions,
+  loading,
+  setFilterOptions,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [chartData, setChartData] = useState(null);
+  const [showCurrentRevenue, setShowCurrentRevenue] = useState(true);
+  const [showPreviousRevenue, setShowPreviousRevenue] = useState(true);
+  const [showForecastRevenue, setShowForecastRevenue] = useState(true);
   const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
-  const colors = [green[400], red[400], blue[400]];
   const options = {
     maintainAspectRatio: false,
     interaction: {
@@ -77,7 +93,7 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
   }, [filterOptions]);
 
   useEffect(() => {
-    if (data.comparisonSeries && data.revenueSeries) {
+    if (data !== null && data.comparisonSeries && data.revenueSeries) {
       let comparisonSeriesDates = Object.keys(data.comparisonSeries);
       let revenueSeriesDates = Object.keys(data.revenueSeries);
       let forecastSeriesDates = Object.keys(data?.forecastSeries);
@@ -110,7 +126,9 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[0],
             tension: 0.4,
-            data: xAxis.map((x) => data.revenueSeries[x]),
+            data: showCurrentRevenue
+              ? xAxis.map((x) => data.revenueSeries[x])
+              : [],
           },
           {
             label: "Previous Revenue",
@@ -118,7 +136,9 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[1],
             tension: 0.4,
-            data: xAxis.map((x) => data.comparisonSeries[x]),
+            data: showPreviousRevenue
+              ? xAxis.map((x) => data.comparisonSeries[x])
+              : [],
           },
           {
             label: "Forecast Revenue",
@@ -126,12 +146,14 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
             backgroundColor: "transparent",
             borderColor: colors[2],
             tension: 0.4,
-            data: xAxis.map((x) => data.forecastSeries[x]),
+            data: showForecastRevenue
+              ? xAxis.map((x) => data.forecastSeries[x])
+              : [],
           },
         ],
       });
     }
-  }, [data]);
+  }, [data, showCurrentRevenue, showPreviousRevenue, showForecastRevenue]);
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
@@ -176,81 +198,119 @@ const SalesChart = ({ title, data, filterOptions, setFilterOptions }) => {
     navigate(new_url);
   };
 
+  const handleCurrentRevenueLabelClicked = () => {
+    setShowCurrentRevenue(!showCurrentRevenue);
+  };
+
+  const handlePreviousRevenueLabelClicked = () => {
+    setShowPreviousRevenue(!showPreviousRevenue);
+  };
+
+  const handleForecastRevenueLabelClicked = () => {
+    setShowForecastRevenue(!showForecastRevenue);
+  };
+
   return (
     <Card mb={1}>
+      <CardHeader title={title} />
+      <Divider />
       <CardContent>
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={1}>
-              <Grid item>
-                <Typography style={{ color: colors[0] }}>
-                  Total Revenue:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography>
-                  {convertPriceFormat(data.stats.total_revenue)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={1}>
-              <Grid item>
-                <Typography style={{ color: colors[1] }}>
-                  Previous Revenue:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography>
-                  {convertPriceFormat(data.stats.total_comparison_revenue)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-
-          {data.forecast48h ? (
-            <Grid item xs={12}>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>
-                  <Typography style={{ color: colors[2] }}>
-                    Forecast Revenue
-                  </Typography>
+        {data !== null && !loading ? (
+          <>
+            <Grid container>
+              <Grid item xs={12}>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>
+                    <LinkText
+                      onClick={handleCurrentRevenueLabelClicked}
+                      style={{
+                        color: colors[0],
+                        textDecoration: !showCurrentRevenue && "line-through",
+                      }}
+                    >
+                      Total Revenue:
+                    </LinkText>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {convertPriceFormat(data.stats.total_revenue)}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>
+                    <LinkText
+                      onClick={handlePreviousRevenueLabelClicked}
+                      style={{
+                        color: colors[1],
+                        textDecoration: !showPreviousRevenue && "line-through",
+                      }}
+                    >
+                      Previous Revenue:
+                    </LinkText>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {convertPriceFormat(data.stats.total_comparison_revenue)}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {data.forecast48h ? (
+                <Grid item xs={12}>
+                  <Grid container alignItems="center" spacing={1}>
+                    <Grid item>
+                      <LinkText
+                        onClick={handleForecastRevenueLabelClicked}
+                        style={{
+                          color: colors[2],
+                          textDecoration:
+                            !showForecastRevenue && "line-through",
+                        }}
+                      >
+                        Forecast Revenue
+                      </LinkText>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : (
+                <></>
+              )}
             </Grid>
-          ) : (
-            <></>
-          )}
-        </Grid>
 
-        <Spacer mb={6} />
+            <Spacer mb={6} />
 
-        {chartData !== null && (
-          <Grid container>
+            {chartData !== null && (
+              <Grid container>
+                <Grid item xs={12}>
+                  <ChartWrapper>
+                    <Chart type="line" data={chartData} options={options} />
+                  </ChartWrapper>
+                </Grid>
+              </Grid>
+            )}
             <Grid item xs={12}>
-              <ChartWrapper>
-                <Chart type="line" data={chartData} options={options} />
-              </ChartWrapper>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={Boolean(showReturns)}
+                    onChange={handleShowReturnsChanged}
+                  />
+                }
+                label="Include: Returned, Partial, and Pending Orders"
+              />
+            </Grid>
+          </>
+        ) : (
+          <Grid container justifyContent="center">
+            <Grid item>
+              <CircularProgress />
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={Boolean(showReturns)}
-                onChange={handleShowReturnsChanged}
-              />
-            }
-            label="Include: Returned, Partial, and Pending Orders"
-          />
-        </Grid>
       </CardContent>
     </Card>
   );

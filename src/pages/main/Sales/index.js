@@ -1,13 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import {
-  CircularProgress,
-  Divider as MuiDivider,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
@@ -69,52 +65,53 @@ const Sales = () => {
     // .catch((err) => signOut());
   }, [filterOptions, companies]);
 
+  const refreshSalesData = useCallback(() => {
+    setLoadingSalesChartData(true);
+    getSales(queryParamsString).then((res) => {
+      const { data, parameters } = res.data.body;
+
+      setLoadingSalesChartData(false);
+      if (data) {
+        const chartData = {
+          comparisonSeries: data.comparison_series,
+          revenueSeries: data.revenue_series,
+          forecastSeries: data?.revenue_forecast || {},
+          stats: data.stats,
+          forecast48h: parameters?.forecast_48h || false,
+        };
+
+        setSalesChartData(chartData);
+      }
+    });
+    //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
+
+    //call to get the table data
+    setLoadingSalesTableData(true);
+    getSalesData(queryParamsString).then((res) => {
+      const { data } = res.data.body;
+
+      setLoadingSalesTableData(false);
+      if (data) {
+        const tableData = data.map((item) => ({
+          name: item.name,
+          revenue: item.revenue,
+          comparisonRevenue: item.comparison_revenue,
+          revenueChange: item.revenue_change,
+          type: item.type,
+          companyId: item?.company_id,
+          productId: item?.product_id,
+        }));
+
+        setSalesTableData(tableData);
+      }
+    });
+  }, [queryParamsString]);
+
   useEffect(() => {
     if (isAuthenticated && isInitialized) {
-      setLoadingSalesChartData(true);
-      getSales(queryParamsString).then((res) => {
-        const { data, parameters } = res.data.body;
-        console.log(parameters);
-
-        setLoadingSalesChartData(false);
-        if (data) {
-          console.log(data);
-          const chartData = {
-            comparisonSeries: data.comparison_series,
-            revenueSeries: data.revenue_series,
-            forecastSeries: data?.revenue_forecast || {},
-            stats: data.stats,
-            forecast48h: parameters?.forecast_48h || false,
-          };
-
-          setSalesChartData(chartData);
-        }
-      });
-      //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
-
-      //call to get the table data
-      setLoadingSalesTableData(true);
-      getSalesData(queryParamsString).then((res) => {
-        const { data } = res.data.body;
-
-        setLoadingSalesTableData(false);
-        if (data) {
-          console.log(data);
-          const tableData = data.map((item) => ({
-            name: item.name,
-            revenue: item.revenue,
-            comparisonRevenue: item.comparison_revenue,
-            revenueChange: item.revenue_change,
-            type: item.type,
-            companyId: item?.company_id,
-            productId: item?.product_id,
-          }));
-
-          setSalesTableData(tableData);
-        }
-      });
+      refreshSalesData();
     }
-  }, [isInitialized, isAuthenticated, queryParamsString]);
+  }, [isInitialized, isAuthenticated, queryParamsString, refreshSalesData]);
 
   return (
     <React.Fragment>
@@ -126,41 +123,36 @@ const Sales = () => {
             Sales
           </Typography>
         </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            onClick={refreshSalesData}
+            disabled={loadingSalesChartData || loadingSalesTableData}
+          >
+            <RefreshIcon />
+          </Button>
+        </Grid>
       </Grid>
 
       <Divider my={6} />
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          {!loadingSalesChartData && salesChartData !== null ? (
-            <SalesChart
-              title={chartTitle}
-              data={salesChartData}
-              filterOptions={filterOptions}
-              setFilterOptions={setFilterOptions}
-            />
-          ) : (
-            <Grid container justifyContent="center">
-              <Grid item>
-                <CircularProgress />
-              </Grid>
-            </Grid>
-          )}
+          <SalesChart
+            title={chartTitle}
+            data={salesChartData}
+            filterOptions={filterOptions}
+            loading={loadingSalesChartData}
+            setFilterOptions={setFilterOptions}
+          />
         </Grid>
         <Grid item xs={12}>
-          {!loadingSalesTableData && salesTableData !== null ? (
-            <SalesTable
-              title={tableTitle}
-              data={salesTableData}
-              salesType={selectedCompanies.length === 1 ? "product" : "brand"}
-            />
-          ) : (
-            <Grid container justifyContent="center">
-              <Grid item>
-                <CircularProgress />
-              </Grid>
-            </Grid>
-          )}
+          <SalesTable
+            title={tableTitle}
+            data={salesTableData}
+            salesType={selectedCompanies.length === 1 ? "product" : "brand"}
+            loading={loadingSalesTableData}
+          />
         </Grid>
       </Grid>
     </React.Fragment>

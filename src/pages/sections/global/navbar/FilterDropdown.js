@@ -85,7 +85,15 @@ const FilterDropdown = ({
 
   useEffect(() => {
     // pre-select filter options from url params
-    if (search && companyList.length && marketList.length) {
+    if (!search) {
+      setSelectedCompanies([]);
+      setSelectedCompanyOptions(defaultFilterOptions.company.selectedOptions);
+      setSelectedMarkets([]);
+      setSelectedMarketOptions(defaultFilterOptions.market.selectedOptions);
+      setDateFilterOptions(defaultFilterOptions.date);
+
+      setFilterOptions(defaultFilterOptions);
+    } else if (search && companyList.length && marketList.length) {
       const searchParams = new URLSearchParams(search);
       const companyIdArray = searchParams.getAll("company_ids[]").map(Number);
       const marketIdArray = searchParams.getAll("market_ids[]").map(Number);
