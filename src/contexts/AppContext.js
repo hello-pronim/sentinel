@@ -4,6 +4,7 @@ import { convertDateToMMDDYY, getPastDate } from "../utils/functions";
 const AppContext = createContext();
 
 function AppProvider({ children }) {
+  const today = new Date();
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
   const defaultFilterOptions = {
@@ -13,11 +14,11 @@ function AppProvider({ children }) {
     },
     date: {
       dateRange: "year_to_date",
-      from: convertDateToMMDDYY(getPastDate(new Date(), 29)),
-      to: convertDateToMMDDYY(new Date()),
+      from: convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1)),
+      to: convertDateToMMDDYY(today),
       compare: false,
-      compFrom: convertDateToMMDDYY(getPastDate(new Date(), 29)),
-      compTo: convertDateToMMDDYY(new Date()),
+      compFrom: convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1)),
+      compTo: convertDateToMMDDYY(today),
       viewMode: "day",
     },
     market: {
