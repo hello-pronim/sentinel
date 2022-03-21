@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import SidebarNavList from "./SidebarNavList";
+import { AppContext } from "../../../../contexts/AppContext";
 
 const SidebarNavSection = (props) => {
+  const { showBrandsView } = useContext(AppContext);
   const {
     title,
     pages,
@@ -10,10 +12,17 @@ const SidebarNavSection = (props) => {
     component: Component = "nav",
     ...rest
   } = props;
+  const [visibleItems, setVisibleItems] = useState(pages);
+
+  useEffect(() => {
+    if (!showBrandsView) {
+      setVisibleItems(pages.filter((page) => page.slug !== "brands"));
+    } else setVisibleItems(pages);
+  }, [showBrandsView, pages]);
 
   return (
     <Component {...rest}>
-      <SidebarNavList pages={pages} depth={0} />
+      <SidebarNavList pages={visibleItems} depth={0} />
     </Component>
   );
 };

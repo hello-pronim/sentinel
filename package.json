@@ -46,6 +46,7 @@
     "date-fns": "2.27.0",
     "deepmerge": "4.2.2",
     "faker": "5.5.3",
+    "flagsmith": "^2.0.0-beta.2",
     "formik": "2.2.9",
     "google-map-react": "2.1.10",
     "history": "5.2.0",
