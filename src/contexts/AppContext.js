@@ -1,11 +1,14 @@
-import { createContext, useState } from "react";
-import { convertDateToMMDDYY, getPastDate } from "../utils/functions";
+import { createContext, useEffect, useState } from "react";
+import flagsmith from "flagsmith";
+import { convertDateToMMDDYY } from "../utils/functions";
 
 const AppContext = createContext();
 
 function AppProvider({ children }) {
+  const today = new Date();
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
+  const [showBrandsView, setShowBrandsView] = useState(false);
   const defaultFilterOptions = {
     company: {
       selected: [],
@@ -13,11 +16,11 @@ function AppProvider({ children }) {
     },
     date: {
       dateRange: "year_to_date",
-      from: convertDateToMMDDYY(getPastDate(new Date(), 29)),
-      to: convertDateToMMDDYY(new Date()),
+      from: convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1)),
+      to: convertDateToMMDDYY(today),
       compare: false,
-      compFrom: convertDateToMMDDYY(getPastDate(new Date(), 29)),
-      compTo: convertDateToMMDDYY(new Date()),
+      compFrom: convertDateToMMDDYY(new Date(today.getFullYear(), 0, 1)),
+      compTo: convertDateToMMDDYY(today),
       viewMode: "day",
     },
     market: {
@@ -28,6 +31,17 @@ function AppProvider({ children }) {
   };
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
+  useEffect(() => {
+    flagsmith.init({
+      environmentID: process.env.REACT_APP_FLAGSMITH_ENVID,
+      cacheFlags: true,
+      enableAnalytics: true,
+      onChange: (oldFlags, params) => {
+        setShowBrandsView(flagsmith.hasFeature("brands_view"));
+      },
+    });
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -35,6 +49,7 @@ function AppProvider({ children }) {
         markets,
         defaultFilterOptions,
         filterOptions,
+        showBrandsView,
         setCompanies,
         setMarkets,
         setFilterOptions,

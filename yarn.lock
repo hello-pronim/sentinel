@@ -5795,6 +5795,11 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
+flagsmith@^2.0.0-beta.2:
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/flagsmith/-/flagsmith-2.0.0-beta.2.tgz#ff10d9678a0c8fb045f363b6651b8380ccaa3e1e"
+  integrity sha512-OBhQL2s5soir4Ldm1aQBCgk5klOd9lEBsjPaymI4lJ4PnRLm8G2qfbn6psl1etCjuqiBzHpaw/YZLQ1HNxuJtQ==
+
 flat-cache@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.0.4.tgz#61b0338302b2fe9f957dcc32fc2a87f1c3048b11"
