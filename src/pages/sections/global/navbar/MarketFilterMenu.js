@@ -15,6 +15,7 @@ const MarketFilterMenu = ({
   selected,
   setSelected,
   setSelectedOptions,
+  onSelectedOptionsChanged,
   ...props
 }) => {
   return (
@@ -31,6 +32,7 @@ const MarketFilterMenu = ({
         selected={selected}
         setSelected={setSelected} // store only option id
         setSelectedOptions={setSelectedOptions} // store option objects
+        onSelectedOptionsChanged={onSelectedOptionsChanged}
         {...props}
       />
     </React.Fragment>

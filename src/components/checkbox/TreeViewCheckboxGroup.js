@@ -12,10 +12,10 @@ const TreeView = styled(MuiTreeView)`
 const TreeViewCheckboxGroup = ({
   data,
   options,
-  defaultSelected,
   selected,
   setSelected,
   setSelectedOptions,
+  onSelectedOptionsChanged,
   ...props
 }) => {
   function getChildById(node, id) {
@@ -90,6 +90,8 @@ const TreeViewCheckboxGroup = ({
 
     setSelected(array);
     setSelectedOptions(selectedOptions);
+
+    onSelectedOptionsChanged(selectedOptions);
   }
 
   const renderTree = (nodes) => (
