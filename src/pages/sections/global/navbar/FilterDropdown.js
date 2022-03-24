@@ -497,14 +497,6 @@ const FilterDropdown = ({
               {mobileScreen ? <Divider /> : <></>}
             </Grid>
             <Grid item sm={12} md={4}>
-              <DateFilterMenu
-                title="Date"
-                filterOptions={dateFilterOptions}
-                setFilterOptions={setDateFilterOptions}
-              />
-              {mobileScreen ? <Divider /> : <></>}
-            </Grid>
-            <Grid item sm={12} md={4}>
               {marketFilterData && (
                 <MarketFilterMenu
                   title="Markets by Category"
@@ -517,6 +509,14 @@ const FilterDropdown = ({
                   onSelectedOptionsChanged={onSelectedMarketOptionsChanged}
                 />
               )}
+              {mobileScreen ? <Divider /> : <></>}
+            </Grid>
+            <Grid item sm={12} md={4}>
+              <DateFilterMenu
+                title="Date"
+                filterOptions={dateFilterOptions}
+                setFilterOptions={setDateFilterOptions}
+              />
             </Grid>
           </Grid>
         </Box>
