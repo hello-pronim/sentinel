@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components/macro";
 
 import { Box, Divider, Typography } from "@mui/material";
 import {
@@ -7,6 +8,10 @@ import {
 } from "@mui/icons-material";
 
 import TreeViewCheckboxGroup from "../../../../components/checkbox/TreeViewCheckboxGroup";
+
+const FilterMenu = styled("div")`
+  min-width: 280px;
+`;
 
 const MarketFilterMenu = ({
   title,
@@ -19,23 +24,27 @@ const MarketFilterMenu = ({
   ...props
 }) => {
   return (
-    <React.Fragment>
+    <FilterMenu>
       <Box p={2}>
         <Typography variant="body2">{title}</Typography>
       </Box>
       <Divider />
-      <TreeViewCheckboxGroup
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-        data={filterData}
-        options={filterOptions}
-        selected={selected}
-        setSelected={setSelected} // store only option id
-        setSelectedOptions={setSelectedOptions} // store option objects
-        onSelectedOptionsChanged={onSelectedOptionsChanged}
-        {...props}
-      />
-    </React.Fragment>
+      {filterData ? (
+        <TreeViewCheckboxGroup
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+          data={filterData}
+          options={filterOptions}
+          selected={selected}
+          setSelected={setSelected} // store only option id
+          setSelectedOptions={setSelectedOptions} // store option objects
+          onSelectedOptionsChanged={onSelectedOptionsChanged}
+          {...props}
+        />
+      ) : (
+        <Typography>Please select a company</Typography>
+      )}
+    </FilterMenu>
   );
 };
 
