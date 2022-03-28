@@ -42,13 +42,13 @@ const MarketFilterMenu = ({
           {...props}
         />
       ) : (
-        <Grid container alignItems="center" justifyContent="center">
-          <Grid item>
-            <Box pt={3} pb={3}>
+        <Box px={2.5} py={5}>
+          <Grid container alignItems="center" justifyContent="center">
+            <Grid item>
               <Typography variant="h4">Please select a company</Typography>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       )}
     </FilterMenu>
   );

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
-import { grey } from "@mui/material/colors";
 
 import CompanyFilterMenu from "./CompanyFilterMenu";
 import DateFilterMenu from "./DateFilterMenu";
@@ -83,11 +82,11 @@ const FilterDropdown = ({
   }, [markets]);
 
   useEffect(() => {
-    // pre-select filter options from url params
     if (companyList.length && marketList.length) {
       let companyIdArray = [];
       let marketIdArray = [];
       const searchParams = new URLSearchParams(search);
+
       if (search) {
         companyIdArray = searchParams.getAll("company_ids[]").map(Number);
         marketIdArray = searchParams.getAll("market_ids[]").map(Number);
@@ -96,6 +95,22 @@ const FilterDropdown = ({
         marketIdArray = marketList.map((mar) => mar.id);
       }
 
+      // update market filter options with market ids from url
+      const marketCategories = Object.keys(markets);
+      const companyMarkets = {};
+
+      marketCategories.forEach((category) => {
+        const sameCategoryMarkets = markets[category];
+        sameCategoryMarkets.forEach((mar) => {
+          if (marketIdArray.includes(mar.id)) {
+            if (!companyMarkets[category]) companyMarkets[category] = [];
+            companyMarkets[category].push(mar);
+          }
+        });
+      });
+      setFilteredMarkets({ ...companyMarkets });
+
+      // pre-select filter options with the params from url
       let selectedCompanies = [];
       let selectedCompanyOptions = [];
       let selectedMarkets = [];
@@ -119,7 +134,6 @@ const FilterDropdown = ({
           });
         }
       });
-
       setSelectedCompanies(selectedCompanies);
       setSelectedCompanyOptions(selectedCompanyOptions);
       setSelectedMarkets(selectedMarkets);
@@ -327,12 +341,6 @@ const FilterDropdown = ({
     setFilterButtonText,
   ]);
 
-  useEffect(() => {
-    setSelectedCompanies(filterOptions.company.selected);
-    setSelectedMarkets(filterOptions.market.selected);
-    setDateFilterOptions(filterOptions.date);
-  }, [filterOptions]);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -397,15 +405,14 @@ const FilterDropdown = ({
   };
   const handleClearClicked = () => {
     setFilterOptions(defaultFilterOptions);
-    setSelectedCompanies(companyFilterOptions.map((opt) => opt.id));
-    setSelectedCompanyOptions(companyFilterOptions);
-    setDateFilterOptions(defaultFilterOptions.date);
+    setSelectedCompanies(allCompanyOptions.map((opt) => opt.id));
+    setSelectedCompanyOptions(allCompanyOptions);
     setFilteredMarkets(markets);
-    // setSelectedMarketOptions(marketFilterOptions);
+    setSelectedMarketOptions(markets);
+    setDateFilterOptions(defaultFilterOptions.date);
 
     navigate("/sales");
   };
-
   const onSelectedCompanyOptionsChanged = (selectedOptions) => {
     let selectedMarketIds = [];
     selectedOptions.forEach(
@@ -454,7 +461,6 @@ const FilterDropdown = ({
     });
     setFilteredMarkets({ ...companyMarkets });
   };
-
   const onSelectedMarketOptionsChanged = (selectedOptions) => {
     console.log("selected company ids: ", selectedOptions);
   };
