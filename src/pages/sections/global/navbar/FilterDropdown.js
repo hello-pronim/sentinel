@@ -37,6 +37,7 @@ const FilterDropdown = ({
   // markets
   const [marketList, setMarketList] = useState([]);
   const [marketFilterOptions, setMarketFilterOptions] = useState([]);
+  const [filteredMarkets, setFilteredMarkets] = useState(markets);
   const [allMarketOptions, setAllMarketOptions] = useState([]);
   const [marketFilterData, setMarketFilterData] = useState(null);
   const [defaultMarketExpandedList, setDefaultMarketExpandedList] = useState(
@@ -67,6 +68,7 @@ const FilterDropdown = ({
 
   useEffect(() => {
     if (markets !== null) {
+      setFilteredMarkets(markets);
       const keys = Object.keys(markets);
       let array = [];
 
@@ -80,11 +82,11 @@ const FilterDropdown = ({
   }, [markets]);
 
   useEffect(() => {
-    // pre-select filter options from url params
     if (companyList.length && marketList.length) {
       let companyIdArray = [];
       let marketIdArray = [];
       const searchParams = new URLSearchParams(search);
+
       if (search) {
         companyIdArray = searchParams.getAll("company_ids[]").map(Number);
         marketIdArray = searchParams.getAll("market_ids[]").map(Number);
@@ -92,8 +94,23 @@ const FilterDropdown = ({
         companyIdArray = companyList.map((comp) => comp.id);
         marketIdArray = marketList.map((mar) => mar.id);
       }
-      console.log(companyIdArray, marketIdArray);
 
+      // update market filter options with market ids from url
+      const marketCategories = Object.keys(markets);
+      const companyMarkets = {};
+
+      marketCategories.forEach((category) => {
+        const sameCategoryMarkets = markets[category];
+        sameCategoryMarkets.forEach((mar) => {
+          if (marketIdArray.includes(mar.id)) {
+            if (!companyMarkets[category]) companyMarkets[category] = [];
+            companyMarkets[category].push(mar);
+          }
+        });
+      });
+      setFilteredMarkets({ ...companyMarkets });
+
+      // pre-select filter options with the params from url
       let selectedCompanies = [];
       let selectedCompanyOptions = [];
       let selectedMarkets = [];
@@ -117,12 +134,10 @@ const FilterDropdown = ({
           });
         }
       });
-
       setSelectedCompanies(selectedCompanies);
       setSelectedCompanyOptions(selectedCompanyOptions);
       setSelectedMarkets(selectedMarkets);
       setSelectedMarketOptions(selectedMarketOptions);
-      console.log(searchParams.get("date_range"));
       setDateFilterOptions({
         ...dateFilterOptions,
         dateRange: searchParams.get("date_range")
@@ -237,39 +252,41 @@ const FilterDropdown = ({
   }, [companies]);
 
   useEffect(() => {
-    if (markets !== null && !filterOptions.market.selected.length) {
+    if (filteredMarkets !== null) {
       const defaultExpanded = ["all"];
       const defaultSelected = ["all"];
       const options = [];
-      const categories = Object.keys(markets);
+      const categories = Object.keys(filteredMarkets);
       const marketArray = [];
       categories.forEach((category) =>
-        markets[category].forEach((market) => marketArray.push(market))
+        filteredMarkets[category].forEach((market) => marketArray.push(market))
       );
-      const data = {
-        id: "all",
-        name: "All",
-        children: categories.map((category) => {
-          const sameCatMarkets = marketArray.filter(
-            (mar) => mar.category_name === category
-          );
-          defaultExpanded.push(category);
-          defaultSelected.push(category);
-          // options.push({ id: "-" + market.name, option: market });
-          return {
-            id: category,
-            name: category,
-            children: sameCatMarkets.map((mar) => {
-              defaultSelected.push(category + "-" + mar.name);
-              options.push({ id: category + "-" + mar.name, option: mar });
+      const data = marketArray.length
+        ? {
+            id: "all",
+            name: "All",
+            children: categories.map((category) => {
+              const sameCatMarkets = marketArray.filter(
+                (mar) => mar.category_name === category
+              );
+              defaultExpanded.push(category);
+              defaultSelected.push(category);
+              // options.push({ id: "-" + market.name, option: market });
               return {
-                id: category + "-" + mar.name,
-                name: mar.name,
+                id: category,
+                name: category,
+                children: sameCatMarkets.map((mar) => {
+                  defaultSelected.push(category + "-" + mar.name);
+                  options.push({ id: category + "-" + mar.name, option: mar });
+                  return {
+                    id: category + "-" + mar.name,
+                    name: mar.name,
+                  };
+                }),
               };
             }),
-          };
-        }),
-      };
+          }
+        : null;
       setDefaultMarketExpandedList(defaultExpanded);
       setAllMarketOptions(options);
       setSelectedMarkets(defaultSelected);
@@ -285,7 +302,7 @@ const FilterDropdown = ({
       setMarketFilterOptions(options);
       setMarketFilterData(data);
     }
-  }, [markets]);
+  }, [filteredMarkets]);
 
   useEffect(() => {
     let companyFilterButtonText = "";
@@ -323,12 +340,6 @@ const FilterDropdown = ({
     selectedMarketOptions,
     setFilterButtonText,
   ]);
-
-  useEffect(() => {
-    setSelectedCompanies(filterOptions.company.selected);
-    setSelectedMarkets(filterOptions.market.selected);
-    setDateFilterOptions(filterOptions.date);
-  }, [filterOptions]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -394,15 +405,15 @@ const FilterDropdown = ({
   };
   const handleClearClicked = () => {
     setFilterOptions(defaultFilterOptions);
-    setSelectedCompanyOptions(companyFilterOptions);
+    setSelectedCompanies(allCompanyOptions.map((opt) => opt.id));
+    setSelectedCompanyOptions(allCompanyOptions);
+    setFilteredMarkets(markets);
+    setSelectedMarketOptions(markets);
     setDateFilterOptions(defaultFilterOptions.date);
-    setSelectedMarketOptions(marketFilterOptions);
 
     navigate("/sales");
   };
-
   const onSelectedCompanyOptionsChanged = (selectedOptions) => {
-    console.log(selectedOptions);
     let selectedMarketIds = [];
     selectedOptions.forEach(
       (opt) =>
@@ -420,8 +431,6 @@ const FilterDropdown = ({
         newMarketsOptionsSelected.push(marketOption);
       }
     });
-    console.log(newMarketsSelected);
-    console.log(newMarketsOptionsSelected);
 
     setSelectedMarkets(newMarketsSelected);
     setSelectedMarketOptions(newMarketsOptionsSelected);
@@ -438,8 +447,20 @@ const FilterDropdown = ({
         selectedOptions: newMarketsOptionsSelected,
       },
     });
-  };
 
+    const marketCategories = Object.keys(markets);
+    const companyMarkets = {};
+    marketCategories.forEach((category) => {
+      const sameCategoryMarkets = markets[category];
+      sameCategoryMarkets.forEach((mar) => {
+        if (selectedMarketIds.includes(mar.id)) {
+          if (!companyMarkets[category]) companyMarkets[category] = [];
+          companyMarkets[category].push(mar);
+        }
+      });
+    });
+    setFilteredMarkets({ ...companyMarkets });
+  };
   const onSelectedMarketOptionsChanged = (selectedOptions) => {
     console.log("selected company ids: ", selectedOptions);
   };
@@ -478,7 +499,7 @@ const FilterDropdown = ({
           <Grid
             container
             wrap="nowrap"
-            spacing={1}
+            spacing={0}
             direction={mobileScreen ? "column" : "row"}
           >
             <Grid item sm={12} md={4}>
@@ -496,20 +517,24 @@ const FilterDropdown = ({
               )}
               {mobileScreen ? <Divider /> : <></>}
             </Grid>
+            <Grid item>
+              <Divider orientation="vertical" />
+            </Grid>
             <Grid item sm={12} md={4}>
-              {marketFilterData && (
-                <MarketFilterMenu
-                  title="Markets by Category"
-                  filterData={marketFilterData}
-                  filterOptions={marketFilterOptions}
-                  expanded={defaultMarketExpandedList}
-                  selected={selectedMarkets}
-                  setSelected={setSelectedMarkets}
-                  setSelectedOptions={setSelectedMarketOptions}
-                  onSelectedOptionsChanged={onSelectedMarketOptionsChanged}
-                />
-              )}
+              <MarketFilterMenu
+                title="Markets by Category"
+                filterData={marketFilterData}
+                filterOptions={marketFilterOptions}
+                expanded={defaultMarketExpandedList}
+                selected={selectedMarkets}
+                setSelected={setSelectedMarkets}
+                setSelectedOptions={setSelectedMarketOptions}
+                onSelectedOptionsChanged={onSelectedMarketOptionsChanged}
+              />
               {mobileScreen ? <Divider /> : <></>}
+            </Grid>
+            <Grid item>
+              <Divider orientation="vertical" />
             </Grid>
             <Grid item sm={12} md={4}>
               <DateFilterMenu

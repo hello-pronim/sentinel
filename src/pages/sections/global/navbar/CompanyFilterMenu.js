@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components/macro";
 
 import { Box, Divider, Typography } from "@mui/material";
 import {
@@ -7,6 +8,10 @@ import {
 } from "@mui/icons-material";
 
 import TreeViewCheckboxGroup from "../../../../components/checkbox/TreeViewCheckboxGroup";
+
+const FilterMenu = styled("div")`
+  min-width: 320px;
+`;
 
 const CompanyFilterMenu = ({
   title,
@@ -19,7 +24,7 @@ const CompanyFilterMenu = ({
   ...props
 }) => {
   return (
-    <React.Fragment>
+    <FilterMenu>
       <Box p={2}>
         <Typography variant="body2">{title}</Typography>
       </Box>
@@ -35,7 +40,7 @@ const CompanyFilterMenu = ({
         onSelectedOptionsChanged={onSelectedOptionsChanged}
         {...props}
       />
-    </React.Fragment>
+    </FilterMenu>
   );
 };
 

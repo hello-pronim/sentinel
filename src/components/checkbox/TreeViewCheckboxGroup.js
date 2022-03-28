@@ -4,9 +4,10 @@ import { TreeView as MuiTreeView, TreeItem } from "@mui/lab";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
 const TreeView = styled(MuiTreeView)`
-  width: 280px;
+  width: 100%;
   height: calc(100vh - 200px);
   overflow-y: scroll;
+  padding: 20px 10px;
 `;
 
 const TreeViewCheckboxGroup = ({

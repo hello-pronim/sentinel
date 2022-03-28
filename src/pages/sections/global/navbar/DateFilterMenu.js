@@ -22,9 +22,10 @@ import {
 } from "../../../../utils/functions";
 
 const DateFilterDropdown = styled(Box)`
-  width: 280px;
+  width: 320px;
   height: calc(100vh - 200px);
   overflow-y: scroll;
+  padding: 20px;
 `;
 
 const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
