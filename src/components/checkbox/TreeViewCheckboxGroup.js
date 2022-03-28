@@ -7,6 +7,7 @@ const TreeView = styled(MuiTreeView)`
   width: 100%;
   height: calc(100vh - 200px);
   overflow-y: scroll;
+  padding: 20px 10px;
 `;
 
 const TreeViewCheckboxGroup = ({

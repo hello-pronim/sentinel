@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/macro";
 
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import {
   ExpandMore as ExpandMoreIcon,
   ChevronRight as ChevronRightIcon,
@@ -10,7 +10,7 @@ import {
 import TreeViewCheckboxGroup from "../../../../components/checkbox/TreeViewCheckboxGroup";
 
 const FilterMenu = styled("div")`
-  min-width: 280px;
+  min-width: 320px;
 `;
 
 const MarketFilterMenu = ({
@@ -42,7 +42,13 @@ const MarketFilterMenu = ({
           {...props}
         />
       ) : (
-        <Typography>Please select a company</Typography>
+        <Grid container alignItems="center" justifyContent="center">
+          <Grid item>
+            <Box pt={3} pb={3}>
+              <Typography variant="h4">Please select a company</Typography>
+            </Box>
+          </Grid>
+        </Grid>
       )}
     </FilterMenu>
   );

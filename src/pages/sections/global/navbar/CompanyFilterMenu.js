@@ -10,7 +10,7 @@ import {
 import TreeViewCheckboxGroup from "../../../../components/checkbox/TreeViewCheckboxGroup";
 
 const FilterMenu = styled("div")`
-  min-width: 280px;
+  min-width: 320px;
 `;
 
 const CompanyFilterMenu = ({

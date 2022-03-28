@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Menu,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 import CompanyFilterMenu from "./CompanyFilterMenu";
 import DateFilterMenu from "./DateFilterMenu";
@@ -500,7 +493,7 @@ const FilterDropdown = ({
           <Grid
             container
             wrap="nowrap"
-            spacing={1}
+            spacing={0}
             direction={mobileScreen ? "column" : "row"}
           >
             <Grid item sm={12} md={4}>
@@ -518,6 +511,9 @@ const FilterDropdown = ({
               )}
               {mobileScreen ? <Divider /> : <></>}
             </Grid>
+            <Grid item>
+              <Divider orientation="vertical" />
+            </Grid>
             <Grid item sm={12} md={4}>
               <MarketFilterMenu
                 title="Markets by Category"
@@ -530,6 +526,9 @@ const FilterDropdown = ({
                 onSelectedOptionsChanged={onSelectedMarketOptionsChanged}
               />
               {mobileScreen ? <Divider /> : <></>}
+            </Grid>
+            <Grid item>
+              <Divider orientation="vertical" />
             </Grid>
             <Grid item sm={12} md={4}>
               <DateFilterMenu
