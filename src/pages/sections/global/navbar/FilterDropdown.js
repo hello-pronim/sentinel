@@ -21,7 +21,6 @@ const FilterDropdown = ({
   // companies
   const [companyList, setCompanyList] = useState([]);
   const [companyFilterOptions, setCompanyFilterOptions] = useState([]);
-  const [allCompanyOptions, setAllCompanyOptions] = useState([]);
   const [companyFilterData, setCompanyFilterData] = useState(null);
   const [defaultCompanyExpandedList, setDefaultCompanyExpandedList] = useState(
     []
@@ -37,8 +36,6 @@ const FilterDropdown = ({
   // markets
   const [marketList, setMarketList] = useState([]);
   const [marketFilterOptions, setMarketFilterOptions] = useState([]);
-  const [filteredMarkets, setFilteredMarkets] = useState(markets);
-  const [allMarketOptions, setAllMarketOptions] = useState([]);
   const [marketFilterData, setMarketFilterData] = useState(null);
   const [defaultMarketExpandedList, setDefaultMarketExpandedList] = useState(
     []
@@ -52,94 +49,67 @@ const FilterDropdown = ({
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    if (companies !== null) {
-      const keys = Object.keys(companies);
-      let array = [];
-
-      keys.forEach((key) => {
-        const sameCatCompanies = companies[key];
-
-        sameCatCompanies.forEach((comp) => array.push(comp));
-      });
-
-      setCompanyList(array);
-    }
-  }, [companies]);
-
-  useEffect(() => {
-    if (markets !== null) {
-      setFilteredMarkets(markets);
-      const keys = Object.keys(markets);
-      let array = [];
-
-      keys.forEach((key) => {
-        const sameCatMarkets = markets[key];
-        sameCatMarkets.forEach((mar) => array.push(mar));
-      });
-
-      setMarketList(array);
-    }
-  }, [markets]);
-
-  useEffect(() => {
-    if (companyList.length && marketList.length) {
-      let companyIdArray = [];
-      let marketIdArray = [];
+    if (markets !== null && companies !== null) {
+      let companyList = [];
+      let marketList = [];
+      let selectedCompanyIds = [];
+      let selectedMarketIds = [];
       const searchParams = new URLSearchParams(search);
 
+      Object.keys(companies).forEach((category) => {
+        const sameCatCompanies = companies[category];
+        sameCatCompanies.forEach((comp) => companyList.push(comp));
+      });
+      Object.keys(markets).forEach((category) => {
+        const sameCatMarkets = markets[category];
+        sameCatMarkets.forEach((mar) => marketList.push(mar));
+      });
+      setCompanyList(companyList);
+      setMarketList(marketList);
+
       if (search) {
-        companyIdArray = searchParams.getAll("company_ids[]").map(Number);
-        marketIdArray = searchParams.getAll("market_ids[]").map(Number);
+        selectedCompanyIds = searchParams.getAll("company_ids[]").map(Number);
+        selectedMarketIds = searchParams.getAll("market_ids[]").map(Number);
       } else {
-        companyIdArray = companyList.map((comp) => comp.id);
-        marketIdArray = marketList.map((mar) => mar.id);
+        selectedCompanyIds = companyList.map((comp) => comp.id);
+        selectedMarketIds = marketList.map((mar) => mar.id);
       }
 
       // update market filter options with market ids from url
       const marketCategories = Object.keys(markets);
       const companyMarkets = {};
+      let availableMarketIdArray = [];
+      let availableMarketArray = [];
+
+      Object.keys(companies).forEach((category) => {
+        const sameCategoryCompanies = companies[category];
+
+        sameCategoryCompanies
+          .filter((company) => selectedCompanyIds.includes(company.id))
+          .forEach((company) => {
+            availableMarketIdArray = new Set([
+              ...availableMarketIdArray,
+              ...company.marketplace_ids,
+            ]);
+          });
+      });
+      availableMarketIdArray = [...availableMarketIdArray];
 
       marketCategories.forEach((category) => {
         const sameCategoryMarkets = markets[category];
         sameCategoryMarkets.forEach((mar) => {
-          if (marketIdArray.includes(mar.id)) {
+          if (availableMarketIdArray.includes(mar.id)) {
             if (!companyMarkets[category]) companyMarkets[category] = [];
             companyMarkets[category].push(mar);
+            availableMarketArray.push(mar);
           }
         });
       });
-      setFilteredMarkets({ ...companyMarkets });
 
-      // pre-select filter options with the params from url
-      let selectedCompanies = [];
-      let selectedCompanyOptions = [];
-      let selectedMarkets = [];
-      let selectedMarketOptions = [];
+      populateCompanyFilterOptions(companies, selectedCompanyIds);
+      populateMarketFilterOptions(companyMarkets, selectedMarketIds);
 
-      companyList.forEach((comp) => {
-        if (companyIdArray.includes(comp.id)) {
-          selectedCompanies.push(comp.category_name + "-" + comp.name);
-          selectedCompanyOptions.push({
-            id: comp.category_name + "-" + comp.name,
-            option: comp,
-          });
-        }
-      });
-      marketList.forEach((mar) => {
-        if (marketIdArray.includes(mar.id)) {
-          selectedMarkets.push(mar.category_name + "-" + mar.name);
-          selectedMarketOptions.push({
-            id: mar.category_name + "-" + mar.name,
-            option: mar,
-          });
-        }
-      });
-      setSelectedCompanies(selectedCompanies);
-      setSelectedCompanyOptions(selectedCompanyOptions);
-      setSelectedMarkets(selectedMarkets);
-      setSelectedMarketOptions(selectedMarketOptions);
-      setDateFilterOptions({
-        ...dateFilterOptions,
+      const newDateFilterOptions = {
         dateRange: searchParams.get("date_range")
           ? searchParams.get("date_range")
           : defaultFilterOptions.date.dateRange,
@@ -158,151 +128,25 @@ const FilterDropdown = ({
         compTo: searchParams.get("comp_to")
           ? searchParams.get("comp_to")
           : defaultFilterOptions.date.compTo,
+      };
+
+      setDateFilterOptions({
+        ...dateFilterOptions,
+        ...newDateFilterOptions,
       });
 
       setFilterOptions({
         ...filterOptions,
-        company: {
-          ...filterOptions.company,
-          selected: selectedCompanies,
-          selectedOptions: selectedCompanyOptions,
-        },
         date: {
           ...filterOptions.date,
-          dateRange: searchParams.get("date_range")
-            ? searchParams.get("date_range")
-            : defaultFilterOptions.date.dateRange,
-          viewMode: searchParams.get("view_by")
-            ? searchParams.get("view_by")
-            : defaultFilterOptions.date.viewMode,
-          from: searchParams.get("from")
-            ? searchParams.get("from")
-            : defaultFilterOptions.date.from,
-          to: searchParams.get("to")
-            ? searchParams.get("to")
-            : defaultFilterOptions.date.to,
-          compFrom: searchParams.get("comp_from")
-            ? searchParams.get("comp_from")
-            : defaultFilterOptions.date.compFrom,
-          compTo: searchParams.get("comp_to")
-            ? searchParams.get("comp_to")
-            : defaultFilterOptions.date.compTo,
-        },
-        market: {
-          ...filterOptions.market,
-          selected: selectedMarkets,
-          selectedOptions: selectedMarketOptions,
+          ...newDateFilterOptions,
         },
         showReturns: searchParams.get("show_returns")
           ? searchParams.get("show_returns") === "true" // convert boolean string to boolean
           : defaultFilterOptions.showReturns,
       });
     }
-  }, [search, companyList, marketList]);
-
-  useEffect(() => {
-    if (companies !== null) {
-      const defaultExpanded = ["all"];
-      const defaultSelected = ["all"];
-      const options = [];
-      const categories = Object.keys(companies);
-      const companyArray = [];
-      categories.forEach((category) =>
-        companies[category].forEach((company) => companyArray.push(company))
-      );
-      const data = {
-        id: "all",
-        name: "All",
-        children: categories.map((category) => {
-          const sameCatCompanies = companyArray.filter(
-            (comp) => comp.category_name === category
-          );
-          defaultExpanded.push(category);
-          defaultSelected.push(category);
-
-          return {
-            id: category,
-            name: category,
-            children: sameCatCompanies.map((comp) => {
-              defaultSelected.push(category + "-" + comp.name);
-              options.push({ id: category + "-" + comp.name, option: comp });
-              return {
-                id: category + "-" + comp.name,
-                name: comp.name,
-              };
-            }),
-          };
-        }),
-      };
-      setDefaultCompanyExpandedList(defaultExpanded);
-      setAllCompanyOptions(options);
-      setSelectedCompanies(defaultSelected);
-      setSelectedCompanyOptions(options);
-      setFilterOptions({
-        ...filterOptions,
-        company: {
-          ...filterOptions.company,
-          selected: defaultSelected,
-          selectedOptions: options,
-        },
-      });
-      setCompanyFilterOptions(options);
-      setCompanyFilterData(data);
-    }
-  }, [companies]);
-
-  useEffect(() => {
-    if (filteredMarkets !== null) {
-      const defaultExpanded = ["all"];
-      const defaultSelected = ["all"];
-      const options = [];
-      const categories = Object.keys(filteredMarkets);
-      const marketArray = [];
-      categories.forEach((category) =>
-        filteredMarkets[category].forEach((market) => marketArray.push(market))
-      );
-      const data = marketArray.length
-        ? {
-            id: "all",
-            name: "All",
-            children: categories.map((category) => {
-              const sameCatMarkets = marketArray.filter(
-                (mar) => mar.category_name === category
-              );
-              defaultExpanded.push(category);
-              defaultSelected.push(category);
-              // options.push({ id: "-" + market.name, option: market });
-              return {
-                id: category,
-                name: category,
-                children: sameCatMarkets.map((mar) => {
-                  defaultSelected.push(category + "-" + mar.name);
-                  options.push({ id: category + "-" + mar.name, option: mar });
-                  return {
-                    id: category + "-" + mar.name,
-                    name: mar.name,
-                  };
-                }),
-              };
-            }),
-          }
-        : null;
-      setDefaultMarketExpandedList(defaultExpanded);
-      setAllMarketOptions(options);
-      setSelectedMarkets(defaultSelected);
-      setSelectedMarketOptions(options);
-      setFilterOptions({
-        ...filterOptions,
-        market: {
-          ...filterOptions.market,
-          selected: defaultSelected,
-          selectedOptions: options,
-        },
-      });
-      setMarketFilterOptions(options);
-      setMarketFilterData(data);
-    }
-  }, [filteredMarkets]);
+  }, [search, markets, companies]);
 
   useEffect(() => {
     let companyFilterButtonText = "";
@@ -346,6 +190,125 @@ const FilterDropdown = ({
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const populateCompanyFilterOptions = (companiesData, selectedCompanyIds) => {
+    const expanded = ["all"];
+    const selected = [];
+    const options = [];
+    const selectedOptions = [];
+    const categories = Object.keys(companiesData);
+    const companyArray = [];
+
+    categories.forEach((category) =>
+      companiesData[category].forEach((company) => companyArray.push(company))
+    );
+    if (companyArray.length === selectedCompanyIds.length) selected.push("all");
+
+    const data = {
+      id: "all",
+      name: "All",
+      children: categories.map((category) => {
+        const sameCatCompanies = companyArray.filter(
+          (comp) => comp.category_name === category
+        );
+        expanded.push(category);
+        // selected.push(category);
+
+        return {
+          id: category,
+          name: category,
+          children: sameCatCompanies.map((comp) => {
+            if (selectedCompanyIds.includes(comp.id)) {
+              selected.push(category + "-" + comp.name);
+              selectedOptions.push({
+                id: category + "-" + comp.name,
+                option: comp,
+              });
+            }
+            options.push({ id: category + "-" + comp.name, option: comp });
+
+            return {
+              id: category + "-" + comp.name,
+              name: comp.name,
+            };
+          }),
+        };
+      }),
+    };
+
+    setCompanyFilterData(data);
+    setDefaultCompanyExpandedList(expanded);
+    setSelectedCompanies(selected);
+    setSelectedCompanyOptions(selectedOptions);
+    setFilterOptions({
+      ...filterOptions,
+      company: {
+        ...filterOptions.company,
+        selected: selected,
+        selectedOptions: selectedOptions,
+      },
+    });
+    setCompanyFilterOptions(options);
+  };
+  const populateMarketFilterOptions = (marketsData, selectedMarketIds) => {
+    const expanded = ["all"];
+    const selected = [];
+    const options = [];
+    const selectedOptions = [];
+    const categories = Object.keys(marketsData);
+    const marketArray = [];
+
+    categories.forEach((category) =>
+      marketsData[category].forEach((market) => marketArray.push(market))
+    );
+    if (marketArray.length === selectedMarketIds.length) selected.push("all");
+
+    const data = marketArray.length
+      ? {
+          id: "all",
+          name: "All",
+          children: categories.map((category) => {
+            const sameCatMarkets = marketArray.filter(
+              (mar) => mar.category_name === category
+            );
+            expanded.push(category);
+            // selected.push(category);
+
+            return {
+              id: category,
+              name: category,
+              children: sameCatMarkets.map((mar) => {
+                if (selectedMarketIds.includes(mar.id)) {
+                  selected.push(category + "-" + mar.name);
+                  selectedOptions.push({
+                    id: category + "-" + mar.name,
+                    option: mar,
+                  });
+                }
+                options.push({ id: category + "-" + mar.name, option: mar });
+
+                return {
+                  id: category + "-" + mar.name,
+                  name: mar.name,
+                };
+              }),
+            };
+          }),
+        }
+      : null;
+    setMarketFilterData(data);
+    setDefaultMarketExpandedList(expanded);
+    setSelectedMarkets(selected);
+    setSelectedMarketOptions(selectedOptions);
+    setFilterOptions({
+      ...filterOptions,
+      market: {
+        ...filterOptions.market,
+        selected,
+        selectedOptions: selectedOptions,
+      },
+    });
+    setMarketFilterOptions(options);
   };
   const handleApplyClicked = () => {
     setFilterOptions({
@@ -404,17 +367,13 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    setFilterOptions(defaultFilterOptions);
-    setSelectedCompanies(allCompanyOptions.map((opt) => opt.id));
-    setSelectedCompanyOptions(allCompanyOptions);
-    setFilteredMarkets(markets);
-    setSelectedMarketOptions(markets);
-    setDateFilterOptions(defaultFilterOptions.date);
-
     navigate("/sales");
   };
   const onSelectedCompanyOptionsChanged = (selectedOptions) => {
     let selectedMarketIds = [];
+    const marketCategories = Object.keys(markets);
+    let companyMarkets = {};
+
     selectedOptions.forEach(
       (opt) =>
         opt.option?.marketplace_ids &&
@@ -422,34 +381,6 @@ const FilterDropdown = ({
     );
     selectedMarketIds = [...new Set(selectedMarketIds)];
 
-    let newMarketsSelected = [];
-    let newMarketsOptionsSelected = [];
-
-    allMarketOptions.forEach((marketOption) => {
-      if (selectedMarketIds.includes(marketOption.option.id)) {
-        newMarketsSelected.push(marketOption.id);
-        newMarketsOptionsSelected.push(marketOption);
-      }
-    });
-
-    setSelectedMarkets(newMarketsSelected);
-    setSelectedMarketOptions(newMarketsOptionsSelected);
-    setFilterOptions({
-      ...filterOptions,
-      company: {
-        ...filterOptions.company,
-        selected: selectedOptions.map((opt) => opt.id),
-        selectedOptions,
-      },
-      market: {
-        ...filterOptions.market,
-        selected: newMarketsSelected,
-        selectedOptions: newMarketsOptionsSelected,
-      },
-    });
-
-    const marketCategories = Object.keys(markets);
-    const companyMarkets = {};
     marketCategories.forEach((category) => {
       const sameCategoryMarkets = markets[category];
       sameCategoryMarkets.forEach((mar) => {
@@ -459,11 +390,10 @@ const FilterDropdown = ({
         }
       });
     });
-    setFilteredMarkets({ ...companyMarkets });
+
+    populateMarketFilterOptions(companyMarkets, selectedMarketIds);
   };
-  const onSelectedMarketOptionsChanged = (selectedOptions) => {
-    console.log("selected company ids: ", selectedOptions);
-  };
+  const onSelectedMarketOptionsChanged = (selectedOptions) => {};
 
   return (
     <React.Fragment>
