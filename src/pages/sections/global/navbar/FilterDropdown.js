@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Button, Divider, Grid, Menu, useMediaQuery } from "@mui/material";
+import styled from "styled-components/macro";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Menu as MuiMenu,
+  useMediaQuery,
+} from "@mui/material";
 
 import CompanyFilterMenu from "./CompanyFilterMenu";
 import DateFilterMenu from "./DateFilterMenu";
 import MarketFilterMenu from "./MarketFilterMenu";
+
+const Menu = styled(MuiMenu)`
+  & .MuiPaper-root {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+`;
 
 const FilterDropdown = ({
   text,
