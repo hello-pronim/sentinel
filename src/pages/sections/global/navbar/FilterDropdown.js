@@ -16,7 +16,7 @@ import MarketFilterMenu from "./MarketFilterMenu";
 
 const Menu = styled(MuiMenu)`
   & .MuiPaper-root {
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
   }
 `;
 

@@ -106,11 +106,11 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
           <Grid item xs={12}>
             <Grid container spacing={4}>
               <Grid item xs={12}>
-                <Grid container alignItems="center" spacing={2}>
+                <Grid container alignItems="center" spacing={4}>
                   <Grid item>
                     <Typography variant="body2">Date Range</Typography>
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={8}>
                     <FormControl id="date-range-label" size="small" fullWidth>
                       <Select
                         labelId="date-range-label"
@@ -177,7 +177,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                   <Grid item>
                     <Typography>Compared to</Typography>
                   </Grid>
-                  <Grid item defaultValue="custom">
+                  <Grid item defaultValue="custom" xs={8}>
                     <FormControl id="compared-to-label" size="small" fullWidth>
                       <Select
                         labelId="compared-to-label"
@@ -250,6 +250,7 @@ const DateFilterMenu = ({ title, filterOptions, setFilterOptions }) => {
                   onChange={handleViewModeChanged}
                   exclusive
                   fullWidth
+                  size="small"
                 >
                   <ToggleButton value="day">Day</ToggleButton>
                   <ToggleButton value="month">Month</ToggleButton>
