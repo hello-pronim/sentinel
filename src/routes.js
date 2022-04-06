@@ -19,6 +19,7 @@ import Page500 from "./pages/auth/Page500";
 
 // Page components
 import Sales from "./pages/main/Sales";
+import Brands from "./pages/main/Brands";
 
 const Profile = async(() => import("./pages/main/Profile"));
 
@@ -56,6 +57,20 @@ const routes = [
       {
         path: "",
         element: <Sales />,
+      },
+    ],
+  },
+  {
+    path: "brands",
+    element: (
+      <AuthGuard>
+        <DashboardLayout />
+      </AuthGuard>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Brands />,
       },
     ],
   },

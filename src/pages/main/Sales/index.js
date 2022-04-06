@@ -89,6 +89,7 @@ const Sales = () => {
     setLoadingSalesTableData(true);
     getSalesData(queryParamsString).then((res) => {
       const { data } = res.data.body;
+      console.log(data);
 
       setLoadingSalesTableData(false);
       if (data) {
