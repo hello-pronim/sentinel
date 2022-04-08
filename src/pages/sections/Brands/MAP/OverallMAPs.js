@@ -1,20 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import styled from "styled-components/macro";
+import React from "react";
 import GaugeChart from "react-gauge-chart";
 
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import {
-  Button,
-  Card,
-  CardContent,
-  Divider as MuiDivider,
-  Grid,
-  Tab,
-  Typography,
-} from "@mui/material";
-import { spacing } from "@mui/system";
-
-const Divider = styled(MuiDivider)(spacing);
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { red, green } from "@mui/material/colors";
 
 const OverallMAPs = ({ current, previous }) => {
   return (
@@ -36,6 +24,7 @@ const OverallMAPs = ({ current, previous }) => {
                     </Grid>
                     <Grid item>
                       <GaugeChart
+                        colors={[red["A700"], green["A700"]]}
                         animate={false}
                         nrOfLevels={20}
                         percent={current}
@@ -55,6 +44,7 @@ const OverallMAPs = ({ current, previous }) => {
                     </Grid>
                     <Grid item>
                       <GaugeChart
+                        colors={[red["A700"], green["A700"]]}
                         animate={false}
                         nrOfLevels={20}
                         percent={previous}

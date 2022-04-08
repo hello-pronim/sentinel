@@ -120,23 +120,23 @@ const ProductsMAPTable = () => {
   useEffect(() => {
     //call to get the table data
     setLoadingCurrentViolationsData(true);
-    getCurrentViolationsData(queryParamsString).then((res) => {
-      console.log(res);
-      const { data } = res.data.body;
+    // getCurrentViolationsData(queryParamsString).then((res) => {
+    //   console.log(res);
+    //   const { data } = res.data.body;
 
-      setLoadingCurrentViolationsData(false);
-      if (data) {
-        const tableData = data.map((item) => ({
-          name: item.name,
-          currentPrice: item.current_price,
-          mapPrice: item.map_price,
-          priceDiff: item.price_diff,
-          companyId: item?.company_id,
-        }));
+    //   setLoadingCurrentViolationsData(false);
+    //   if (data) {
+    //     const tableData = data.map((item) => ({
+    //       name: item.name,
+    //       currentPrice: item.current_price,
+    //       mapPrice: item.map_price,
+    //       priceDiff: item.price_diff,
+    //       companyId: item?.company_id,
+    //     }));
 
-        setCurrentViolationsData(tableData);
-      }
-    });
+    //     setCurrentViolationsData(tableData);
+    //   }
+    // });
   }, [queryParamsString]);
 
   const handleTabChanged = (event, value) => {

@@ -1,30 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
 import { Grid } from "@mui/material";
 
-import { getBrandsMAPData } from "../../../../services/MAPService";
+import { AuthContext } from "../../../../contexts/CognitoContext";
+
+import {
+  getMAPOveralls,
+  getBrandsMAPData,
+} from "../../../../services/MAPService";
 import OverallMAPs from "./OverallMAPs";
 import BrandsMAPTable from "./BrandsMAPTable";
 import ProductsMAPTable from "./ProductsMAPTable";
 
 const MAP = () => {
   const queryParamsString = window.location.search;
-  const [currentOverall, setCurrentOverall] = useState(0.2);
-  const [previousOverall, setPreviousOverall] = useState(0.3);
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
+  const [currentOverall, setCurrentOverall] = useState(0);
+  const [previousOverall, setPreviousOverall] = useState(0);
+  const [loadingMAPOverall, setLoadingMAPOverall] = useState(false);
   const [brandsMAPData, setBrandsMAPData] = useState(null);
   const [loadingBrandsMAPData, setLoadingBrandsMAPData] = useState(false);
 
-  useEffect(() => {
-    //call to get the table data
+  const initializeMAPData = useCallback(() => {
+    //call to get the MAP overall data
+    setLoadingMAPOverall(true);
+    getMAPOveralls().then((res) => {
+      const {
+        data: {
+          body: {
+            data: { stats },
+          },
+        },
+      } = res;
+
+      setLoadingMAPOverall(false);
+      if (stats) {
+        setCurrentOverall(stats.current_map);
+        setPreviousOverall(stats.comparison_map);
+      }
+    });
+
+    //call to get the brands' MAP data
     setLoadingBrandsMAPData(true);
     getBrandsMAPData(queryParamsString).then((res) => {
       console.log(res);
-      const { data } = res.data.body;
+      const {
+        data: {
+          body: {
+            data: { brands },
+          },
+        },
+      } = res;
 
       setLoadingBrandsMAPData(false);
-      if (data) {
-        const tableData = data.map((item) => ({
+      if (brands) {
+        const tableData = brands.map((item) => ({
           name: item.name,
           MAP: item.MAP,
           comparisonMAP: item.comparison_map,
@@ -36,6 +68,16 @@ const MAP = () => {
       }
     });
   }, [queryParamsString]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      initializeMAPData();
+    }
+  }, [isAuthenticated, isInitialized, initializeMAPData]);
 
   return (
     <React.Fragment>
