@@ -1,10 +1,5 @@
 import axios from "../utils/axios";
 
-import {
-  mockBrandsMAPTableData,
-  mockCurrentViolationsTableData,
-} from "./mocks";
-
 const getMAPOveralls = () => {
   return axios.get(`/api/${process.env.REACT_APP_API_ENV || "dev"}/map`);
 };
