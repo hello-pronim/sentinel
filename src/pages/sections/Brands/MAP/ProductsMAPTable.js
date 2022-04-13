@@ -186,6 +186,7 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
+                          title="Products"
                           data={currentViolationsData}
                           columns={columns}
                         />
