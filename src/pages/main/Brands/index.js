@@ -19,10 +19,7 @@ const MAP = async(() => import("../../sections/Brands/MAP/index"));
 const Divider = styled(MuiDivider)(spacing);
 
 const Brands = () => {
-  const tabs = [
-    { id: 0, label: "MAP", value: "map" },
-    { id: 1, label: "Something else coming later tab", value: "other" },
-  ];
+  const tabs = [{ id: 0, label: "MAP", value: "map" }];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
 
   const handleTabChanged = (event, value) => {
@@ -64,7 +61,6 @@ const Brands = () => {
                   </Grid>
                 </Grid>
               </TabPanel>
-              <TabPanel value="other">Coming soon</TabPanel>
             </TabContext>
           </Card>
         </Grid>
