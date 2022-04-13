@@ -343,7 +343,7 @@ const FilterDropdown = ({
       },
     });
 
-    let url = "/sales?";
+    let url = window.location.pathname + "?";
 
     selectedCompanyOptions.forEach((opt, index) => {
       url +=

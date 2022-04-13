@@ -1,12 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
-import GaugeChart from "react-gauge-chart";
 import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -14,9 +12,10 @@ import {
   Grid,
   Link,
   Tab,
-  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
+
+import { AuthContext } from "../../../../contexts/CognitoContext";
 
 import { getCurrentViolationsData } from "../../../../services/MAPService";
 import {
@@ -28,6 +27,8 @@ const Divider = styled(MuiDivider)(spacing);
 
 const ProductsMAPTable = () => {
   const queryParamsString = window.location.search;
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
   const tabs = [
     {
       id: 0,
@@ -55,12 +56,14 @@ const ProductsMAPTable = () => {
       title: "Listing",
       width: "55%",
       render: (rowData) => {
-        const { name } = rowData;
+        const { name, url } = rowData;
 
-        return (
-          <Link component={NavLink} to="#">
+        return url ? (
+          <Link component={NavLink} to={url}>
             {name}
           </Link>
+        ) : (
+          name
         );
       },
     },
@@ -117,27 +120,44 @@ const ProductsMAPTable = () => {
     },
   ];
 
-  useEffect(() => {
+  const initializeProductsMAPData = useCallback(() => {
     //call to get the table data
     setLoadingCurrentViolationsData(true);
-    // getCurrentViolationsData(queryParamsString).then((res) => {
-    //   console.log(res);
-    //   const { data } = res.data.body;
+    getCurrentViolationsData(queryParamsString).then((res) => {
+      const {
+        data: {
+          body: {
+            data: { listings },
+          },
+        },
+      } = res;
+      console.log(listings);
 
-    //   setLoadingCurrentViolationsData(false);
-    //   if (data) {
-    //     const tableData = data.map((item) => ({
-    //       name: item.name,
-    //       currentPrice: item.current_price,
-    //       mapPrice: item.map_price,
-    //       priceDiff: item.price_diff,
-    //       companyId: item?.company_id,
-    //     }));
+      setLoadingCurrentViolationsData(false);
+      if (listings) {
+        const tableData = listings.map((item) => ({
+          name: item.name,
+          currentPrice: item.price,
+          mapPrice: item.map_price,
+          priceDiff: item.price_diff,
+          companyId: item?.company_id,
+          url: item.url,
+        }));
 
-    //     setCurrentViolationsData(tableData);
-    //   }
-    // });
+        setCurrentViolationsData(tableData);
+      }
+    });
   }, [queryParamsString]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      initializeProductsMAPData();
+    }
+  }, [isAuthenticated, isInitialized, initializeProductsMAPData]);
 
   const handleTabChanged = (event, value) => {
     setSelectedTab(value);
@@ -166,6 +186,7 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
+                          title="Products"
                           data={currentViolationsData}
                           columns={columns}
                         />
