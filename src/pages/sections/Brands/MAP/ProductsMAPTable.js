@@ -35,16 +35,6 @@ const ProductsMAPTable = () => {
       label: "Current Listing Violations",
       value: "current_listing_violations",
     },
-    {
-      id: 1,
-      label: "Current Listings Without a Price",
-      value: "current_listings_without_price",
-    },
-    {
-      id: 2,
-      label: "Violations by Time Period",
-      value: "violations_by_time_period",
-    },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
@@ -199,12 +189,6 @@ const ProductsMAPTable = () => {
                       )}
                     </Grid>
                   </Grid>
-                </TabPanel>
-                <TabPanel value="current_listings_without_price">
-                  Coming soon
-                </TabPanel>
-                <TabPanel value="violations_by_time_period">
-                  Coming soon
                 </TabPanel>
               </TabContext>
             </Grid>
