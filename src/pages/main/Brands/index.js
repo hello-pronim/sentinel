@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
@@ -12,9 +12,6 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
-import { AppContext } from "../../../contexts/AppContext";
-import { AuthContext } from "../../../contexts/CognitoContext";
-
 import async from "../../../components/Async";
 
 const MAP = async(() => import("../../sections/Brands/MAP/index"));
@@ -22,43 +19,12 @@ const MAP = async(() => import("../../sections/Brands/MAP/index"));
 const Divider = styled(MuiDivider)(spacing);
 
 const Brands = () => {
-  const queryParamsString = window.location.search;
-  const tabs = [
-    { id: 0, label: "MAP", value: "map" },
-    { id: 1, label: "Something else coming later tab", value: "other" },
-  ];
-  const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
-  const { isInitialized, isAuthenticated, initialize } =
-    useContext(AuthContext);
+  const tabs = [{ id: 0, label: "MAP", value: "map" }];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
-
-  useEffect(() => {
-    initialize();
-  }, [initialize]);
 
   const handleTabChanged = (event, value) => {
-    console.log(value);
     setSelectedTab(value);
   };
-
-  useEffect(() => {
-    const selectedCompanyList = filterOptions.company.selectedOptions.map(
-      (item) => item.option
-    );
-
-    setSelectedCompanies(selectedCompanyList);
-
-    if (companies) {
-      const companyCategories = Object.keys(companies);
-      const allCompanies = [];
-
-      companyCategories.forEach((category) => {
-        companies[category].forEach((company) => allCompanies.push(company));
-      });
-    }
-    // .catch((err) => signOut());
-  }, [filterOptions, companies]);
 
   return (
     <React.Fragment>
@@ -95,7 +61,6 @@ const Brands = () => {
                   </Grid>
                 </Grid>
               </TabPanel>
-              <TabPanel value="other">Coming soon</TabPanel>
             </TabContext>
           </Card>
         </Grid>

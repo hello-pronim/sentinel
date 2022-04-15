@@ -1,12 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
-import GaugeChart from "react-gauge-chart";
 import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -14,9 +12,10 @@ import {
   Grid,
   Link,
   Tab,
-  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
+
+import { AuthContext } from "../../../../contexts/CognitoContext";
 
 import { getCurrentViolationsData } from "../../../../services/MAPService";
 import {
@@ -28,21 +27,13 @@ const Divider = styled(MuiDivider)(spacing);
 
 const ProductsMAPTable = () => {
   const queryParamsString = window.location.search;
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
   const tabs = [
     {
       id: 0,
       label: "Current Listing Violations",
       value: "current_listing_violations",
-    },
-    {
-      id: 1,
-      label: "Current Listings Without a Price",
-      value: "current_listings_without_price",
-    },
-    {
-      id: 2,
-      label: "Violations by Time Period",
-      value: "violations_by_time_period",
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
@@ -55,12 +46,14 @@ const ProductsMAPTable = () => {
       title: "Listing",
       width: "55%",
       render: (rowData) => {
-        const { name } = rowData;
+        const { name, url } = rowData;
 
-        return (
-          <Link component={NavLink} to="#">
+        return url ? (
+          <Link component={NavLink} to={url}>
             {name}
           </Link>
+        ) : (
+          name
         );
       },
     },
@@ -117,27 +110,44 @@ const ProductsMAPTable = () => {
     },
   ];
 
-  useEffect(() => {
+  const initializeProductsMAPData = useCallback(() => {
     //call to get the table data
     setLoadingCurrentViolationsData(true);
     getCurrentViolationsData(queryParamsString).then((res) => {
-      console.log(res);
-      const { data } = res.data.body;
+      const {
+        data: {
+          body: {
+            data: { listings },
+          },
+        },
+      } = res;
+      console.log(listings);
 
       setLoadingCurrentViolationsData(false);
-      if (data) {
-        const tableData = data.map((item) => ({
+      if (listings) {
+        const tableData = listings.map((item) => ({
           name: item.name,
-          currentPrice: item.current_price,
+          currentPrice: item.price,
           mapPrice: item.map_price,
           priceDiff: item.price_diff,
           companyId: item?.company_id,
+          url: item.url,
         }));
 
         setCurrentViolationsData(tableData);
       }
     });
   }, [queryParamsString]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      initializeProductsMAPData();
+    }
+  }, [isAuthenticated, isInitialized, initializeProductsMAPData]);
 
   const handleTabChanged = (event, value) => {
     setSelectedTab(value);
@@ -166,6 +176,7 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
+                          title="Products"
                           data={currentViolationsData}
                           columns={columns}
                         />
@@ -178,12 +189,6 @@ const ProductsMAPTable = () => {
                       )}
                     </Grid>
                   </Grid>
-                </TabPanel>
-                <TabPanel value="current_listings_without_price">
-                  Coming soon
-                </TabPanel>
-                <TabPanel value="violations_by_time_period">
-                  Coming soon
                 </TabPanel>
               </TabContext>
             </Grid>

@@ -89,7 +89,6 @@ const Sales = () => {
     setLoadingSalesTableData(true);
     getSalesData(queryParamsString).then((res) => {
       const { data } = res.data.body;
-      console.log(data);
 
       setLoadingSalesTableData(false);
       if (data) {
@@ -112,7 +111,7 @@ const Sales = () => {
     if (isAuthenticated && isInitialized) {
       refreshSalesData();
     }
-  }, [isInitialized, isAuthenticated, queryParamsString, refreshSalesData]);
+  }, [isInitialized, isAuthenticated, refreshSalesData]);
 
   return (
     <React.Fragment>

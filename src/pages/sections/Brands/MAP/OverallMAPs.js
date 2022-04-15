@@ -1,68 +1,86 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import styled from "styled-components/macro";
+import React from "react";
 import GaugeChart from "react-gauge-chart";
 
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
-  Button,
   Card,
   CardContent,
-  Divider as MuiDivider,
+  CircularProgress,
   Grid,
-  Tab,
   Typography,
 } from "@mui/material";
-import { spacing } from "@mui/system";
+import { red, green } from "@mui/material/colors";
 
-const Divider = styled(MuiDivider)(spacing);
+import { convertPercentFormat } from "../../../../utils/functions";
 
-const OverallMAPs = ({ current, previous }) => {
+const OverallMAPs = ({ current, previous, loading }) => {
   return (
     <React.Fragment>
       <Card variant="outlined">
         <CardContent>
-          <Grid container>
-            <Grid item md={6} xs={12}>
-              <Grid container spacing={4}>
-                <Grid item md={6} xs={12}>
-                  <Grid
-                    container
-                    direction="column"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <Grid item>
-                      <Typography>Overall MAP</Typography>
+          <Grid container justifyContent="center">
+            <Grid item md={8} xs={12}>
+              {!loading ? (
+                <Grid container spacing={4}>
+                  <Grid item md={6} xs={12}>
+                    <Grid
+                      container
+                      direction="column"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Grid item>
+                        <Typography>Overall MAP</Typography>
+                      </Grid>
+                      <Grid item>
+                        <GaugeChart
+                          colors={[red["A700"], green["A700"]]}
+                          animate={false}
+                          nrOfLevels={20}
+                          percent={current}
+                          formatTextValue={() => ""}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="h3">
+                          {convertPercentFormat(current)}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item>
-                      <GaugeChart
-                        animate={false}
-                        nrOfLevels={20}
-                        percent={current}
-                      />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Grid
+                      container
+                      direction="column"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Grid item>
+                        <Typography>Previous Overall MAP</Typography>
+                      </Grid>
+                      <Grid item>
+                        <GaugeChart
+                          colors={[red["A700"], green["A700"]]}
+                          animate={false}
+                          nrOfLevels={20}
+                          percent={previous}
+                          formatTextValue={() => ""}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="h3">
+                          {convertPercentFormat(previous)}
+                        </Typography>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item md={6} xs={12}>
-                  <Grid
-                    container
-                    direction="column"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <Grid item>
-                      <Typography>Previous Overall MAP</Typography>
-                    </Grid>
-                    <Grid item>
-                      <GaugeChart
-                        animate={false}
-                        nrOfLevels={20}
-                        percent={previous}
-                      />
-                    </Grid>
+              ) : (
+                <Grid container justifyContent="center">
+                  <Grid item>
+                    <CircularProgress />
                   </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Grid>
           </Grid>
         </CardContent>
