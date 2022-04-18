@@ -1,4 +1,7 @@
-import { MonetizationOn as MonetizationOnIcon } from "@mui/icons-material";
+import {
+  MonetizationOn as MonetizationOnIcon,
+  Storefront as StorefrontIcon,
+} from "@mui/icons-material";
 
 const pagesSection = [
   {
@@ -10,7 +13,7 @@ const pagesSection = [
   {
     slug: "brands",
     href: "/brands",
-    icon: MonetizationOnIcon,
+    icon: StorefrontIcon,
     title: "Brands",
   },
 ];
