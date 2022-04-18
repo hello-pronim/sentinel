@@ -93,7 +93,15 @@ const BrandsMAPTable = ({ title, data, loading }) => {
           <Grid container>
             <Grid item xs={12}>
               {data !== null && !loading ? (
-                <MaterialTable title={title} columns={columns} data={data} />
+                <MaterialTable
+                  columns={columns}
+                  data={data}
+                  options={{
+                    pageSize: 10,
+                    search: true,
+                    showTitle: false,
+                  }}
+                />
               ) : (
                 <Grid container justifyContent="center">
                   <Grid item>

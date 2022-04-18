@@ -5,6 +5,7 @@ import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
+  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -14,6 +15,7 @@ import {
   Tab,
 } from "@mui/material";
 import { spacing } from "@mui/system";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
 
@@ -44,17 +46,36 @@ const ProductsMAPTable = () => {
     {
       field: "name",
       title: "Listing",
-      width: "55%",
+      width: "40%",
       render: (rowData) => {
         const { name, url } = rowData;
 
         return url ? (
-          <Link component={NavLink} to={url}>
-            {name}
-          </Link>
+          <Grid container alignItems="center" spacing={2}>
+            <Grid item>
+              {/* <Link component={NavLink} to="#" target="_blank"> */}
+              {name}
+              {/* </Link> */}
+            </Grid>
+            <Grid item>
+              <Link component="button" onClick={() => window.open(url)}>
+                <LaunchIcon />
+              </Link>
+            </Grid>
+          </Grid>
         ) : (
           name
         );
+      },
+    },
+    {
+      field: "marketplace",
+      title: "Market",
+      width: "15%",
+      render: (rowData) => {
+        const { marketplace } = rowData;
+
+        return marketplace;
       },
     },
     {
@@ -121,12 +142,12 @@ const ProductsMAPTable = () => {
           },
         },
       } = res;
-      console.log(listings);
 
       setLoadingCurrentViolationsData(false);
       if (listings) {
         const tableData = listings.map((item) => ({
           name: item.name,
+          marketplace: item.marketplace,
           currentPrice: item.price,
           mapPrice: item.map_price,
           priceDiff: item.price_diff,
@@ -176,9 +197,13 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
-                          title="Products"
                           data={currentViolationsData}
                           columns={columns}
+                          options={{
+                            pageSize: 20,
+                            search: true,
+                            showTitle: false,
+                          }}
                         />
                       ) : (
                         <Grid container justifyContent="center">
