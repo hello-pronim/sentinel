@@ -53,9 +53,9 @@ const ProductsMAPTable = () => {
         return url ? (
           <Grid container alignItems="center" spacing={2}>
             <Grid item>
-              <Link component={NavLink} to="#" target="_blank">
-                {name}
-              </Link>
+              {/* <Link component={NavLink} to="#" target="_blank"> */}
+              {name}
+              {/* </Link> */}
             </Grid>
             <Grid item>
               <Link component="button" onClick={() => window.open(url)}>
