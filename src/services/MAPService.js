@@ -1,7 +1,9 @@
 import axios from "../utils/axios";
 
-const getMAPOveralls = () => {
-  return axios.get(`/api/${process.env.REACT_APP_API_ENV || "dev"}/map`);
+const getMAPOveralls = (paramsString) => {
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/map${paramsString}`
+  );
 };
 
 const getBrandsMAPData = (paramsString) => {
