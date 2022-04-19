@@ -26,7 +26,7 @@ const MAP = () => {
   const initializeMAPData = useCallback(() => {
     //call to get the MAP overall data
     setLoadingMAPOverall(true);
-    getMAPOveralls().then((res) => {
+    getMAPOveralls(queryParamsString).then((res) => {
       const {
         data: {
           body: {
