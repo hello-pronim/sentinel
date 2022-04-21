@@ -111,7 +111,7 @@ const Sales = () => {
     if (isAuthenticated && isInitialized) {
       refreshSalesData();
     }
-  }, [isInitialized, isAuthenticated, queryParamsString, refreshSalesData]);
+  }, [isInitialized, isAuthenticated, refreshSalesData]);
 
   return (
     <React.Fragment>

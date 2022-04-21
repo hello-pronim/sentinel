@@ -1,7 +1,5 @@
 import { createContext, useCallback, useEffect, useReducer } from "react";
 
-import { getRefreshToken, refreshToken } from "../services/AuthService";
-
 import {
   AuthenticationDetails,
   CognitoUser,
