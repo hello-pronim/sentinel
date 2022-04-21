@@ -69,6 +69,16 @@ const ProductsMAPTable = () => {
       },
     },
     {
+      field: "marketId",
+      title: "ID",
+      width: "15%",
+      render: (rowData) => {
+        const { marketId } = rowData;
+
+        return marketId;
+      },
+    },
+    {
       field: "marketplace",
       title: "Market",
       width: "15%",
@@ -76,6 +86,16 @@ const ProductsMAPTable = () => {
         const { marketplace } = rowData;
 
         return marketplace;
+      },
+    },
+    {
+      field: "seller",
+      title: "Seller",
+      width: "10%",
+      render: (rowData) => {
+        const { seller } = rowData;
+
+        return seller;
       },
     },
     {
@@ -148,6 +168,8 @@ const ProductsMAPTable = () => {
         const tableData = listings.map((item) => ({
           name: item.name,
           marketplace: item.marketplace,
+          seller: item.seller,
+          marketId: item.market_id,
           currentPrice: item.price,
           mapPrice: item.map_price,
           priceDiff: item.price_diff,
