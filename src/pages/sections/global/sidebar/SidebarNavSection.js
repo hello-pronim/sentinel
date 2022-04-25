@@ -4,7 +4,9 @@ import SidebarNavList from "./SidebarNavList";
 import { AppContext } from "../../../../contexts/AppContext";
 
 const SidebarNavSection = (props) => {
-  const { showBrandsView } = useContext(AppContext);
+  const {
+    features: { showBrandsView },
+  } = useContext(AppContext);
   const {
     title,
     pages,
