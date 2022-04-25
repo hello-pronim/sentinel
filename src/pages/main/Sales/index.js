@@ -8,12 +8,13 @@ import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
 import { AuthContext } from "../../../contexts/CognitoContext";
-
 import { getSales, getSalesData } from "../../../services/SalesService";
-import SalesTable from "../../sections/Sales/SalesTable";
 import async from "../../../components/Async";
 
+import SalesTable from "../../sections/Sales/SalesTable";
+import SalesPerformance from "../../sections/Sales/SalesPerformance";
 const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
+
 const Divider = styled(MuiDivider)(spacing);
 
 const Sales = () => {
@@ -137,6 +138,9 @@ const Sales = () => {
       <Divider my={6} />
 
       <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <SalesPerformance title="My Portfolio's Performance" />
+        </Grid>
         <Grid item xs={12}>
           <SalesChart
             title={chartTitle}
