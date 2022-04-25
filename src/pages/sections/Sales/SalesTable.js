@@ -275,6 +275,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
                 pageSize: 20,
                 search: true,
                 showTitle: false,
+                emptyRowsWhenPaging: false,
               }}
             />
           </TableWrapper>

@@ -223,6 +223,7 @@ const ProductsMAPTable = () => {
                             pageSize: 20,
                             search: true,
                             showTitle: false,
+                            emptyRowsWhenPaging: false,
                           }}
                         />
                       ) : (
