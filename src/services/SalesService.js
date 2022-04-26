@@ -12,4 +12,10 @@ const getSalesData = (paramsString) => {
   );
 };
 
-export { getSales, getSalesData };
+const getSalesExport = (file_type) => {
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/export/${file_type}`
+  );
+};
+
+export { getSales, getSalesData, getSalesExport };

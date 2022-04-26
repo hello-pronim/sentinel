@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
+import { getSalesExport } from "../../../services/SalesService";
 
 import {
   Card as MuiCard,
@@ -11,7 +12,10 @@ import {
   Chip as MuiChip,
   Grid,
   Link,
+  IconButton,
+  useMediaQuery,
 } from "@mui/material";
+import { Download } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 import MaterialTable from "@material-table/core";
 
@@ -39,6 +43,7 @@ const TableWrapper = styled.div`
 
 const SalesTable = ({ title, data, salesType, loading }) => {
   const { filterOptions } = useContext(AppContext);
+  const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [dateFilterOptions, setDateFilterOptions] = useState(
     filterOptions.date
   );
@@ -257,9 +262,37 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     return url;
   };
 
+  const downloadReport = async () => {
+    const response = await getSalesExport("csv");
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    const filename = response.headers["content-disposition"].replace(
+      /attachment;\sfilename=/g,
+      ""
+    );
+    link.setAttribute("download", `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+  };
+
   return (
     <Card mb={6}>
-      <CardHeader title={title} />
+      <Grid
+        container
+        wrap="nowrap"
+        space={0}
+        direction={mobileScreen ? "column" : "row"}
+      >
+        <Grid item xs={11}>
+          <CardHeader title={title} />
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton size="large" onClick={downloadReport}>
+            <Download />
+          </IconButton>
+        </Grid>
+      </Grid>
       <Divider />
       <CardContent>
         {data !== null && !loading ? (
