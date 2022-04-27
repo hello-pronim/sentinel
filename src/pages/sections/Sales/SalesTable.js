@@ -14,6 +14,7 @@ import {
   Link,
   IconButton,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
 import { spacing } from "@mui/system";
@@ -282,9 +283,11 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       <CardHeader
         title={title}
         action={
-          <IconButton size="large" onClick={downloadReport}>
-            <Download />
-          </IconButton>
+          <Tooltip title="Daily Sales">
+            <IconButton size="large" onClick={downloadReport}>
+              <Download />
+            </IconButton>
+          </Tooltip>
         }
       />
       <Divider />
