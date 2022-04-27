@@ -42,6 +42,7 @@ const TableWrapper = styled.div`
 `;
 
 const SalesTable = ({ title, data, salesType, loading }) => {
+  const queryParamsString = window.location.search;
   const { filterOptions } = useContext(AppContext);
   const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [dateFilterOptions, setDateFilterOptions] = useState(
@@ -263,7 +264,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   };
 
   const downloadReport = async () => {
-    const response = await getSalesExport("csv");
+    const response = await getSalesExport("csv", queryParamsString);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
