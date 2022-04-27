@@ -278,21 +278,14 @@ const SalesTable = ({ title, data, salesType, loading }) => {
 
   return (
     <Card mb={6}>
-      <Grid
-        container
-        wrap="nowrap"
-        space={0}
-        direction={mobileScreen ? "column" : "row"}
-      >
-        <Grid item xs={11}>
-          <CardHeader title={title} />
-        </Grid>
-        <Grid item xs={1}>
+      <CardHeader
+        title={title}
+        action={
           <IconButton size="large" onClick={downloadReport}>
             <Download />
           </IconButton>
-        </Grid>
-      </Grid>
+        }
+      />
       <Divider />
       <CardContent>
         {data !== null && !loading ? (
