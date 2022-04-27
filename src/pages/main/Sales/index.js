@@ -2,7 +2,13 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  Divider as MuiDivider,
+  Grid,
+  Typography,
+  Tooltip,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
@@ -130,13 +136,15 @@ const Sales = () => {
           </Typography>
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            onClick={refreshSalesData}
-            disabled={loadingSalesChartData || loadingSalesTableData}
-          >
-            <RefreshIcon />
-          </Button>
+          <Tooltip title="Refresh Data">
+            <Button
+              variant="contained"
+              onClick={refreshSalesData}
+              disabled={loadingSalesChartData || loadingSalesTableData}
+            >
+              <RefreshIcon />
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
 

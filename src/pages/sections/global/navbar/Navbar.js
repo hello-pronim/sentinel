@@ -5,6 +5,7 @@ import {
   AppBar as MuiAppBar,
   IconButton as MuiIconButton,
   Toolbar,
+  Tooltip,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 
@@ -86,17 +87,19 @@ const Navbar = ({ onDrawerToggle }) => {
               </IconButton>
             </Grid>
             <Grid item xs />
-            <Grid item>
-              <FilterDropdown
-                text={filterButtonText}
-                companies={companies}
-                markets={markets}
-                filterOptions={filterOptions}
-                defaultFilterOptions={defaultFilterOptions}
-                setFilterButtonText={setFilterButtonText}
-                setFilterOptions={setFilterOptions}
-              />
-            </Grid>
+            <Tooltip title="Data Filters">
+              <Grid item>
+                <FilterDropdown
+                  text={filterButtonText}
+                  companies={companies}
+                  markets={markets}
+                  filterOptions={filterOptions}
+                  defaultFilterOptions={defaultFilterOptions}
+                  setFilterButtonText={setFilterButtonText}
+                  setFilterOptions={setFilterOptions}
+                />
+              </Grid>
+            </Tooltip>
           </Grid>
         </Toolbar>
       </AppBar>
