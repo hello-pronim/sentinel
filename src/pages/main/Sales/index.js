@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Divider as MuiDivider,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -190,13 +191,15 @@ const Sales = () => {
           </Typography>
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            onClick={refreshSalesData}
-            disabled={loadingSalesChartData || loadingSalesTableData}
-          >
-            <RefreshIcon />
-          </Button>
+          <Tooltip title="Refresh Data">
+            <Button
+              variant="contained"
+              onClick={refreshSalesData}
+              disabled={loadingSalesChartData || loadingSalesTableData}
+            >
+              <RefreshIcon />
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
 
