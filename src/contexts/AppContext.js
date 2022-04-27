@@ -9,6 +9,7 @@ function AppProvider({ children }) {
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
   const [showBrandsView, setShowBrandsView] = useState(false);
+  const [showSalesPerformance, setShowSalesPerformance] = useState(false);
   const defaultFilterOptions = {
     company: {
       selected: [],
@@ -38,6 +39,7 @@ function AppProvider({ children }) {
       enableAnalytics: true,
       onChange: (oldFlags, params) => {
         setShowBrandsView(flagsmith.hasFeature("brands_view"));
+        setShowSalesPerformance(flagsmith.hasFeature("sales_performance"));
       },
     });
   }, []);
@@ -49,7 +51,7 @@ function AppProvider({ children }) {
         markets,
         defaultFilterOptions,
         filterOptions,
-        showBrandsView,
+        features: { showBrandsView, showSalesPerformance },
         setCompanies,
         setMarkets,
         setFilterOptions,

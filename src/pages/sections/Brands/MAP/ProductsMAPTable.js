@@ -1,11 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
 import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -225,6 +223,7 @@ const ProductsMAPTable = () => {
                             pageSize: 20,
                             search: true,
                             showTitle: false,
+                            emptyRowsWhenPaging: false,
                           }}
                         />
                       ) : (

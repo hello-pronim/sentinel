@@ -100,6 +100,7 @@ const BrandsMAPTable = ({ title, data, loading }) => {
                     pageSize: 10,
                     search: true,
                     showTitle: false,
+                    emptyRowsWhenPaging: false,
                   }}
                 />
               ) : (

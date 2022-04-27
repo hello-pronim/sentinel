@@ -381,7 +381,7 @@ const FilterDropdown = ({
     setAnchorEl(null);
   };
   const handleClearClicked = () => {
-    navigate("/sales");
+    navigate(window.location.pathname);
   };
   const onSelectedCompanyOptionsChanged = (selectedOptions) => {
     let selectedMarketIds = [];
