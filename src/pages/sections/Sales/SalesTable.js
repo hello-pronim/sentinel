@@ -14,7 +14,6 @@ import {
   Link,
   IconButton,
   useMediaQuery,
-  Tooltip,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
 import { spacing } from "@mui/system";
@@ -264,8 +263,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   };
 
   const downloadReport = async () => {
-    const queryParamsString = window.location.search;
-    const response = await getSalesExport("csv", queryParamsString);
+    const response = await getSalesExport("csv");
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
@@ -280,16 +278,21 @@ const SalesTable = ({ title, data, salesType, loading }) => {
 
   return (
     <Card mb={6}>
-      <CardHeader
-        title={title}
-        action={
-          <Tooltip title="Daily Sales">
-            <IconButton size="large" onClick={downloadReport}>
-              <Download />
-            </IconButton>
-          </Tooltip>
-        }
-      />
+      <Grid
+        container
+        wrap="nowrap"
+        space={0}
+        direction={mobileScreen ? "column" : "row"}
+      >
+        <Grid item xs={11}>
+          <CardHeader title={title} />
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton size="large" onClick={downloadReport}>
+            <Download />
+          </IconButton>
+        </Grid>
+      </Grid>
       <Divider />
       <CardContent>
         {data !== null && !loading ? (

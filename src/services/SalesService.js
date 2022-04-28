@@ -20,10 +20,9 @@ const getSalesData = (paramsString) => {
   );
 };
 
-const getSalesExport = (file_type, paramsString) => {
-  const params = file_type + paramsString;
+const getSalesExport = (file_type) => {
   return axios.get(
-    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/export/${params}`
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/export/${file_type}`
   );
 };
 
