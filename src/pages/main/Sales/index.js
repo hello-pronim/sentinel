@@ -2,13 +2,23 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet-async";
 
-import { Button, Divider as MuiDivider, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Divider as MuiDivider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
 import { AuthContext } from "../../../contexts/CognitoContext";
-import { getSales, getSalesData } from "../../../services/SalesService";
+import {
+  getSalesPerformance,
+  getSales,
+  getSalesData,
+} from "../../../services/SalesService";
 import async from "../../../components/Async";
 
 import SalesTable from "../../sections/Sales/SalesTable";
@@ -29,11 +39,22 @@ const Sales = () => {
     useContext(AuthContext);
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
+  const [salesPerformanceData, setSalesPerformanceData] = useState(null);
   const [salesChartData, setSalesChartData] = useState(null);
   const [salesTableData, setSalesTableData] = useState(null);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [loadingSalesPerformanceData, setLoadingSalesPerformanceData] =
+    useState(false);
   const [loadingSalesChartData, setLoadingSalesChartData] = useState(false);
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
+  const salesPerformanceItems = [
+    { key: "week", label: "Sales 1 Week" },
+    { key: "month", label: "Sales 1 Month" },
+    { key: "3_month", label: "Sales 3 Months" },
+    { key: "6_month", label: "Sales 6 Months" },
+    { key: "year", label: "Sales 1 Year" },
+    { key: "ytd", label: "Year to Date" },
+  ];
 
   useEffect(() => {
     initialize();
@@ -72,6 +93,45 @@ const Sales = () => {
   }, [filterOptions, companies]);
 
   const refreshSalesData = useCallback(() => {
+    setLoadingSalesPerformanceData(true);
+    getSalesPerformance(queryParamsString).then((res) => {
+      const { data, parameters } = res.data.body;
+      console.log(data, parameters);
+
+      setLoadingSalesPerformanceData(false);
+      if (data) {
+        const performanceData = {
+          estimatedSalesChangeData: {
+            label:
+              "Estimated Sales for " +
+              new Intl.DateTimeFormat("en", { month: "long" }).format(
+                new Date()
+              ),
+            data: {
+              revenue: data["estimated_month"]?.revenue ?? 0,
+              revenueChange: data["estimated_month"]?.revenue_change ?? 0,
+            },
+          },
+          mtdSalesChangeData: {
+            label: "MTD Total Sales",
+            data: {
+              revenue: data["mtd"]?.revenue ?? 0,
+              revenueChange: data["mtd"]?.revenue_change ?? 0,
+            },
+          },
+          salesChanges: salesPerformanceItems.map((item) => ({
+            label: item.label,
+            data: {
+              revenue: data[item.key]?.revenue ?? 0,
+              revenueChange: data[item.key]?.revenue_change ?? 0,
+            },
+          })),
+        };
+
+        setSalesPerformanceData(performanceData);
+      }
+    });
+
     setLoadingSalesChartData(true);
     getSales(queryParamsString).then((res) => {
       const { data, parameters } = res.data.body;
@@ -145,7 +205,18 @@ const Sales = () => {
       <Grid container spacing={6}>
         {showSalesPerformance && (
           <Grid item xs={12}>
-            <SalesPerformance title="My Portfolio's Performance" />
+            {salesPerformanceData !== null && !loadingSalesPerformanceData ? (
+              <SalesPerformance
+                title="My Portfolio's Performance"
+                data={salesPerformanceData}
+              />
+            ) : (
+              <Grid container justifyContent="center">
+                <Grid item>
+                  <CircularProgress />
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         )}
         <Grid item xs={12}>
