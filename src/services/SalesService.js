@@ -14,6 +14,14 @@ const getSales = (paramsString) => {
   );
 };
 
+const getSalesByCompany = (paramsString) => {
+  return axios.get(
+    `/api/${
+      process.env.REACT_APP_API_ENV || "dev"
+    }/sales/companies${paramsString}`
+  );
+};
+
 const getSalesData = (paramsString) => {
   return axios.get(
     `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/data${paramsString}`
@@ -27,4 +35,10 @@ const getSalesExport = (file_type, paramsString) => {
   );
 };
 
-export { getSalesPerformance, getSales, getSalesData, getSalesExport };
+export {
+  getSalesPerformance,
+  getSales,
+  getSalesByCompany,
+  getSalesData,
+  getSalesExport,
+};
