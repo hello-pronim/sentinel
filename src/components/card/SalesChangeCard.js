@@ -101,8 +101,10 @@ const SalesChangeCard = ({
                           <Grid item>
                             {revenueChange > 0 ? (
                               <ArrowUpwardIcon size="small" />
-                            ) : (
+                            ) : revenueChange < 0 ? (
                               <ArrowDownwardIcon size="small" />
+                            ) : (
+                              <></>
                             )}
                           </Grid>
                           <Grid item>
@@ -146,8 +148,10 @@ const SalesChangeCard = ({
                   >
                     {revenueChange > 0 ? (
                       <ArrowUpwardIcon />
-                    ) : (
+                    ) : revenueChange < 0 ? (
                       <ArrowDownwardIcon />
+                    ) : (
+                      <></>
                     )}
                   </IconWrapper>
                 </Grid>
