@@ -24,8 +24,8 @@ const Card = styled(MuiCard)`
   border: ${(props) =>
     props.variant === "outlined" &&
     (props.change > 0
-      ? `1px solid ${props.positiveColor}`
-      : `1px solid ${props.negativeColor}`)};
+      ? `1px solid ${props.pcolor}`
+      : `1px solid ${props.ncolor}`)};
 `;
 
 const Typography = styled(MuiTypography)(spacing);
@@ -52,8 +52,8 @@ const SalesChangeCard = ({
     <Card
       variant={variant}
       change={revenueChange}
-      positiveColor={positiveColor}
-      negativeColor={negativeColor}
+      pcolor={positiveColor}
+      ncolor={negativeColor}
     >
       <CardContent>
         {size === "medium" ? (
@@ -101,8 +101,10 @@ const SalesChangeCard = ({
                           <Grid item>
                             {revenueChange > 0 ? (
                               <ArrowUpwardIcon size="small" />
-                            ) : (
+                            ) : revenueChange < 0 ? (
                               <ArrowDownwardIcon size="small" />
+                            ) : (
+                              <></>
                             )}
                           </Grid>
                           <Grid item>
@@ -146,8 +148,10 @@ const SalesChangeCard = ({
                   >
                     {revenueChange > 0 ? (
                       <ArrowUpwardIcon />
-                    ) : (
+                    ) : revenueChange < 0 ? (
                       <ArrowDownwardIcon />
+                    ) : (
+                      <></>
                     )}
                   </IconWrapper>
                 </Grid>

@@ -12,7 +12,7 @@ const SalesPerformance = ({ title, data }) => {
         <Typography variant="h3">{title}</Typography>
       </Grid>
       <Grid item xs={12}>
-        <Grid container spacing={8}>
+        <Grid container spacing={4}>
           <Grid item xs={12}>
             <Grid container spacing={8}>
               <Grid item xs={6}>

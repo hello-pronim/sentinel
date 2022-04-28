@@ -211,7 +211,7 @@ const SalesChart = ({
   };
 
   return (
-    <Card mb={1}>
+    <Card variant="outlined" mb={1}>
       <CardHeader title={title} />
       <Divider />
       <CardContent>
