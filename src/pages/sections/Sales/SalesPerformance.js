@@ -3,11 +3,6 @@ import { Grid, Typography } from "@mui/material";
 import { red, green } from "@mui/material/colors";
 
 import SalesChangeCard from "../../../components/card/SalesChangeCard";
-// import {
-//   estimatedSalesChangeData,
-//   mtdSalesChangeData,
-//   salesChanges,
-// } from "./mock";
 
 const SalesPerformance = ({ title, data }) => {
   const { estimatedSalesChangeData, mtdSalesChangeData, salesChanges } = data;
