@@ -80,7 +80,12 @@ const SalesChangeCard = ({
                 spacing={4}
               >
                 <Grid item>
-                  <Grid direction="column" alignItems="flex-end" spacing={4}>
+                  <Grid
+                    container
+                    direction="column"
+                    alignItems="flex-end"
+                    spacing={4}
+                  >
                     <Grid item>
                       <IconWrapper
                         color={
@@ -110,9 +115,9 @@ const SalesChangeCard = ({
                       <Trend
                         data={[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]}
                         radius={0}
-                        width="120"
-                        height="30"
-                        strokeWidth="2"
+                        width={120}
+                        height={30}
+                        strokeWidth={2}
                         smooth
                       />
                     </Grid>
