@@ -4,12 +4,15 @@ import { Helmet } from "react-helmet-async";
 
 import {
   Button,
+  Card,
   CircularProgress,
   Divider as MuiDivider,
   Grid,
+  Tab,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
@@ -18,6 +21,7 @@ import { AuthContext } from "../../../contexts/CognitoContext";
 import {
   getSalesPerformance,
   getSales,
+  getSalesByCompany,
   getSalesData,
 } from "../../../services/SalesService";
 import async from "../../../components/Async";
@@ -25,8 +29,24 @@ import async from "../../../components/Async";
 import SalesTable from "../../sections/Sales/SalesTable";
 import SalesPerformance from "../../sections/Sales/SalesPerformance";
 const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
+const SalesByCompanyChart = async(() =>
+  import("../../sections/Sales/SalesByCompanyChart")
+);
 
 const Divider = styled(MuiDivider)(spacing);
+
+const salesPerformanceItems = [
+  { key: "week", label: "Sales 1 Week" },
+  { key: "month", label: "Sales 1 Month" },
+  { key: "3_month", label: "Sales 3 Months" },
+  { key: "6_month", label: "Sales 6 Months" },
+  { key: "year", label: "Sales 1 Year" },
+  { key: "ytd", label: "Year to Date" },
+];
+const chartTabs = [
+  { label: "Sales", value: "sales" },
+  { label: "Sales by Company", value: "sales_by_company" },
+];
 
 const Sales = () => {
   const queryParamsString = window.location.search;
@@ -42,20 +62,16 @@ const Sales = () => {
   const [tableTitle, setTableTitle] = useState("Sales");
   const [salesPerformanceData, setSalesPerformanceData] = useState(null);
   const [salesChartData, setSalesChartData] = useState(null);
+  const [salesByCompanyChartData, setSalesByCompanyChartData] = useState(null);
   const [salesTableData, setSalesTableData] = useState(null);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [loadingSalesPerformanceData, setLoadingSalesPerformanceData] =
     useState(false);
   const [loadingSalesChartData, setLoadingSalesChartData] = useState(false);
+  const [loadingSalesByCompanyChartData, setLoadingSalesByCompanyChartData] =
+    useState(false);
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
-  const salesPerformanceItems = [
-    { key: "week", label: "Sales 1 Week" },
-    { key: "month", label: "Sales 1 Month" },
-    { key: "3_month", label: "Sales 3 Months" },
-    { key: "6_month", label: "Sales 6 Months" },
-    { key: "year", label: "Sales 1 Year" },
-    { key: "ytd", label: "Year to Date" },
-  ];
+  const [selectedChartTab, setSelectedChartTab] = useState(chartTabs[0].value);
 
   useEffect(() => {
     initialize();
@@ -150,6 +166,21 @@ const Sales = () => {
         setSalesChartData(chartData);
       }
     });
+
+    setLoadingSalesByCompanyChartData(true);
+    getSalesByCompany(queryParamsString).then((res) => {
+      const { data } = res.data.body;
+      console.log(data);
+
+      setLoadingSalesByCompanyChartData(false);
+      if (data) {
+        const chartData = {
+          companyRevenueSeries: data.company_revenue_series,
+        };
+
+        setSalesByCompanyChartData(chartData);
+      }
+    });
     //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
 
     //call to get the table data
@@ -179,6 +210,10 @@ const Sales = () => {
       refreshSalesData();
     }
   }, [isInitialized, isAuthenticated, refreshSalesData]);
+
+  const handleChartTabChanged = (event, tab) => {
+    setSelectedChartTab(tab);
+  };
 
   return (
     <React.Fragment>
@@ -223,13 +258,43 @@ const Sales = () => {
           </Grid>
         )}
         <Grid item xs={12}>
-          <SalesChart
-            title={chartTitle}
-            data={salesChartData}
-            filterOptions={filterOptions}
-            loading={loadingSalesChartData}
-            setFilterOptions={setFilterOptions}
-          />
+          <Card>
+            <TabContext value={selectedChartTab}>
+              <TabList
+                onChange={handleChartTabChanged}
+                variant="scrollable"
+                scrollButtons="auto"
+              >
+                {chartTabs.map((tab) => (
+                  <Tab key={tab.value} label={tab.label} value={tab.value} />
+                ))}
+              </TabList>
+              <Divider />
+              <TabPanel value="sales">
+                <Grid container>
+                  <Grid item xs={12}>
+                    <SalesChart
+                      title={chartTitle}
+                      data={salesChartData}
+                      filterOptions={filterOptions}
+                      loading={loadingSalesChartData}
+                      setFilterOptions={setFilterOptions}
+                    />
+                  </Grid>
+                </Grid>
+              </TabPanel>
+              <TabPanel value="sales_by_company">
+                <Grid container>
+                  <Grid item xs={12}>
+                    <SalesByCompanyChart
+                      data={salesByCompanyChartData}
+                      loading={loadingSalesByCompanyChartData}
+                    />
+                  </Grid>
+                </Grid>
+              </TabPanel>
+            </TabContext>
+          </Card>
         </Grid>
         <Grid item xs={12}>
           <SalesTable

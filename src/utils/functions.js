@@ -44,6 +44,32 @@ const convertPercentFormat = (value, decimals = 2) => {
   }).format(value);
 };
 
+function getRandomColor() {
+  var letters = "0123456789ABCDEF";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+function getColorFromString(string) {
+  let hash = 0;
+  let i;
+
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.substr(-2);
+  }
+
+  return color;
+}
+
 export {
   convertDateToMMDDYY,
   convertPriceFormat,
@@ -51,4 +77,6 @@ export {
   getPastDate,
   getWeekNumber,
   getDatesOfWeek,
+  getColorFromString,
+  getRandomColor,
 };
