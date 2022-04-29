@@ -20,6 +20,8 @@ const SalesPerformance = ({ title, data }) => {
                   label={mtdSalesChangeData.label}
                   description="vs Prior Period"
                   data={mtdSalesChangeData.data}
+                  hasTrendLine={true}
+                  trendLineData={mtdSalesChangeData.trendLineData}
                   variant="contained"
                   size="medium"
                   positiveColor={green[500]}
@@ -31,6 +33,7 @@ const SalesPerformance = ({ title, data }) => {
                   label={estimatedSalesChangeData.label}
                   description="vs Last Month's Sales"
                   data={estimatedSalesChangeData.data}
+                  hasTrendLine={false}
                   variant="contained"
                   size="medium"
                   positiveColor={green[500]}
@@ -46,6 +49,7 @@ const SalesPerformance = ({ title, data }) => {
                   <SalesChangeCard
                     label={item.label}
                     data={item.data}
+                    hasTrendLine={false}
                     variant="outlined"
                     size="small"
                     positiveColor={green[500]}

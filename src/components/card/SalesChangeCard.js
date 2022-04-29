@@ -1,5 +1,5 @@
 import React from "react";
-import Trend from "react-trend";
+import { XYPlot, LineSeries } from "react-vis";
 import styled from "styled-components/macro";
 
 import {
@@ -17,6 +17,8 @@ import {
   convertPercentFormat,
   convertPriceFormat,
 } from "../../utils/functions";
+
+import "../../../node_modules/react-vis/dist/style.css";
 
 const Card = styled(MuiCard)`
   position: relative;
@@ -41,6 +43,8 @@ const SalesChangeCard = ({
   label,
   description = "",
   data,
+  hasTrendLine = false,
+  trendLineData,
   positiveColor,
   negativeColor,
   variant,
@@ -114,14 +118,30 @@ const SalesChangeCard = ({
                       </IconWrapper>
                     </Grid>
                     <Grid item>
-                      <Trend
-                        data={[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]}
-                        radius={0}
-                        width={120}
-                        height={30}
-                        strokeWidth={2}
-                        smooth
-                      />
+                      {hasTrendLine ? (
+                        <XYPlot width={120} height={60}>
+                          <LineSeries
+                            color="black"
+                            data={Object.keys(
+                              trendLineData.comparison_revenue
+                            ).map((x) => ({
+                              x: parseInt(x),
+                              y: trendLineData.comparison_revenue[x],
+                            }))}
+                          />
+                          <LineSeries
+                            color="red"
+                            data={Object.keys(trendLineData.revenue).map(
+                              (x) => ({
+                                x: parseInt(x),
+                                y: trendLineData.revenue[x],
+                              })
+                            )}
+                          />
+                        </XYPlot>
+                      ) : (
+                        <XYPlot width={120} height={60} />
+                      )}
                     </Grid>
                   </Grid>
                 </Grid>
