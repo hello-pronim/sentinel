@@ -135,6 +135,7 @@ const Sales = () => {
               revenue: data["mtd"]?.revenue ?? 0,
               revenueChange: data["mtd"]?.revenue_change ?? 0,
             },
+            trendLineData: data["sales_mtd_change_series"],
           },
           salesChanges: salesPerformanceItems.map((item) => ({
             label: item.label,
