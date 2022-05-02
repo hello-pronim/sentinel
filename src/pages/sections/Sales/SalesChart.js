@@ -17,7 +17,10 @@ import {
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
-import { convertPriceFormat } from "../../../utils/functions";
+import {
+  convertPriceFormat,
+  convertPercentFormat,
+} from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 const Divider = styled(MuiDivider)(spacing);
@@ -63,9 +66,9 @@ const SalesChart = ({
             var label = context.dataset.label || "";
 
             if (label) label += ": ";
-            if (context.parsed.y !== null)
+            if (context.parsed.y !== null && label.includes("Revenue", 0))
               label += convertPriceFormat(context.parsed.y);
-
+            else label += convertPercentFormat(context.parsed.y);
             return label;
           },
         },
@@ -121,7 +124,7 @@ const SalesChart = ({
         labels: xAxis,
         datasets: [
           {
-            label: "Current revenue",
+            label: "Current Revenue",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[0],
@@ -136,8 +139,14 @@ const SalesChart = ({
             backgroundColor: "transparent",
             borderColor: colors[1],
             tension: 0.4,
-            data: showPreviousRevenue
+            data: showCurrentRevenue
               ? xAxis.map((x) => data.comparisonSeries[x])
+              : [],
+          },
+          {
+            label: "Percent Change",
+            data: showPreviousRevenue
+              ? xAxis.map((x) => data.changeSeries[x])
               : [],
           },
           {
