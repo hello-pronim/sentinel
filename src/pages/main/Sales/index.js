@@ -158,6 +158,7 @@ const Sales = () => {
         const chartData = {
           comparisonSeries: data.comparison_series,
           revenueSeries: data.revenue_series,
+          changeSeries: data.revenue_change,
           forecastSeries: data?.revenue_forecast || {},
           stats: data.stats,
           forecast48h: parameters?.forecast_48h || false,
