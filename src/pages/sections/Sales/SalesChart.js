@@ -145,9 +145,10 @@ const SalesChart = ({
           },
           {
             label: "Percent Change",
-            data: showPreviousRevenue
-              ? xAxis.map((x) => data.changeSeries[x])
-              : [],
+            data: "N/A",
+            // data: showPreviousRevenue
+            //   ? xAxis.map((x) => data.changeSeries[x])
+            //   : [],
           },
           {
             label: "Forecast Revenue",
