@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
 
@@ -11,11 +10,8 @@ import {
   Divider as MuiDivider,
   Grid,
   Typography,
-  Switch,
-  FormControlLabel,
 } from "@mui/material";
 import { spacing } from "@mui/system";
-import { red, green, blue } from "@mui/material/colors";
 
 import {
   convertPriceFormat,
