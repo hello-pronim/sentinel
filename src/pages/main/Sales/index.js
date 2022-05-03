@@ -246,10 +246,7 @@ const Sales = () => {
         {showSalesPerformance && (
           <Grid item xs={12}>
             {salesPerformanceData !== null && !loadingSalesPerformanceData ? (
-              <SalesPerformance
-                title="My Portfolio's Performance"
-                data={salesPerformanceData}
-              />
+              <SalesPerformance data={salesPerformanceData} />
             ) : (
               <Grid container justifyContent="center">
                 <Grid item>
