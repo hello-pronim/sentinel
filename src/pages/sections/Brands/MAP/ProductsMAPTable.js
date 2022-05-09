@@ -8,8 +8,12 @@ import {
   CardContent,
   CircularProgress,
   Divider as MuiDivider,
+  FormControl,
   Grid,
+  InputLabel,
   Link,
+  MenuItem,
+  Select,
   Tab,
 } from "@mui/material";
 import { spacing } from "@mui/system";
@@ -37,6 +41,7 @@ const ProductsMAPTable = () => {
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
+  const [statusFilter, setStatusFilter] = useState("");
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
     useState(false);
   const [currentViolationsData, setCurrentViolationsData] = useState(null);
@@ -44,7 +49,7 @@ const ProductsMAPTable = () => {
     {
       field: "name",
       title: "Listing",
-      width: "40%",
+      width: "30%",
       render: (rowData) => {
         const { name, url } = rowData;
 
@@ -69,7 +74,7 @@ const ProductsMAPTable = () => {
     {
       field: "marketId",
       title: "ID",
-      width: "15%",
+      width: "10%",
       render: (rowData) => {
         const { marketId } = rowData;
 
@@ -79,7 +84,7 @@ const ProductsMAPTable = () => {
     {
       field: "marketplace",
       title: "Market",
-      width: "15%",
+      width: "10%",
       render: (rowData) => {
         const { marketplace } = rowData;
 
@@ -100,7 +105,7 @@ const ProductsMAPTable = () => {
       field: "currentPrice",
       title: "Current Price",
       customSort: (a, b) => a.currentPrice - b.currentPrice,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -117,7 +122,7 @@ const ProductsMAPTable = () => {
       field: "mapPrice",
       title: "MAP Price",
       customSort: (a, b) => a.mapPrice - b.mapPrice,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -134,7 +139,7 @@ const ProductsMAPTable = () => {
       field: "priceDiff",
       title: "Price Diff",
       customSort: (a, b) => a.priceDiff - b.priceDiff,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -145,6 +150,37 @@ const ProductsMAPTable = () => {
         const { priceDiff } = rowData;
 
         return convertPercentFormat(priceDiff);
+      },
+    },
+    {
+      field: "status",
+      title: "Status",
+      width: "10%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { status } = rowData;
+
+        return (
+          <FormControl
+            sx={{ m: 1, minWidth: 120 }}
+            variant="outlined"
+            size="small"
+          >
+            <Select value={status} onChange={(e) => handleStatusUpdated(e)}>
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="contacted">Contacted</MenuItem>
+              <MenuItem value="ignored">Ignored</MenuItem>
+              <MenuItem value="investigating">Investigating</MenuItem>
+            </Select>
+          </FormControl>
+        );
       },
     },
   ];
@@ -193,6 +229,12 @@ const ProductsMAPTable = () => {
   const handleTabChanged = (event, value) => {
     setSelectedTab(value);
   };
+  const handleStatusFilterChanged = (e) => {
+    setStatusFilter(e.target.value);
+  };
+  const handleStatusUpdated = (e) => {
+    console.log(e.target.value);
+  };
 
   return (
     <React.Fragment>
@@ -220,11 +262,45 @@ const ProductsMAPTable = () => {
                           data={currentViolationsData}
                           columns={columns}
                           options={{
+                            actionsColumnIndex: -1,
                             pageSize: 20,
                             search: true,
                             showTitle: false,
                             emptyRowsWhenPaging: false,
+                            toolbarButtonAlignment: "left",
                           }}
+                          components={{
+                            Action: (props) => (
+                              <FormControl
+                                sx={{ m: 1, minWidth: 240 }}
+                                variant="standard"
+                                size="small"
+                              >
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                  value={statusFilter}
+                                  onChange={handleStatusFilterChanged}
+                                >
+                                  <MenuItem value="">
+                                    <em>None</em>
+                                  </MenuItem>
+                                  <MenuItem value="contacted">
+                                    Contacted
+                                  </MenuItem>
+                                  <MenuItem value="ignored">Ignored</MenuItem>
+                                  <MenuItem value="investigating">
+                                    Investigating
+                                  </MenuItem>
+                                </Select>
+                              </FormControl>
+                            ),
+                          }}
+                          actions={[
+                            {
+                              onClick: (event, rowData) => alert("something"),
+                              isFreeAction: true,
+                            },
+                          ]}
                         />
                       ) : (
                         <Grid container justifyContent="center">
