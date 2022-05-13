@@ -4,6 +4,7 @@ import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
+  Alert as MuiAlert,
   Card,
   CardContent,
   CircularProgress,
@@ -14,6 +15,7 @@ import {
   Link,
   MenuItem,
   Select,
+  Snackbar,
   Tab,
 } from "@mui/material";
 import { spacing } from "@mui/system";
@@ -21,13 +23,20 @@ import LaunchIcon from "@mui/icons-material/Launch";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
 
-import { getCurrentViolationsData } from "../../../../services/MAPService";
+import {
+  getCurrentViolationsData,
+  updateMAPStatus,
+} from "../../../../services/MAPService";
 import {
   convertPercentFormat,
   convertPriceFormat,
 } from "../../../../utils/functions";
 
 const Divider = styled(MuiDivider)(spacing);
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const ProductsMAPTable = () => {
   const queryParamsString = window.location.search;
@@ -45,6 +54,8 @@ const ProductsMAPTable = () => {
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
     useState(false);
   const [currentViolationsData, setCurrentViolationsData] = useState(null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [isStatusUpdateSuccess, setIsStatusUpdateSuccess] = useState(false);
   const columns = [
     {
       field: "name",
@@ -163,7 +174,7 @@ const ProductsMAPTable = () => {
         textAlign: "center",
       },
       render: (rowData) => {
-        const { status } = rowData;
+        const { priceId, status } = rowData;
 
         return (
           <FormControl
@@ -171,13 +182,17 @@ const ProductsMAPTable = () => {
             variant="outlined"
             size="small"
           >
-            <Select value={status} onChange={(e) => handleStatusUpdated(e)}>
-              <MenuItem value="">
+            <Select
+              value={status ?? ""}
+              onChange={(e) => handleStatusUpdated(e, priceId)}
+              disabled={updatingStatus}
+            >
+              <MenuItem>
                 <em>None</em>
               </MenuItem>
-              <MenuItem value="contacted">Contacted</MenuItem>
-              <MenuItem value="ignored">Ignored</MenuItem>
-              <MenuItem value="investigating">Investigating</MenuItem>
+              <MenuItem value="Contacted">Contacted</MenuItem>
+              <MenuItem value="Ignored">Ignored</MenuItem>
+              <MenuItem value="Investigating">Investigating</MenuItem>
             </Select>
           </FormControl>
         );
@@ -207,8 +222,10 @@ const ProductsMAPTable = () => {
           currentPrice: item.price,
           mapPrice: item.map_price,
           priceDiff: item.price_diff,
+          priceId: item.price_id,
           companyId: item?.company_id,
           url: item.url,
+          status: item.status,
         }));
 
         setCurrentViolationsData(tableData);
@@ -232,8 +249,24 @@ const ProductsMAPTable = () => {
   const handleStatusFilterChanged = (e) => {
     setStatusFilter(e.target.value);
   };
-  const handleStatusUpdated = (e) => {
-    console.log(e.target.value);
+  const handleStatusUpdated = (e, priceId) => {
+    setUpdatingStatus(true);
+    updateMAPStatus(e.target.value, priceId).then((res) => {
+      const {
+        data: {
+          body: { Success: success },
+        },
+      } = res;
+
+      setUpdatingStatus(false);
+      if (success) {
+        setIsStatusUpdateSuccess(true);
+        initializeProductsMAPData();
+      }
+    });
+  };
+  const handleAlertClose = () => {
+    setIsStatusUpdateSuccess(false);
   };
 
   return (
@@ -259,7 +292,11 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
-                          data={currentViolationsData}
+                          data={currentViolationsData.filter(
+                            (item) =>
+                              item.status === statusFilter ||
+                              statusFilter === ""
+                          )}
                           columns={columns}
                           options={{
                             actionsColumnIndex: -1,
@@ -278,17 +315,17 @@ const ProductsMAPTable = () => {
                               >
                                 <InputLabel>Status</InputLabel>
                                 <Select
-                                  value={statusFilter}
+                                  value={statusFilter ?? ""}
                                   onChange={handleStatusFilterChanged}
                                 >
                                   <MenuItem value="">
                                     <em>None</em>
                                   </MenuItem>
-                                  <MenuItem value="contacted">
+                                  <MenuItem value="Contacted">
                                     Contacted
                                   </MenuItem>
-                                  <MenuItem value="ignored">Ignored</MenuItem>
-                                  <MenuItem value="investigating">
+                                  <MenuItem value="Ignored">Ignored</MenuItem>
+                                  <MenuItem value="Investigating">
                                     Investigating
                                   </MenuItem>
                                 </Select>
@@ -317,6 +354,16 @@ const ProductsMAPTable = () => {
           </Grid>
         </CardContent>
       </Card>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={3000}
+        open={isStatusUpdateSuccess}
+        onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose} severity="success">
+          The MAP status has been updated successfully!
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 };
