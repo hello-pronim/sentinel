@@ -18,4 +18,18 @@ const getCurrentViolationsData = (paramsString) => {
   );
 };
 
-export { getMAPOveralls, getBrandsMAPData, getCurrentViolationsData };
+const updateMAPStatus = (status, priceId) => {
+  const formData = new FormData();
+  formData.append("status", status);
+  return axios.put(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/map/${priceId}`,
+    formData
+  );
+};
+
+export {
+  getMAPOveralls,
+  getBrandsMAPData,
+  getCurrentViolationsData,
+  updateMAPStatus,
+};
