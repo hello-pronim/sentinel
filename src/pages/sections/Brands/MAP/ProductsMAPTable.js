@@ -51,6 +51,7 @@ const ProductsMAPTable = () => {
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
   const [statusFilter, setStatusFilter] = useState("");
+  const [statusList, setStatusList] = useState({});
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
     useState(false);
   const [currentViolationsData, setCurrentViolationsData] = useState(null);
@@ -174,7 +175,7 @@ const ProductsMAPTable = () => {
         textAlign: "center",
       },
       render: (rowData) => {
-        const { priceId, status } = rowData;
+        const { priceId } = rowData;
 
         return (
           <FormControl
@@ -183,7 +184,7 @@ const ProductsMAPTable = () => {
             size="small"
           >
             <Select
-              value={status ?? ""}
+              value={statusList[priceId] ?? ""}
               onChange={(e) => handleStatusUpdated(e, priceId)}
               disabled={updatingStatus}
             >
@@ -214,20 +215,26 @@ const ProductsMAPTable = () => {
 
       setLoadingCurrentViolationsData(false);
       if (listings) {
-        const tableData = listings.map((item) => ({
-          name: item.name,
-          marketplace: item.marketplace,
-          seller: item.seller,
-          marketId: item.market_id,
-          currentPrice: item.price,
-          mapPrice: item.map_price,
-          priceDiff: item.price_diff,
-          priceId: item.price_id,
-          companyId: item?.company_id,
-          url: item.url,
-          status: item.status,
-        }));
+        let newStatusList = { ...statusList };
+        const tableData = listings.map((item) => {
+          newStatusList[item.price_id] = item.status;
 
+          return {
+            name: item.name,
+            marketplace: item.marketplace,
+            seller: item.seller,
+            marketId: item.market_id,
+            currentPrice: item.price,
+            mapPrice: item.map_price,
+            priceDiff: item.price_diff,
+            priceId: item.price_id,
+            companyId: item?.company_id,
+            url: item.url,
+            status: item.status,
+          };
+        });
+
+        setStatusList(newStatusList);
         setCurrentViolationsData(tableData);
       }
     });
@@ -261,7 +268,10 @@ const ProductsMAPTable = () => {
       setUpdatingStatus(false);
       if (success) {
         setIsStatusUpdateSuccess(true);
-        initializeProductsMAPData();
+
+        let newStatusList = { ...statusList };
+        newStatusList[priceId] = e.target.value;
+        setStatusList(newStatusList);
       }
     });
   };
