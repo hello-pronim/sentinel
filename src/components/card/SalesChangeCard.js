@@ -65,12 +65,10 @@ const SalesChangeCard = ({
             <Grid item>
               <Grid container spacing={4}>
                 <Grid item xs={12}>
-                  <Typography variant="body2" color="common.black">
-                    {label}
-                  </Typography>
+                  <Typography variant="body2">{label}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="h2" color="common.black">
+                  <Typography variant="h2">
                     {convertPriceFormat(revenue)}
                   </Typography>
                 </Grid>
@@ -156,9 +154,7 @@ const SalesChangeCard = ({
         ) : size === "small" ? (
           <Grid container direction="column" alignItems="center" spacing={4}>
             <Grid item>
-              <Typography variant="body2" color="common.black">
-                {label}
-              </Typography>
+              <Typography variant="body2">{label}</Typography>
             </Grid>
             <Grid item>
               <Grid container alignItems="center" spacing={1}>

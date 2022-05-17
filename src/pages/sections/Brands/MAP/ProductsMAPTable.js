@@ -4,12 +4,18 @@ import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
+  Alert as MuiAlert,
   Card,
   CardContent,
   CircularProgress,
   Divider as MuiDivider,
+  FormControl,
   Grid,
+  InputLabel,
   Link,
+  MenuItem,
+  Select,
+  Snackbar,
   Tab,
 } from "@mui/material";
 import { spacing } from "@mui/system";
@@ -17,13 +23,20 @@ import LaunchIcon from "@mui/icons-material/Launch";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
 
-import { getCurrentViolationsData } from "../../../../services/MAPService";
+import {
+  getCurrentViolationsData,
+  updateMAPStatus,
+} from "../../../../services/MAPService";
 import {
   convertPercentFormat,
   convertPriceFormat,
 } from "../../../../utils/functions";
 
 const Divider = styled(MuiDivider)(spacing);
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const ProductsMAPTable = () => {
   const queryParamsString = window.location.search;
@@ -37,14 +50,18 @@ const ProductsMAPTable = () => {
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [statusList, setStatusList] = useState({});
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
     useState(false);
   const [currentViolationsData, setCurrentViolationsData] = useState(null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [isStatusUpdateSuccess, setIsStatusUpdateSuccess] = useState(false);
   const columns = [
     {
       field: "name",
       title: "Listing",
-      width: "40%",
+      width: "30%",
       render: (rowData) => {
         const { name, url } = rowData;
 
@@ -69,7 +86,7 @@ const ProductsMAPTable = () => {
     {
       field: "marketId",
       title: "ID",
-      width: "15%",
+      width: "10%",
       render: (rowData) => {
         const { marketId } = rowData;
 
@@ -79,7 +96,7 @@ const ProductsMAPTable = () => {
     {
       field: "marketplace",
       title: "Market",
-      width: "15%",
+      width: "10%",
       render: (rowData) => {
         const { marketplace } = rowData;
 
@@ -100,7 +117,7 @@ const ProductsMAPTable = () => {
       field: "currentPrice",
       title: "Current Price",
       customSort: (a, b) => a.currentPrice - b.currentPrice,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -117,7 +134,7 @@ const ProductsMAPTable = () => {
       field: "mapPrice",
       title: "MAP Price",
       customSort: (a, b) => a.mapPrice - b.mapPrice,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -134,7 +151,7 @@ const ProductsMAPTable = () => {
       field: "priceDiff",
       title: "Price Diff",
       customSort: (a, b) => a.priceDiff - b.priceDiff,
-      width: "15%",
+      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -145,6 +162,41 @@ const ProductsMAPTable = () => {
         const { priceDiff } = rowData;
 
         return convertPercentFormat(priceDiff);
+      },
+    },
+    {
+      field: "status",
+      title: "Status",
+      width: "10%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { priceId } = rowData;
+
+        return (
+          <FormControl
+            sx={{ m: 1, minWidth: 120 }}
+            variant="outlined"
+            size="small"
+          >
+            <Select
+              value={statusList[priceId] ?? ""}
+              onChange={(e) => handleStatusUpdated(e, priceId)}
+              disabled={updatingStatus}
+            >
+              <MenuItem>
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="Contacted">Contacted</MenuItem>
+              <MenuItem value="Ignored">Ignored</MenuItem>
+              <MenuItem value="Investigating">Investigating</MenuItem>
+            </Select>
+          </FormControl>
+        );
       },
     },
   ];
@@ -163,18 +215,26 @@ const ProductsMAPTable = () => {
 
       setLoadingCurrentViolationsData(false);
       if (listings) {
-        const tableData = listings.map((item) => ({
-          name: item.name,
-          marketplace: item.marketplace,
-          seller: item.seller,
-          marketId: item.market_id,
-          currentPrice: item.price,
-          mapPrice: item.map_price,
-          priceDiff: item.price_diff,
-          companyId: item?.company_id,
-          url: item.url,
-        }));
+        let newStatusList = { ...statusList };
+        const tableData = listings.map((item) => {
+          newStatusList[item.price_id] = item.status;
 
+          return {
+            name: item.name,
+            marketplace: item.marketplace,
+            seller: item.seller,
+            marketId: item.market_id,
+            currentPrice: item.price,
+            mapPrice: item.map_price,
+            priceDiff: item.price_diff,
+            priceId: item.price_id,
+            companyId: item?.company_id,
+            url: item.url,
+            status: item.status,
+          };
+        });
+
+        setStatusList(newStatusList);
         setCurrentViolationsData(tableData);
       }
     });
@@ -192,6 +252,31 @@ const ProductsMAPTable = () => {
 
   const handleTabChanged = (event, value) => {
     setSelectedTab(value);
+  };
+  const handleStatusFilterChanged = (e) => {
+    setStatusFilter(e.target.value);
+  };
+  const handleStatusUpdated = (e, priceId) => {
+    setUpdatingStatus(true);
+    updateMAPStatus(e.target.value, priceId).then((res) => {
+      const {
+        data: {
+          body: { Success: success },
+        },
+      } = res;
+
+      setUpdatingStatus(false);
+      if (success) {
+        setIsStatusUpdateSuccess(true);
+
+        let newStatusList = { ...statusList };
+        newStatusList[priceId] = e.target.value;
+        setStatusList(newStatusList);
+      }
+    });
+  };
+  const handleAlertClose = () => {
+    setIsStatusUpdateSuccess(false);
   };
 
   return (
@@ -217,14 +302,52 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
-                          data={currentViolationsData}
+                          data={currentViolationsData.filter(
+                            (item) =>
+                              item.status === statusFilter ||
+                              statusFilter === ""
+                          )}
                           columns={columns}
                           options={{
+                            actionsColumnIndex: -1,
                             pageSize: 20,
                             search: true,
                             showTitle: false,
                             emptyRowsWhenPaging: false,
+                            toolbarButtonAlignment: "left",
                           }}
+                          components={{
+                            Action: (props) => (
+                              <FormControl
+                                sx={{ m: 1, minWidth: 240 }}
+                                variant="standard"
+                                size="small"
+                              >
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                  value={statusFilter ?? ""}
+                                  onChange={handleStatusFilterChanged}
+                                >
+                                  <MenuItem value="">
+                                    <em>None</em>
+                                  </MenuItem>
+                                  <MenuItem value="Contacted">
+                                    Contacted
+                                  </MenuItem>
+                                  <MenuItem value="Ignored">Ignored</MenuItem>
+                                  <MenuItem value="Investigating">
+                                    Investigating
+                                  </MenuItem>
+                                </Select>
+                              </FormControl>
+                            ),
+                          }}
+                          actions={[
+                            {
+                              onClick: (event, rowData) => alert("something"),
+                              isFreeAction: true,
+                            },
+                          ]}
                         />
                       ) : (
                         <Grid container justifyContent="center">
@@ -241,6 +364,16 @@ const ProductsMAPTable = () => {
           </Grid>
         </CardContent>
       </Card>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={3000}
+        open={isStatusUpdateSuccess}
+        onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose} severity="success">
+          The MAP status has been updated successfully!
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 };
