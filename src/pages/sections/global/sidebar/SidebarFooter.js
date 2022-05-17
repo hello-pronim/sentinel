@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import { IconMenuItem, NestedMenuItem } from "mui-nested-menu";
@@ -19,6 +19,7 @@ import {
   StorefrontOutlined,
 } from "@mui/icons-material";
 
+import { AppContext } from "../../../../contexts/AppContext";
 import useAuth from "../../../../hooks/useAuth";
 
 const Item = styled(ListItemButton)`
@@ -58,6 +59,9 @@ const FooterSubText = styled(Typography)`
 
 const SidebarFooter = ({ ...rest }) => {
   const navigate = useNavigate();
+  const {
+    features: { showAdminBrands },
+  } = useContext(AppContext);
   const { user, signOut } = useAuth();
   const [anchorMenu, setAnchorMenu] = React.useState(null);
 
@@ -117,19 +121,25 @@ const SidebarFooter = ({ ...rest }) => {
           onClick={goToProfile}
         />
         <Divider />
-        <NestedMenuItem
-          label="Admin"
-          leftIcon={<AdminPanelSettingsOutlined />}
-          rightIcon={<ArrowRight />}
-          parentMenuOpen={Boolean(anchorMenu) ?? false}
-        >
-          <IconMenuItem
-            label="Companies/Brands"
-            leftIcon={<StorefrontOutlined />}
-            onClick={goToAdminBrands}
-          />
-        </NestedMenuItem>
-        <Divider />
+        {showAdminBrands && (
+          <>
+            <NestedMenuItem
+              label="Admin"
+              leftIcon={<AdminPanelSettingsOutlined />}
+              rightIcon={<ArrowRight />}
+              parentMenuOpen={Boolean(anchorMenu) ?? false}
+            >
+              {showAdminBrands && (
+                <IconMenuItem
+                  label="Companies/Brands"
+                  leftIcon={<StorefrontOutlined />}
+                  onClick={goToAdminBrands}
+                />
+              )}
+            </NestedMenuItem>
+            <Divider />
+          </>
+        )}
         <IconMenuItem
           label="Sign out"
           leftIcon={<ExitToAppOutlined />}
