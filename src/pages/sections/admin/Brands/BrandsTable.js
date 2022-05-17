@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import MaterialTable from "@material-table/core";
 
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -11,7 +12,9 @@ import {
   Divider as MuiDivider,
   Grid,
   IconButton,
+  Typography,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { spacing } from "@mui/system";
 
@@ -60,7 +63,14 @@ const BrandsTable = ({ title, data, loading }) => {
   return (
     <React.Fragment>
       <Card variant="outlined">
-        <CardHeader title={title} />
+        <CardHeader
+          title={title}
+          action={
+            <Button variant="outlined" color="primary" startIcon={<AddIcon />}>
+              New
+            </Button>
+          }
+        />
         <Divider />
         <CardContent>
           <Grid container>
