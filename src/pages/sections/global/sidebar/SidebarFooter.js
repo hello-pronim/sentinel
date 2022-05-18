@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
+import { IconMenuItem, NestedMenuItem } from "mui-nested-menu";
 
 import {
+  Divider,
   Grid,
   ListItemButton,
   Menu,
-  MenuItem,
   Typography,
   Tooltip,
 } from "@mui/material";
+import {
+  AccountCircleOutlined,
+  AdminPanelSettingsOutlined,
+  ArrowRight,
+  ExitToAppOutlined,
+  StorefrontOutlined,
+} from "@mui/icons-material";
 
+import { AppContext } from "../../../../contexts/AppContext";
 import useAuth from "../../../../hooks/useAuth";
 
 const Item = styled(ListItemButton)`
@@ -49,9 +58,12 @@ const FooterSubText = styled(Typography)`
 `;
 
 const SidebarFooter = ({ ...rest }) => {
-  const [anchorMenu, setAnchorMenu] = React.useState(null);
   const navigate = useNavigate();
+  const {
+    features: { showAdminBrands },
+  } = useContext(AppContext);
   const { user, signOut } = useAuth();
+  const [anchorMenu, setAnchorMenu] = React.useState(null);
 
   const toggleMenu = (event) => {
     setAnchorMenu(event.currentTarget);
@@ -68,6 +80,10 @@ const SidebarFooter = ({ ...rest }) => {
 
   const goToProfile = () => {
     navigate("/profile");
+  };
+
+  const goToAdminBrands = () => {
+    navigate("/admin/brands");
   };
 
   return (
@@ -96,11 +112,39 @@ const SidebarFooter = ({ ...rest }) => {
         anchorEl={anchorMenu}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(anchorMenu)}
+        open={Boolean(anchorMenu) ?? false}
         onClose={closeMenu}
       >
-        <MenuItem onClick={goToProfile}>Profile</MenuItem>
-        <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+        <IconMenuItem
+          label="Profile"
+          leftIcon={<AccountCircleOutlined />}
+          onClick={goToProfile}
+        />
+        <Divider />
+        {showAdminBrands && (
+          <>
+            <NestedMenuItem
+              label="Admin"
+              leftIcon={<AdminPanelSettingsOutlined />}
+              rightIcon={<ArrowRight />}
+              parentMenuOpen={Boolean(anchorMenu) ?? false}
+            >
+              {showAdminBrands && (
+                <IconMenuItem
+                  label="Companies/Brands"
+                  leftIcon={<StorefrontOutlined />}
+                  onClick={goToAdminBrands}
+                />
+              )}
+            </NestedMenuItem>
+            <Divider />
+          </>
+        )}
+        <IconMenuItem
+          label="Sign out"
+          leftIcon={<ExitToAppOutlined />}
+          onClick={handleSignOut}
+        />
       </Menu>
     </Footer>
   );
