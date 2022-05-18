@@ -304,7 +304,7 @@ const ProductsMAPTable = () => {
                         <MaterialTable
                           data={currentViolationsData.filter(
                             (item) =>
-                              item.status === statusFilter ||
+                              statusList[item.priceId] === statusFilter ||
                               statusFilter === ""
                           )}
                           columns={columns}
