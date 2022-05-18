@@ -82,8 +82,14 @@ const FilterDropdown = ({
       setMarketList(marketList);
 
       if (search) {
-        selectedCompanyIds = searchParams.getAll("company_ids[]").map(Number);
-        selectedMarketIds = searchParams.getAll("market_ids[]").map(Number);
+        selectedCompanyIds = searchParams
+          .get("company_ids[]")
+          .split(",")
+          .map(Number);
+        selectedMarketIds = searchParams
+          .get("market_ids[]")
+          .split(",")
+          .map(Number);
       } else {
         selectedCompanyIds = companyList.map((comp) => comp.id);
         selectedMarketIds = marketList.map((mar) => mar.id);
@@ -343,13 +349,11 @@ const FilterDropdown = ({
       },
     });
 
-    let url = window.location.pathname + "?";
+    let url = window.location.pathname + "?company_ids[]=";
 
     selectedCompanyOptions.forEach((opt, index) => {
       url +=
-        "company_ids[]=" +
-        opt.option.id +
-        (index < selectedCompanyOptions.length - 1 ? "&" : "");
+        opt.option.id + (index < selectedCompanyOptions.length - 1 ? "," : "");
     });
 
     url +=
@@ -367,13 +371,11 @@ const FilterDropdown = ({
         dateFilterOptions.compFrom +
         "&comp_to=" +
         dateFilterOptions.compTo;
-    url += selectedMarketOptions.length ? "&" : "";
+    url += selectedMarketOptions.length ? "&market_ids[]=" : "";
 
     selectedMarketOptions.forEach((opt, index) => {
       url +=
-        "market_ids[]=" +
-        opt.option.id +
-        (index < selectedMarketOptions.length - 1 ? "&" : "");
+        opt.option.id + (index < selectedMarketOptions.length - 1 ? "," : "");
     });
     url += "&show_returns=" + filterOptions.showReturns;
 

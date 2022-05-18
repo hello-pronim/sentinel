@@ -3,14 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import { IconMenuItem, NestedMenuItem } from "mui-nested-menu";
 
-import {
-  Divider,
-  Grid,
-  ListItemButton,
-  Menu,
-  Typography,
-  Tooltip,
-} from "@mui/material";
+import { Grid, ListItemButton, Menu, Typography, Tooltip } from "@mui/material";
 import {
   AccountCircleOutlined,
   AdminPanelSettingsOutlined,
@@ -120,25 +113,21 @@ const SidebarFooter = ({ ...rest }) => {
           leftIcon={<AccountCircleOutlined />}
           onClick={goToProfile}
         />
-        <Divider />
         {showAdminBrands && (
-          <>
-            <NestedMenuItem
-              label="Admin"
-              leftIcon={<AdminPanelSettingsOutlined />}
-              rightIcon={<ArrowRight />}
-              parentMenuOpen={Boolean(anchorMenu) ?? false}
-            >
-              {showAdminBrands && (
-                <IconMenuItem
-                  label="Companies/Brands"
-                  leftIcon={<StorefrontOutlined />}
-                  onClick={goToAdminBrands}
-                />
-              )}
-            </NestedMenuItem>
-            <Divider />
-          </>
+          <NestedMenuItem
+            label="Admin"
+            leftIcon={<AdminPanelSettingsOutlined />}
+            rightIcon={<ArrowRight />}
+            parentMenuOpen={Boolean(anchorMenu) ?? false}
+          >
+            {showAdminBrands && (
+              <IconMenuItem
+                label="Companies/Brands"
+                leftIcon={<StorefrontOutlined />}
+                onClick={goToAdminBrands}
+              />
+            )}
+          </NestedMenuItem>
         )}
         <IconMenuItem
           label="Sign out"
