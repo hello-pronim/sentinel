@@ -44,7 +44,6 @@ const TableWrapper = styled.div`
 
 const SalesTable = ({ title, data, salesType, loading }) => {
   const { filterOptions } = useContext(AppContext);
-  const mobileScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [dateFilterOptions, setDateFilterOptions] = useState(
     filterOptions.date
   );
@@ -250,13 +249,11 @@ const SalesTable = ({ title, data, salesType, loading }) => {
         dateFilterOptions.compFrom +
         "&comp_to=" +
         dateFilterOptions.compTo;
-    url += selectedMarketOptions.length ? "&" : "";
+    url += selectedMarketOptions.length ? "&market_ids[]=" : "";
 
     selectedMarketOptions.forEach((opt, index) => {
       url +=
-        "market_ids[]=" +
-        opt.option.id +
-        (index < selectedMarketOptions.length - 1 ? "&" : "");
+        opt.option.id + (index < selectedMarketOptions.length - 1 ? "," : "");
     });
     url += "&show_returns=" + filterOptions.showReturns;
 

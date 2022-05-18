@@ -166,12 +166,11 @@ const SalesChart = ({
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
-    let url = "";
+    let url = "company_ids[]=";
     filterOptions.company.selectedOptions.forEach((opt, index) => {
       url +=
-        "company_ids[]=" +
         opt.option.id +
-        (index < filterOptions.company.selectedOptions.length - 1 ? "&" : "");
+        (index < filterOptions.company.selectedOptions.length - 1 ? "," : "");
     });
 
     url +=
