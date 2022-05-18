@@ -62,7 +62,7 @@ const SalesChangeCard = ({
       <CardContent>
         {size === "medium" ? (
           <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
+            <Grid item xs={8}>
               <Grid container spacing={4}>
                 <Grid item xs={12}>
                   <Typography variant="body2">{label}</Typography>
@@ -74,7 +74,7 @@ const SalesChangeCard = ({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item>
+            <Grid item xs={4}>
               <Grid
                 container
                 direction="column"

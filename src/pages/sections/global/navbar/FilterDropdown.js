@@ -126,9 +126,14 @@ const FilterDropdown = ({
         });
       });
 
-      populateCompanyFilterOptions(companies, selectedCompanyIds);
-      populateMarketFilterOptions(companyMarkets, selectedMarketIds);
-
+      const newCompanyFilterOptions = getNewCompanyFilterOptions(
+        companies,
+        selectedCompanyIds
+      );
+      const newMarketFilterOptions = getNewMarketFilterOptions(
+        companyMarkets,
+        selectedMarketIds
+      );
       const newDateFilterOptions = {
         dateRange: searchParams.get("date_range")
           ? searchParams.get("date_range")
@@ -157,6 +162,8 @@ const FilterDropdown = ({
 
       setFilterOptions({
         ...filterOptions,
+        company: { ...newCompanyFilterOptions },
+        market: { ...newMarketFilterOptions },
         date: {
           ...filterOptions.date,
           ...newDateFilterOptions,
@@ -211,7 +218,7 @@ const FilterDropdown = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const populateCompanyFilterOptions = (companiesData, selectedCompanyIds) => {
+  const getNewCompanyFilterOptions = (companiesData, selectedCompanyIds) => {
     const expanded = ["all"];
     const selected = [];
     const options = [];
@@ -260,17 +267,14 @@ const FilterDropdown = ({
     setDefaultCompanyExpandedList(expanded);
     setSelectedCompanies(selected);
     setSelectedCompanyOptions(selectedOptions);
-    setFilterOptions({
-      ...filterOptions,
-      company: {
-        ...filterOptions.company,
-        selected: selected,
-        selectedOptions: selectedOptions,
-      },
-    });
     setCompanyFilterOptions(options);
+
+    return {
+      selected,
+      selectedOptions: selectedOptions,
+    };
   };
-  const populateMarketFilterOptions = (marketsData, selectedMarketIds) => {
+  const getNewMarketFilterOptions = (marketsData, selectedMarketIds) => {
     const expanded = ["all"];
     const selected = [];
     const options = [];
@@ -320,15 +324,12 @@ const FilterDropdown = ({
     setDefaultMarketExpandedList(expanded);
     setSelectedMarkets(selected);
     setSelectedMarketOptions(selectedOptions);
-    setFilterOptions({
-      ...filterOptions,
-      market: {
-        ...filterOptions.market,
-        selected,
-        selectedOptions: selectedOptions,
-      },
-    });
     setMarketFilterOptions(options);
+
+    return {
+      selected,
+      selectedOptions: selectedOptions,
+    };
   };
   const handleApplyClicked = () => {
     setFilterOptions({
@@ -407,7 +408,14 @@ const FilterDropdown = ({
       });
     });
 
-    populateMarketFilterOptions(companyMarkets, selectedMarketIds);
+    const newMarketFilterOptions = getNewMarketFilterOptions(
+      companyMarkets,
+      selectedMarketIds
+    );
+    setFilterOptions({
+      ...filterOptions,
+      market: { ...newMarketFilterOptions },
+    });
   };
   const onSelectedMarketOptionsChanged = (selectedOptions) => {};
 
