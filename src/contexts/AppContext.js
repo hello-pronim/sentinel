@@ -8,8 +8,8 @@ function AppProvider({ children }) {
   const today = new Date();
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
-  const [showBrandsView, setShowBrandsView] = useState(false);
-  const [showSalesPerformance, setShowSalesPerformance] = useState(false);
+  const [showBrandsView, setShowBrandsView] = useState(true);
+  const [showSalesPerformance, setShowSalesPerformance] = useState(true);
   const [showAdminBrands, setShowAdminBrands] = useState(false);
   const defaultFilterOptions = {
     company: {
