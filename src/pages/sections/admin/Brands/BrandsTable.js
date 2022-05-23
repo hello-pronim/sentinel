@@ -18,12 +18,16 @@ import { spacing } from "@mui/system";
 
 const Divider = styled(MuiDivider)(spacing);
 
-const BrandsTable = ({ title, data, loading }) => {
+const BrandsTable = ({ title, data, loading, handleAdd, handleEdit }) => {
   const columns = [
     {
-      field: "id",
       title: "#",
       width: "10%",
+      render: (rowData) => {
+        const { tableData } = rowData;
+
+        return tableData.id + 1;
+      },
     },
     {
       field: "name",
@@ -39,8 +43,10 @@ const BrandsTable = ({ title, data, loading }) => {
       title: "Actions",
       width: "10%",
       render: (rowData) => {
+        const { nickname } = rowData;
+
         return (
-          <IconButton aria-label="edit">
+          <IconButton aria-label="edit" onClick={() => handleEdit(nickname)}>
             <EditIcon />
           </IconButton>
         );
@@ -54,7 +60,12 @@ const BrandsTable = ({ title, data, loading }) => {
         <CardHeader
           title={title}
           action={
-            <Button variant="outlined" color="primary" startIcon={<AddIcon />}>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleAdd}
+            >
               New
             </Button>
           }

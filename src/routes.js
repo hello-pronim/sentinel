@@ -10,10 +10,10 @@ import DashboardLayout from "./layouts/Dashboard";
 import AuthGuard from "./guards/AuthGuard";
 
 // Auth components
-import SignIn from "./pages/auth/SignIn/index";
-import SignUp from "./pages/auth/SignUp/index";
-import ForgotPassword from "./pages/auth/ForgotPassword/index";
-import ResetPassword from "./pages/auth/ResetPassword/index";
+import SignIn from "./pages/auth/SignIn";
+import SignUp from "./pages/auth/SignUp";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import Page404 from "./pages/auth/Page404";
 import Page500 from "./pages/auth/Page500";
 

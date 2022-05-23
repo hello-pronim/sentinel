@@ -1,52 +1,52 @@
 const brandsData = [
   {
-    id: 1,
     name: "Natursutten",
+    nickname: "natursutten",
     category: "Baby",
   },
   {
-    id: 2,
     name: "Mimijumi",
+    nickname: "mimijumi",
     category: "Baby",
   },
   {
-    id: 3,
     name: "Dammit Dolls",
+    nickname: "dammit_dolls",
     category: "Novelty",
   },
   {
-    id: 4,
     name: "Hyke & Byke",
+    nickname: "hyke_byke",
     category: "Outdoor",
   },
   {
-    id: 5,
     name: "First Landings",
+    nickname: "first_landings",
     category: "Baby",
   },
   {
-    id: 6,
     name: "Sleeping Baby",
+    nickname: "sleeping_baby",
     category: "Baby",
   },
   {
-    id: 7,
     name: "Blooming Bath",
+    nickname: "blooming_bath",
     category: "Baby",
   },
   {
-    id: 8,
     name: "Little Giraffe",
+    nickname: "little_giraffe",
     category: "Baby",
   },
   {
-    id: 9,
     name: "Brybelly",
+    nickname: "brybelly",
     category: "Novelty",
   },
   {
-    id: 10,
     name: "Downtown Pet Supply",
+    nickname: "downtown_pete_supplyl",
     category: "Baby",
   },
 ];
