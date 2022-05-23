@@ -1,53 +1,53 @@
 const brandsData = [
   {
+    id: 1,
     name: "Natursutten",
     category: "Baby",
-    MAP: 1,
   },
   {
+    id: 2,
     name: "Mimijumi",
     category: "Baby",
-    MAP: 1,
   },
   {
+    id: 3,
     name: "Dammit Dolls",
     category: "Novelty",
-    MAP: 1,
   },
   {
+    id: 4,
     name: "Hyke & Byke",
     category: "Outdoor",
-    MAP: 1,
   },
   {
+    id: 5,
     name: "First Landings",
     category: "Baby",
-    MAP: 1,
   },
   {
+    id: 6,
     name: "Sleeping Baby",
     category: "Baby",
-    MAP: 1,
   },
   {
+    id: 7,
     name: "Blooming Bath",
     category: "Baby",
-    MAP: 0.9982,
   },
   {
+    id: 8,
     name: "Little Giraffe",
     category: "Baby",
-    MAP: 1,
   },
   {
+    id: 9,
     name: "Brybelly",
     category: "Novelty",
-    MAP: 0.9412,
   },
   {
+    id: 10,
     name: "Downtown Pet Supply",
     category: "Baby",
-    MAP: 1,
   },
 ];
 
