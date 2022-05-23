@@ -122,7 +122,7 @@ const SidebarFooter = ({ ...rest }) => {
           >
             {showAdminBrands && (
               <IconMenuItem
-                label="Companies/Brands"
+                label="Brands"
                 leftIcon={<StorefrontOutlined />}
                 onClick={goToAdminBrands}
               />

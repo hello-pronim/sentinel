@@ -7,52 +7,46 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Chip,
   CircularProgress,
   Divider as MuiDivider,
   Grid,
   IconButton,
-  Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { spacing } from "@mui/system";
 
-import { convertPercentFormat } from "../../../../utils/functions";
-
 const Divider = styled(MuiDivider)(spacing);
 
-const BrandsTable = ({ title, data, loading }) => {
+const BrandsTable = ({ title, data, loading, handleAdd, handleEdit }) => {
   const columns = [
+    {
+      title: "#",
+      width: "10%",
+      render: (rowData) => {
+        const { tableData } = rowData;
+
+        return tableData.id + 1;
+      },
+    },
     {
       field: "name",
       title: "Brand",
+      width: "50%",
     },
     {
       field: "category",
       title: "Category",
-    },
-    {
-      field: "MAP",
-      title: "MAP",
-      customSort: (a, b) => a.revenue - b.revenue,
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-      },
-      render: (rowData) => {
-        const { MAP } = rowData;
-
-        return `${convertPercentFormat(MAP)}`;
-      },
+      width: "30%",
     },
     {
       title: "Actions",
+      width: "10%",
       render: (rowData) => {
+        const { nickname } = rowData;
+
         return (
-          <IconButton aria-label="edit">
+          <IconButton aria-label="edit" onClick={() => handleEdit(nickname)}>
             <EditIcon />
           </IconButton>
         );
@@ -66,7 +60,12 @@ const BrandsTable = ({ title, data, loading }) => {
         <CardHeader
           title={title}
           action={
-            <Button variant="outlined" color="primary" startIcon={<AddIcon />}>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleAdd}
+            >
               New
             </Button>
           }
