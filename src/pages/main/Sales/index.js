@@ -113,7 +113,6 @@ const Sales = () => {
     setLoadingSalesPerformanceData(true);
     getSalesPerformance(queryParamsString).then((res) => {
       const { data, parameters } = res.data.body;
-      console.log(data, parameters);
 
       setLoadingSalesPerformanceData(false);
       if (data) {
@@ -180,7 +179,6 @@ const Sales = () => {
     setLoadingSalesByCompanyChartData(true);
     getSalesByCompany(queryParamsString).then((res) => {
       const { data } = res.data.body;
-      console.log(data);
 
       setLoadingSalesByCompanyChartData(false);
       if (data) {

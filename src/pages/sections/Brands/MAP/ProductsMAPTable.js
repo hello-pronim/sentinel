@@ -50,7 +50,7 @@ const ProductsMAPTable = () => {
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [statusList, setStatusList] = useState({});
   const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
     useState(false);
@@ -217,7 +217,7 @@ const ProductsMAPTable = () => {
       if (listings) {
         let newStatusList = { ...statusList };
         const tableData = listings.map((item) => {
-          newStatusList[item.price_id] = item.status;
+          newStatusList[item.price_id] = item.status || "";
 
           return {
             name: item.name,
@@ -305,7 +305,7 @@ const ProductsMAPTable = () => {
                           data={currentViolationsData.filter(
                             (item) =>
                               statusList[item.priceId] === statusFilter ||
-                              statusFilter === ""
+                              statusFilter === "all"
                           )}
                           columns={columns}
                           options={{
@@ -325,18 +325,19 @@ const ProductsMAPTable = () => {
                               >
                                 <InputLabel>Status</InputLabel>
                                 <Select
-                                  value={statusFilter ?? ""}
+                                  value={statusFilter}
                                   onChange={handleStatusFilterChanged}
                                 >
-                                  <MenuItem value="">
-                                    <em>None</em>
-                                  </MenuItem>
+                                  <MenuItem value="all">All</MenuItem>
                                   <MenuItem value="Contacted">
                                     Contacted
                                   </MenuItem>
                                   <MenuItem value="Ignored">Ignored</MenuItem>
                                   <MenuItem value="Investigating">
                                     Investigating
+                                  </MenuItem>
+                                  <MenuItem value="">
+                                    <em>None</em>
                                   </MenuItem>
                                 </Select>
                               </FormControl>
