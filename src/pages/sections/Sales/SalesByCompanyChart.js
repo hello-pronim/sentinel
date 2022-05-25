@@ -14,6 +14,7 @@ import {
 import { spacing } from "@mui/system";
 
 import {
+  convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
   getColorFromString,
 } from "../../../utils/functions";
@@ -90,7 +91,14 @@ const SalesByCompanyChart = ({ data, loading }) => {
       });
 
       const chartXAxis = [...new Set(dates)]; // available dates for revenue, forecast and comparison chart
-      setXAxis(chartXAxis);
+      console.log(chartXAxis);
+      setXAxis(
+        chartXAxis.sort(
+          (a, b) =>
+            convertMMDDYYYYDateStringToTime(a) -
+            convertMMDDYYYYDateStringToTime(b)
+        )
+      );
 
       setShowCompanyRevenueChart(newShowCompanyRevenueChart);
       setChartData({

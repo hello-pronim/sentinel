@@ -7,6 +7,15 @@ const convertDateToMMDDYY = (date) => {
   return mm + "/" + dd + "/" + yy;
 };
 
+function convertMMDDYYYYDateStringToTime(dateString) {
+  const dd = dateString.split("-")[1];
+  const mm = dateString.split("-")[0];
+  const yy = dateString.split("-")[2];
+  const time = new Date(yy, mm - 1, dd).getTime();
+
+  return time;
+}
+
 const getPastDate = (date, days) => {
   return new Date().setDate(date.getDate() - days);
 };
@@ -72,6 +81,7 @@ function getColorFromString(string) {
 
 export {
   convertDateToMMDDYY,
+  convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
   convertPercentFormat,
   getPastDate,

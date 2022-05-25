@@ -18,6 +18,7 @@ import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
 import {
+  convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
   convertPercentFormat,
 } from "../../../utils/functions";
@@ -104,13 +105,19 @@ const SalesChart = ({
       let xAxis = [];
 
       comparisonSeriesDates = comparisonSeriesDates.sort(
-        (a, b) => new Date(a) - new Date(b)
+        (a, b) =>
+          convertMMDDYYYYDateStringToTime(a) -
+          convertMMDDYYYYDateStringToTime(b)
       );
       revenueSeriesDates = revenueSeriesDates.sort(
-        (a, b) => new Date(a) - new Date(b)
+        (a, b) =>
+          convertMMDDYYYYDateStringToTime(a) -
+          convertMMDDYYYYDateStringToTime(b)
       );
       forecastSeriesDates = forecastSeriesDates.sort(
-        (a, b) => new Date(a) - new Date(b)
+        (a, b) =>
+          convertMMDDYYYYDateStringToTime(a) -
+          convertMMDDYYYYDateStringToTime(b)
       );
 
       dates = [
@@ -118,6 +125,7 @@ const SalesChart = ({
         ...revenueSeriesDates,
         ...forecastSeriesDates,
       ];
+      console.log(dates);
       xAxis = [...new Set(dates)]; // available dates for revenue, forecast and comparison chart
 
       setChartData({
