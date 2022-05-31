@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
@@ -19,11 +19,39 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
+import BrandConfigTable from "./BrandConfigTable";
+
 const Alert = styled(MuiAlert)(spacing);
 const Divider = styled(MuiDivider)(spacing);
 const TextField = styled(MuiTextField)(spacing);
 
 const BrandDetailsForm = ({ mode, data, handleSubmit, handleCancel }) => {
+  const [apiKeys, setApiKeys] = useState(data?.apiKeys || []);
+
+  const onSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
+    try {
+      handleSubmit({ ...values, apiKeys });
+    } catch (error) {
+      const message = error.message || "Something went wrong";
+
+      setStatus({ success: false });
+      setErrors({ submit: message });
+      setSubmitting(false);
+    }
+  };
+
+  const handleBrandConfigSubmit = (brandConfigData) => {
+    let newApiKeys = [...apiKeys];
+    const maxId = apiKeys.map((item) => item.id).sort((a, b) => a > b)[0] || 0;
+    if (brandConfigData.id === "" || apiKeys.length === 0) {
+      newApiKeys.push({ ...brandConfigData, id: maxId + 1 });
+    } else
+      newApiKeys = apiKeys.map((item) =>
+        item.id === brandConfigData.id ? brandConfigData : item
+      );
+    setApiKeys([...newApiKeys]);
+  };
+
   return (
     <React.Fragment>
       <Card variant="outlined">
@@ -34,17 +62,7 @@ const BrandDetailsForm = ({ mode, data, handleSubmit, handleCancel }) => {
             nickname: Yup.string().max(255).required("Nickname is required"),
             category: Yup.string().max(255).required("Category is required"),
           })}
-          onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-            try {
-              handleSubmit(values);
-            } catch (error) {
-              const message = error.message || "Something went wrong";
-
-              setStatus({ success: false });
-              setErrors({ submit: message });
-              setSubmitting(false);
-            }
-          }}
+          onSubmit={onSubmit}
         >
           {({
             errors,
@@ -128,6 +146,13 @@ const BrandDetailsForm = ({ mode, data, handleSubmit, handleCancel }) => {
                       helperText={touched.dataMAP && errors.dataMAP}
                       fullWidth
                       my={2}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <BrandConfigTable
+                      title="Brand Configuration"
+                      data={apiKeys}
+                      handleSubmit={handleBrandConfigSubmit}
                     />
                   </Grid>
                 </Grid>
