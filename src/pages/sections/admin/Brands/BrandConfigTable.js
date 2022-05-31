@@ -166,7 +166,7 @@ const BrandConfigTable = ({ title, data, loading, handleSubmit }) => {
             values,
           }) => (
             <form noValidate onSubmit={handleSubmit}>
-              <DialogTitle>Subscribe</DialogTitle>
+              <DialogTitle>{values.id === "" ? "Add" : "Edit"}</DialogTitle>
               <Divider />
               <DialogContent>
                 <Grid container spacing={4}>
