@@ -25,7 +25,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const AdminBrands = () => {
-  const queryParamsString = window.location.search;
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
   const [brands, setBrands] = useState(brandsData);
@@ -44,9 +43,25 @@ const AdminBrands = () => {
   const initializeMAPData = useCallback(() => {
     setLoadingBrands(true);
     getAdminBrands().then((res) => {
-      console.log(res);
+      const {
+        data: {
+          body: { data },
+        },
+      } = res;
+      console.log(data);
+      setLoadingBrands(false);
+      if (data) {
+        const brandList = data.map((brand) => ({
+          id: brand.id,
+          name: brand.name,
+          nickname: brand.nickname,
+          dataMAP: brand.data_map,
+          category: brand.category_name,
+        }));
+        setBrands([...brandList]);
+      }
     });
-  }, [queryParamsString]);
+  }, []);
 
   useEffect(() => {
     initialize();
@@ -63,23 +78,20 @@ const AdminBrands = () => {
     setFormData({ ...defaultFormData });
     setShowBrandDetailsFormPanel(true);
   };
-  const handleEdit = (nickname) => {
+  const handleEdit = (id) => {
     setBrandsDetailsFormMode("edit");
-    setFormData(
-      brands.find((brand) => brand.nickname === nickname) || defaultFormData
-    );
+    setFormData(brands.find((brand) => brand.id === id) || defaultFormData);
     setShowBrandDetailsFormPanel(true);
   };
   const handleSubmit = (formData) => {
     let newBrands = [...brands];
     const isExist =
-      newBrands.filter((brand) => brand.nickname === formData.nickname).length >
-      0;
+      newBrands.filter((brand) => brand.id === formData.id).length > 0;
 
     if (!isExist) newBrands.push(formData);
     else
       newBrands = brands.map((brand) => {
-        if (brand.nickname === formData.nickname) return { ...formData };
+        if (brand.id === formData.id) return { ...formData };
         return { ...brand };
       });
 
@@ -123,6 +135,7 @@ const AdminBrands = () => {
           <BrandsTable
             title="Brands"
             data={brands}
+            loading={loadingBrands}
             handleAdd={handleAdd}
             handleEdit={handleEdit}
           />

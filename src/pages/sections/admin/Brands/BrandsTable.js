@@ -21,13 +21,9 @@ const Divider = styled(MuiDivider)(spacing);
 const BrandsTable = ({ title, data, loading, handleAdd, handleEdit }) => {
   const columns = [
     {
+      field: "id",
       title: "#",
       width: "10%",
-      render: (rowData) => {
-        const { tableData } = rowData;
-
-        return tableData.id + 1;
-      },
     },
     {
       field: "name",
@@ -43,10 +39,10 @@ const BrandsTable = ({ title, data, loading, handleAdd, handleEdit }) => {
       title: "Actions",
       width: "10%",
       render: (rowData) => {
-        const { nickname } = rowData;
+        const { id } = rowData;
 
         return (
-          <IconButton aria-label="edit" onClick={() => handleEdit(nickname)}>
+          <IconButton aria-label="edit" onClick={() => handleEdit(id)}>
             <EditIcon />
           </IconButton>
         );
@@ -77,7 +73,7 @@ const BrandsTable = ({ title, data, loading, handleAdd, handleEdit }) => {
               {data !== null && !loading ? (
                 <MaterialTable
                   columns={columns}
-                  data={data}
+                  data={data.sort((a, b) => a.id - b.id)}
                   options={{
                     pageSize: 10,
                     search: true,
