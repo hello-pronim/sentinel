@@ -130,6 +130,7 @@ const BrandDetailsForm = ({ mode, data, handleSubmit, handleCancel }) => {
                         <em>None</em>
                       </MenuItem>
                       <MenuItem value="Baby">Baby</MenuItem>
+                      <MenuItem value="Pet">Pet</MenuItem>
                       <MenuItem value="Novelty">Novelty</MenuItem>
                       <MenuItem value="Outdoor">Outdoor</MenuItem>
                     </TextField>
