@@ -12,6 +12,7 @@ import {
 import { spacing } from "@mui/system";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
+import { getAdminBrands } from "../../../../services/AdminService";
 
 import BrandsTable from "../../../sections/admin/Brands/BrandsTable";
 import BrandDetailsForm from "../../../sections/admin/Brands/BrandDetailsForm";
@@ -40,7 +41,12 @@ const AdminBrands = () => {
   };
   const [formData, setFormData] = useState(defaultFormData);
   const [showAlert, setShowAlert] = useState(false);
-  const initializeMAPData = useCallback(() => {}, [queryParamsString]);
+  const initializeMAPData = useCallback(() => {
+    setLoadingBrands(true);
+    getAdminBrands().then((res) => {
+      console.log(res);
+    });
+  }, [queryParamsString]);
 
   useEffect(() => {
     initialize();
