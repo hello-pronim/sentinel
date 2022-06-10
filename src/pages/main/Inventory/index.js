@@ -29,10 +29,7 @@ const InventoryChart = async(() =>
 
 const Divider = styled(MuiDivider)(spacing);
 
-const chartTabs = [
-  { label: "Shipped", value: "shipped" },
-  { label: "Future Content Tab", value: "coming_soon" },
-];
+const chartTabs = [{ label: "Shipped", value: "shipped" }];
 
 const Inventory = () => {
   const queryParamsString = window.location.search;
@@ -72,7 +69,7 @@ const Inventory = () => {
 
       if (selectedCompanyList.length === allCompanies.length) {
         setChartTitle("All companies");
-        setTableTitle("Sales");
+        setTableTitle("Units Shipped");
       } else if (selectedCompanyList.length === 1) {
         const selectedCompany = allCompanies.find(
           (company) => company.id === selectedCompanyList[0].id
@@ -81,7 +78,7 @@ const Inventory = () => {
         setTableTitle(selectedCompany.name);
       } else {
         setChartTitle("Multi companies");
-        setTableTitle("Sales");
+        setTableTitle("Units Shipped");
       }
     }
     // .catch((err) => signOut());
@@ -147,17 +144,6 @@ const Inventory = () => {
             Inventory
           </Typography>
         </Grid>
-        <Grid item>
-          <Tooltip title="Refresh Data">
-            <Button
-              variant="contained"
-              onClick={refreshInventoryData}
-              disabled={loadingInventoryChartData || loadingInventoryTableData}
-            >
-              <RefreshIcon />
-            </Button>
-          </Tooltip>
-        </Grid>
       </Grid>
 
       <Divider my={6} />
@@ -187,11 +173,6 @@ const Inventory = () => {
                       setFilterOptions={setFilterOptions}
                     />
                   </Grid>
-                </Grid>
-              </TabPanel>
-              <TabPanel value="coming_soon">
-                <Grid container>
-                  <Grid item xs={12}></Grid>
                 </Grid>
               </TabPanel>
             </TabContext>
