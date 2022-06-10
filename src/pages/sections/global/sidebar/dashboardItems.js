@@ -1,6 +1,7 @@
 import {
   MonetizationOnOutlined as MonetizationOnOutlinedIcon,
   StorefrontOutlined as StorefrontOutlinedIcon,
+  Inventory2Outlined as Inventory2OutlinedIcon,
 } from "@mui/icons-material";
 
 const pagesSection = [
@@ -15,6 +16,12 @@ const pagesSection = [
     href: "/brands",
     icon: StorefrontOutlinedIcon,
     title: "Brands",
+  },
+  {
+    slug: "inventory",
+    href: "/inventory",
+    icon: Inventory2OutlinedIcon,
+    title: "Inventory",
   },
 ];
 

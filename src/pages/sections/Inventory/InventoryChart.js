@@ -37,19 +37,16 @@ const LinkText = styled(Typography)`
 
 const colors = [green[400], red[400], blue[400]];
 
-const SalesChart = ({
+const InventoryChart = ({
   title,
   data,
   filterOptions,
   loading,
   setFilterOptions,
 }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [chartData, setChartData] = useState(null);
   const [showCurrentRevenue, setShowCurrentRevenue] = useState(true);
   const [showPreviousRevenue, setShowPreviousRevenue] = useState(true);
-  const [showForecastRevenue, setShowForecastRevenue] = useState(true);
   const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
   const options = {
     maintainAspectRatio: false,
@@ -131,7 +128,7 @@ const SalesChart = ({
         labels: xAxis,
         datasets: [
           {
-            label: "Current Revenue",
+            label: "Current Shipped",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[0],
@@ -141,7 +138,7 @@ const SalesChart = ({
               : [],
           },
           {
-            label: "Previous Revenue",
+            label: "Previous Shipped",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[1],
@@ -150,68 +147,10 @@ const SalesChart = ({
               ? xAxis.map((x) => data.comparisonSeries[x])
               : [],
           },
-          {
-            label: "Percent Change",
-            data: showPreviousRevenue
-              ? xAxis.map((x) => data.changeSeries[x])
-              : [],
-          },
-          {
-            label: "Forecast Revenue",
-            fill: true,
-            backgroundColor: "transparent",
-            borderColor: colors[2],
-            tension: 0.4,
-            data: showForecastRevenue
-              ? xAxis.map((x) => data.forecastSeries[x])
-              : [],
-          },
         ],
       });
     }
-  }, [data, showCurrentRevenue, showPreviousRevenue, showForecastRevenue]);
-
-  const handleShowReturnsChanged = (event, value) => {
-    const search = location.search;
-    let url = "company_ids[]=";
-    filterOptions.company.selectedOptions.forEach((opt, index) => {
-      url +=
-        opt.option.id +
-        (index < filterOptions.company.selectedOptions.length - 1 ? "," : "");
-    });
-
-    url +=
-      "&date_range=" +
-      filterOptions.date.dateRange +
-      "&view_by=" +
-      filterOptions.date.viewMode +
-      "&from=" +
-      filterOptions.date.from +
-      "&to=" +
-      filterOptions.date.to;
-    url += "&";
-    filterOptions.market.selectedOptions.forEach((opt, index) => {
-      url +=
-        "market_ids[]=" +
-        opt.option.id +
-        (index < filterOptions.market.selectedOptions.length - 1 ? "&" : "");
-    });
-    url += "&show_returns=" + value;
-
-    const new_url =
-      "/sales" +
-      (search.length !== 0
-        ? search.replace(/show_returns=(true|false)/, "show_returns=" + value)
-        : "?" + url);
-
-    setShowReturns(value);
-    setFilterOptions({
-      ...filterOptions,
-      showReturns: value,
-    });
-
-    navigate(new_url);
-  };
+  }, [data, showCurrentRevenue, showPreviousRevenue]);
 
   const handleCurrentRevenueLabelClicked = () => {
     setShowCurrentRevenue(!showCurrentRevenue);
@@ -219,10 +158,6 @@ const SalesChart = ({
 
   const handlePreviousRevenueLabelClicked = () => {
     setShowPreviousRevenue(!showPreviousRevenue);
-  };
-
-  const handleForecastRevenueLabelClicked = () => {
-    setShowForecastRevenue(!showForecastRevenue);
   };
 
   return (
@@ -243,7 +178,7 @@ const SalesChart = ({
                         textDecoration: !showCurrentRevenue && "line-through",
                       }}
                     >
-                      Total Revenue:
+                      Total Shipped:
                     </LinkText>
                   </Grid>
                   <Grid item>
@@ -263,7 +198,7 @@ const SalesChart = ({
                         textDecoration: !showPreviousRevenue && "line-through",
                       }}
                     >
-                      Previous Revenue:
+                      Previous Shipped:
                     </LinkText>
                   </Grid>
                   <Grid item>
@@ -273,27 +208,6 @@ const SalesChart = ({
                   </Grid>
                 </Grid>
               </Grid>
-
-              {data.forecast48h ? (
-                <Grid item xs={12}>
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>
-                      <LinkText
-                        onClick={handleForecastRevenueLabelClicked}
-                        style={{
-                          color: colors[2],
-                          textDecoration:
-                            !showForecastRevenue && "line-through",
-                        }}
-                      >
-                        Forecast Revenue
-                      </LinkText>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              ) : (
-                <></>
-              )}
             </Grid>
 
             <Spacer mb={6} />
@@ -307,17 +221,6 @@ const SalesChart = ({
                 </Grid>
               </Grid>
             )}
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={Boolean(showReturns)}
-                    onChange={handleShowReturnsChanged}
-                  />
-                }
-                label="Include: Returned, Partial, and Pending Orders"
-              />
-            </Grid>
           </>
         ) : (
           <Grid container justifyContent="center">
@@ -331,4 +234,4 @@ const SalesChart = ({
   );
 };
 
-export default SalesChart;
+export default InventoryChart;

@@ -50,12 +50,7 @@ const chartTabs = [
 
 const Sales = () => {
   const queryParamsString = window.location.search;
-  const {
-    companies,
-    features: { showSalesPerformance },
-    filterOptions,
-    setFilterOptions,
-  } = useContext(AppContext);
+  const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
   const [chartTitle, setChartTitle] = useState("All companies");
@@ -249,22 +244,20 @@ const Sales = () => {
       <Divider my={6} />
 
       <Grid container spacing={6}>
-        {showSalesPerformance && (
-          <Grid item xs={12}>
-            {salesPerformanceData !== null && !loadingSalesPerformanceData ? (
-              <SalesPerformance
-                title="My Portfolio's Performance"
-                data={salesPerformanceData}
-              />
-            ) : (
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <CircularProgress />
-                </Grid>
+        <Grid item xs={12}>
+          {salesPerformanceData !== null && !loadingSalesPerformanceData ? (
+            <SalesPerformance
+              title="My Portfolio's Performance"
+              data={salesPerformanceData}
+            />
+          ) : (
+            <Grid container justifyContent="center">
+              <Grid item>
+                <CircularProgress />
               </Grid>
-            )}
-          </Grid>
-        )}
+            </Grid>
+          )}
+        </Grid>
         <Grid item xs={12}>
           <Card>
             <TabContext value={selectedChartTab}>
