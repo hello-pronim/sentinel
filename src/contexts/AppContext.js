@@ -8,8 +8,7 @@ function AppProvider({ children }) {
   const today = new Date();
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
-  const [showBrandsView, setShowBrandsView] = useState(true);
-  const [showSalesPerformance, setShowSalesPerformance] = useState(true);
+  const [showInventoryView, setShowInventoryView] = useState(true);
   const [showAdminBrands, setShowAdminBrands] = useState(false);
   const defaultFilterOptions = {
     company: {
@@ -39,8 +38,7 @@ function AppProvider({ children }) {
       cacheFlags: true,
       enableAnalytics: true,
       onChange: (oldFlags, params) => {
-        setShowBrandsView(flagsmith.hasFeature("brands_view"));
-        setShowSalesPerformance(flagsmith.hasFeature("sales_performance"));
+        setShowInventoryView(flagsmith.hasFeature("inventory_view"));
         setShowAdminBrands(flagsmith.hasFeature("admin_brands"));
       },
     });
@@ -53,7 +51,10 @@ function AppProvider({ children }) {
         markets,
         defaultFilterOptions,
         filterOptions,
-        features: { showBrandsView, showSalesPerformance, showAdminBrands },
+        features: {
+          showInventoryView,
+          showAdminBrands,
+        },
         setCompanies,
         setMarkets,
         setFilterOptions,

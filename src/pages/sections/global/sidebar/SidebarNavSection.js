@@ -5,7 +5,7 @@ import { AppContext } from "../../../../contexts/AppContext";
 
 const SidebarNavSection = (props) => {
   const {
-    features: { showBrandsView },
+    features: { showInventoryView },
   } = useContext(AppContext);
   const {
     title,
@@ -17,10 +17,12 @@ const SidebarNavSection = (props) => {
   const [visibleItems, setVisibleItems] = useState(pages);
 
   useEffect(() => {
-    if (!showBrandsView) {
-      setVisibleItems(pages.filter((page) => page.slug !== "brands"));
-    } else setVisibleItems(pages);
-  }, [showBrandsView, pages]);
+    let visiblePages = [...pages];
+    if (!showInventoryView) {
+      visiblePages = visiblePages.filter((page) => page.slug !== "inventory");
+    }
+    setVisibleItems(visiblePages);
+  }, [showInventoryView, pages]);
 
   return (
     <Component {...rest}>
