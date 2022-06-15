@@ -14,11 +14,7 @@ import {
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
-import {
-  convertMMDDYYYYDateStringToTime,
-  convertPriceFormat,
-  convertPercentFormat,
-} from "../../../utils/functions";
+import { convertMMDDYYYYDateStringToTime } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 const Divider = styled(MuiDivider)(spacing);
@@ -61,8 +57,8 @@ const InventoryChart = ({
 
             if (label) label += ": ";
             if (context.parsed.y !== null && label.includes("Shipped", 0))
-              label += convertPriceFormat(context.parsed.y);
-            else label += convertPercentFormat(context.parsed.y);
+              label += context.parsed.y;
+            else label += context.parsed.y;
             return label;
           },
         },
@@ -163,9 +159,7 @@ const InventoryChart = ({
                     </LinkText>
                   </Grid>
                   <Grid item>
-                    <Typography>
-                      {convertPriceFormat(data.stats.total_shipped_units)}
-                    </Typography>
+                    <Typography>{data.stats.total_shipped_units}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -184,9 +178,7 @@ const InventoryChart = ({
                   </Grid>
                   <Grid item>
                     <Typography>
-                      {convertPriceFormat(
-                        data.stats.total_shipped_units_comparison
-                      )}
+                      {data.stats.total_shipped_units_comparison}
                     </Typography>
                   </Grid>
                 </Grid>
