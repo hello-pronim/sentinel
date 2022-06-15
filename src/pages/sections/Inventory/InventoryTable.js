@@ -13,7 +13,6 @@ import {
   Grid,
   Link,
   IconButton,
-  useMediaQuery,
   Tooltip,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
@@ -254,7 +253,7 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
       <CardHeader
         title={title}
         action={
-          <Tooltip title="Daily Sales">
+          <Tooltip title="Units Shipped">
             <IconButton size="large" onClick={downloadReport}>
               <Download />
             </IconButton>

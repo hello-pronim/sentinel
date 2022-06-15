@@ -13,12 +13,11 @@ import {
   Typography,
 } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
 import { AuthContext } from "../../../contexts/CognitoContext";
-import { getSales, getSalesData } from "../../../services/SalesService";
+import { getShipped } from "../../../services/InventoryService";
 import async from "../../../components/Async";
 
 import InventoryTable from "../../sections/Inventory/InventoryTable";
@@ -86,18 +85,16 @@ const Inventory = () => {
 
   const refreshInventoryData = useCallback(() => {
     setLoadingInventoryChartData(true);
-    getSales(queryParamsString).then((res) => {
-      const { data, parameters } = res.data.body;
+    getShipped(queryParamsString).then((res) => {
+      const { data } = res.data.body;
+      console.log(data);
 
       setLoadingInventoryChartData(false);
       if (data) {
         const chartData = {
-          comparisonSeries: data.comparison_series,
-          revenueSeries: data.revenue_series,
-          changeSeries: data.revenue_change,
-          forecastSeries: data?.revenue_forecast || {},
+          comparisonSeries: data.units_shipped_comparison_series,
+          series: data.units_shipped_series,
           stats: data.stats,
-          forecast48h: parameters?.forecast_48h || false,
         };
 
         setInventoryChartData(chartData);
