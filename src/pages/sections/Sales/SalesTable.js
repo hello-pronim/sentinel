@@ -13,7 +13,6 @@ import {
   Grid,
   Link,
   IconButton,
-  useMediaQuery,
   Tooltip,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
@@ -144,7 +143,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   const productsTableColumns = [
     {
       field: "name",
-      title: "Brand",
+      title: "Product",
       width: "55%",
       render: (rowData) => {
         const { name } = rowData;

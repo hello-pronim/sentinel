@@ -107,7 +107,7 @@ const Sales = () => {
   const refreshSalesData = useCallback(() => {
     setLoadingSalesPerformanceData(true);
     getSalesPerformance(queryParamsString).then((res) => {
-      const { data, parameters } = res.data.body;
+      const { data } = res.data.body;
 
       setLoadingSalesPerformanceData(false);
       if (data) {
