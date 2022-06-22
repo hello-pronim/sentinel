@@ -293,7 +293,11 @@ const SalesTable = ({ title, data, salesType, loading }) => {
           title={title}
           action={
             <Tooltip title="Daily Sales">
-              <IconButton size="large" onClick={downloadReport}>
+              <IconButton
+                size="large"
+                onClick={downloadReport}
+                disabled={downloadingCSV}
+              >
                 <Download />
               </IconButton>
             </Tooltip>

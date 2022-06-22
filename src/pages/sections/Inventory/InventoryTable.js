@@ -235,7 +235,11 @@ const InventoryTable = ({ title, data, shippedType, loading }) => {
           title={title}
           action={
             <Tooltip title="Units Shipped">
-              <IconButton size="large" onClick={downloadReport}>
+              <IconButton
+                size="large"
+                onClick={downloadReport}
+                disabled={downloadingCSV}
+              >
                 <Download />
               </IconButton>
             </Tooltip>
