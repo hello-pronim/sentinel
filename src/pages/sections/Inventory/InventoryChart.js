@@ -102,7 +102,6 @@ const InventoryChart = ({
       dates = [...comparisonSeriesDates, ...currentSeriesDates];
       xAxis = [...new Set(dates)]; // available dates for revenue, forecast and comparison chart
 
-      console.log("xaxis", xAxis);
       setChartData({
         labels: xAxis,
         datasets: [

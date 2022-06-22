@@ -14,11 +14,13 @@ import { spacing } from "@mui/system";
 
 import { AppContext } from "../../../contexts/AppContext";
 import { AuthContext } from "../../../contexts/CognitoContext";
-import { getShipped } from "../../../services/InventoryService";
+import {
+  getShippedChartData,
+  getShippedTableData,
+} from "../../../services/InventoryService";
 import async from "../../../components/Async";
 
 import InventoryTable from "../../sections/Inventory/InventoryTable";
-import data from "./data";
 const InventoryChart = async(() =>
   import("../../sections/Inventory/InventoryChart")
 );
@@ -35,8 +37,7 @@ const Inventory = () => {
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
   const [inventoryChartData, setInventoryChartData] = useState(null);
-  // const [inventoryTableData, setInventoryTableData] = useState(null);
-  const { inventoryTableData } = data;
+  const [inventoryTableData, setInventoryTableData] = useState(null);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [loadingInventoryChartData, setLoadingInventoryChartData] =
     useState(false);
@@ -82,7 +83,7 @@ const Inventory = () => {
 
   const refreshInventoryData = useCallback(() => {
     setLoadingInventoryChartData(true);
-    getShipped(queryParamsString).then((res) => {
+    getShippedChartData(queryParamsString).then((res) => {
       const { data } = res.data.body;
       console.log(data);
 
@@ -97,25 +98,25 @@ const Inventory = () => {
         setInventoryChartData(chartData);
       }
     });
-    // setLoadingInventoryTableData(true);
-    // getSalesData(queryParamsString).then((res) => {
-    //   const { data } = res.data.body;
+    setLoadingInventoryTableData(true);
+    getShippedTableData(queryParamsString).then((res) => {
+      const { data } = res.data.body;
+      console.log(data);
 
-    //   setLoadingInventoryTableData(false);
-    //   if (data) {
-    //     const tableData = data.map((item) => ({
-    //       name: item.name,
-    //       revenue: item.revenue,
-    //       comparisonRevenue: item.comparison_revenue,
-    //       revenueChange: item.revenue_change,
-    //       type: item.type,
-    //       companyId: item?.company_id,
-    //       productId: item?.product_id,
-    //     }));
+      setLoadingInventoryTableData(false);
+      if (data) {
+        const tableData = data.map((item) => ({
+          name: item.brand,
+          unitsShipped: item.total_units_shipped,
+          comparisonUnitsShipped: item.total_units_shipped_comparison,
+          change: item.total_units_shipped_change,
+          companyId: item?.company_id,
+          productId: item?.product_id,
+        }));
 
-    //     setInventoryTableData(tableData);
-    //   }
-    // });
+        setInventoryTableData(tableData);
+      }
+    });
   }, [queryParamsString]);
 
   useEffect(() => {

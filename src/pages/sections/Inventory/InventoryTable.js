@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
-import { getSalesExport } from "../../../services/SalesService";
+import { getUntisShippedExport } from "../../../services/InventoryService";
 
 import {
   Card as MuiCard,
@@ -20,10 +20,7 @@ import { spacing } from "@mui/system";
 import MaterialTable from "@material-table/core";
 
 import { AppContext } from "../../../contexts/AppContext";
-import {
-  convertPriceFormat,
-  convertPercentFormat,
-} from "../../../utils/functions";
+import { convertPercentFormat } from "../../../utils/functions";
 
 const Card = styled(MuiCard)(spacing);
 const Divider = styled(MuiDivider)(spacing);
@@ -41,7 +38,7 @@ const TableWrapper = styled.div`
   max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
 `;
 
-const SalesTable = ({ title, data, shippedType, loading }) => {
+const InventoryTable = ({ title, data, shippedType, loading }) => {
   const { filterOptions } = useContext(AppContext);
   const [dateFilterOptions, setDateFilterOptions] = useState(
     filterOptions.date
@@ -70,7 +67,7 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
       },
     },
     {
-      field: "shipped",
+      field: "unitsShipped",
       title: "Shipped",
       width: "15%",
       headerStyle: {
@@ -81,7 +78,7 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
       },
     },
     {
-      field: "comparisonShipped",
+      field: "comparisonUnitsShipped",
       title: "Comparison Shipped",
       width: "15%",
       headerStyle: {
@@ -117,7 +114,7 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
   const productsTableColumns = [
     {
       field: "name",
-      title: "Brand",
+      title: "Product",
       width: "55%",
       render: (rowData) => {
         const { name } = rowData;
@@ -126,53 +123,30 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
       },
     },
     {
-      field: "revenue",
-      title: "Revenue",
-      type: "currency",
-      currencySetting: {
-        currencyCode: "$",
-      },
-      customSort: (a, b) => a.revenue - b.revenue,
+      field: "unitsShipped",
+      title: "Shipped",
       width: "15%",
       headerStyle: {
         textAlign: "center",
       },
       cellStyle: {
         textAlign: "center",
-      },
-      render: (rowData) => {
-        const { revenue } = rowData;
-
-        return `${convertPriceFormat(revenue)}`;
       },
     },
     {
-      field: "comparisonRevenue",
-      title: "Comparison Revenue",
-      type: "currency",
-      currencySetting: {
-        currencyCode: "$",
-      },
-      customSort: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
+      field: "comparisonUnitsShipped",
+      title: "Comparison Shipped",
       width: "15%",
       headerStyle: {
         textAlign: "center",
       },
       cellStyle: {
         textAlign: "center",
-      },
-      defaultSort: "desc",
-      render: (rowData) => {
-        const { comparisonRevenue } = rowData;
-
-        return `${convertPriceFormat(comparisonRevenue)}`;
       },
     },
     {
-      field: "revenueChange",
-      title: "Revenue Change",
-      customSort: (a, b) => a.revenueChange - b.revenueChange,
-      width: "15%",
+      field: "change",
+      title: "Change",
       headerStyle: {
         textAlign: "center",
       },
@@ -180,18 +154,12 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
         textAlign: "center",
       },
       render: (rowData) => {
-        const { revenueChange } = rowData;
+        const { change } = rowData;
 
         return (
           <Chip
-            label={`${convertPercentFormat(revenueChange)}`}
-            color={
-              revenueChange > 0
-                ? "success"
-                : revenueChange === 0
-                ? "warning"
-                : "error"
-            }
+            label={`${convertPercentFormat(change)}`}
+            color={change > 0 ? "success" : change === 0 ? "warning" : "error"}
           />
         );
       },
@@ -235,7 +203,7 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
 
   const downloadReport = async () => {
     const queryParamsString = window.location.search;
-    const response = await getSalesExport("csv", queryParamsString);
+    const response = await getUntisShippedExport(queryParamsString);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
@@ -290,4 +258,4 @@ const SalesTable = ({ title, data, shippedType, loading }) => {
     </Card>
   );
 };
-export default SalesTable;
+export default InventoryTable;
