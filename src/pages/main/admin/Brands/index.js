@@ -48,7 +48,7 @@ const AdminBrands = () => {
           body: { data },
         },
       } = res;
-      console.log(data);
+
       setLoadingBrands(false);
       if (data) {
         const brandList = data.map((brand) => ({

@@ -91,7 +91,7 @@ const SalesByCompanyChart = ({ data, loading }) => {
       });
 
       const chartXAxis = [...new Set(dates)]; // available dates for revenue, forecast and comparison chart
-      console.log(chartXAxis);
+
       setXAxis(
         chartXAxis.sort(
           (a, b) =>
