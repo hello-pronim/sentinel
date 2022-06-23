@@ -4,6 +4,7 @@ import styled from "styled-components/macro";
 import { getSalesExport } from "../../../services/SalesService";
 
 import {
+  Alert as MuiAlert,
   Card as MuiCard,
   CardHeader,
   CardContent,
@@ -13,6 +14,7 @@ import {
   Grid,
   Link,
   IconButton,
+  Snackbar,
   Tooltip,
 } from "@mui/material";
 import { Download } from "@mui/icons-material";
@@ -40,6 +42,9 @@ const TableWrapper = styled.div`
   overflow-y: auto;
   max-width: calc(100vw - ${(props) => props.theme.spacing(12)});
 `;
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const SalesTable = ({ title, data, salesType, loading }) => {
   const { filterOptions } = useContext(AppContext);
@@ -49,6 +54,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   const [selectedMarketOptions, setSelectedMarketOptions] = useState(
     filterOptions.market.selectedOptions
   );
+  const [downloadingCSV, setDownloadingCSV] = useState(false);
 
   const brandsTableColumns = [
     {
@@ -260,6 +266,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   };
 
   const downloadReport = async () => {
+    setDownloadingCSV(true);
     const queryParamsString = window.location.search;
     const response = await getSalesExport("csv", queryParamsString);
     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -272,48 +279,68 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     link.setAttribute("download", `${filename}`);
     document.body.appendChild(link);
     link.click();
+    setDownloadingCSV(false);
+  };
+
+  const handleAlertClose = () => {
+    setDownloadingCSV(false);
   };
 
   return (
-    <Card mb={6}>
-      <CardHeader
-        title={title}
-        action={
-          <Tooltip title="Daily Sales">
-            <IconButton size="large" onClick={downloadReport}>
-              <Download />
-            </IconButton>
-          </Tooltip>
-        }
-      />
-      <Divider />
-      <CardContent>
-        {data !== null && !loading ? (
-          <TableWrapper>
-            <MaterialTable
-              columns={
-                salesType === "product"
-                  ? productsTableColumns
-                  : brandsTableColumns
-              }
-              data={data}
-              options={{
-                pageSize: 20,
-                search: true,
-                showTitle: false,
-                emptyRowsWhenPaging: false,
-              }}
-            />
-          </TableWrapper>
-        ) : (
-          <Grid container justifyContent="center">
-            <Grid item>
-              <CircularProgress />
+    <>
+      <Card mb={6}>
+        <CardHeader
+          title={title}
+          action={
+            <Tooltip title="Daily Sales">
+              <IconButton
+                size="large"
+                onClick={downloadReport}
+                disabled={downloadingCSV}
+              >
+                <Download />
+              </IconButton>
+            </Tooltip>
+          }
+        />
+        <Divider />
+        <CardContent>
+          {data !== null && !loading ? (
+            <TableWrapper>
+              <MaterialTable
+                columns={
+                  salesType === "product"
+                    ? productsTableColumns
+                    : brandsTableColumns
+                }
+                data={data}
+                options={{
+                  pageSize: 20,
+                  search: true,
+                  showTitle: false,
+                  emptyRowsWhenPaging: false,
+                }}
+              />
+            </TableWrapper>
+          ) : (
+            <Grid container justifyContent="center">
+              <Grid item>
+                <CircularProgress />
+              </Grid>
             </Grid>
-          </Grid>
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </CardContent>
+      </Card>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={downloadingCSV}
+        onClose={handleAlertClose}
+      >
+        <Alert icon={<></>} onClose={handleAlertClose} severity="success">
+          Preparing download, please wait...
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 export default SalesTable;

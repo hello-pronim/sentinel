@@ -85,7 +85,6 @@ const Inventory = () => {
     setLoadingInventoryChartData(true);
     getShippedChartData(queryParamsString).then((res) => {
       const { data } = res.data.body;
-      console.log(data);
 
       setLoadingInventoryChartData(false);
       if (data) {
@@ -101,7 +100,6 @@ const Inventory = () => {
     setLoadingInventoryTableData(true);
     getShippedTableData(queryParamsString).then((res) => {
       const { data } = res.data.body;
-      console.log(data);
 
       setLoadingInventoryTableData(false);
       if (data) {
