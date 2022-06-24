@@ -158,6 +158,22 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       },
     },
     {
+      field: "units",
+      title: "Units",
+      width: "5%",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        const { units } = rowData;
+
+        return units;
+      },
+    },
+    {
       field: "revenue",
       title: "Revenue",
       type: "currency",

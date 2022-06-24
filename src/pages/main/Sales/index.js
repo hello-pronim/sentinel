@@ -195,6 +195,7 @@ const Sales = () => {
       if (data) {
         const tableData = data.map((item) => ({
           name: item.name,
+          units: item.units,
           revenue: item.revenue,
           comparisonRevenue: item.comparison_revenue,
           revenueChange: item.revenue_change,
