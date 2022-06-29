@@ -32,7 +32,6 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
   const [chartData, setChartData] = useState(null);
   const [showRevenueChart, setShowRevenueChart] = useState(true);
   const [showExpenseChart, setShowExpenseChart] = useState(true);
-  const [showProductCostChart, setShowProductCostChart] = useState(true);
   const options = {
     maintainAspectRatio: false,
     interaction: {
@@ -58,23 +57,13 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
   };
 
   useEffect(() => {
-    if (
-      data !== null &&
-      data.revenueSeries &&
-      data.expenseSeries &&
-      data.productCostSeries
-    ) {
+    if (data !== null && data.revenueSeries && data.expenseSeries) {
       let revenueSeriesDates = Object.keys(data.revenueSeries);
       let expenseSeriesDates = Object.keys(data.expenseSeries);
-      let productCostSeriesDates = Object.keys(data.productCostSeries);
       let dates = [];
       let xAxis = [];
 
-      dates = [
-        ...revenueSeriesDates,
-        ...expenseSeriesDates,
-        ...productCostSeriesDates,
-      ];
+      dates = [...revenueSeriesDates, ...expenseSeriesDates];
       xAxis = [...new Set(dates)];
 
       setChartData({
@@ -100,20 +89,10 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
               ? xAxis.map((x) => data.expenseSeries[x])
               : [],
           },
-          {
-            label: "Product Cost",
-            fill: true,
-            backgroundColor: alpha(colors[2], 0.1),
-            borderColor: colors[2],
-            tension: 0,
-            data: showProductCostChart
-              ? xAxis.map((x) => data.productCostSeries[x])
-              : [],
-          },
         ],
       });
     }
-  }, [data, showRevenueChart, showExpenseChart, showProductCostChart]);
+  }, [data, showRevenueChart, showExpenseChart]);
 
   const handleRevenueChartLabelClicked = () => {
     setShowRevenueChart(!showRevenueChart);
@@ -121,10 +100,6 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
 
   const handleExpenseChartLabelClicked = () => {
     setShowExpenseChart(!showExpenseChart);
-  };
-
-  const handleProductCostChartLabelClicked = () => {
-    setShowProductCostChart(!showProductCostChart);
   };
 
   return (
@@ -189,34 +164,6 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
                             }}
                           >
                             Expense
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </DatasetLabelWrapper>
-                  </Grid>
-                  <Grid item>
-                    <DatasetLabelWrapper
-                      onClick={handleProductCostChartLabelClicked}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item>
-                          <LocationSearchingIcon
-                            fontSize="small"
-                            sx={{
-                              color: colors[2],
-                            }}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography
-                            variant="body2"
-                            style={{
-                              color: colors[2],
-                              textDecoration:
-                                !showProductCostChart && "line-through",
-                            }}
-                          >
-                            Product Cost
                           </Typography>
                         </Grid>
                       </Grid>
