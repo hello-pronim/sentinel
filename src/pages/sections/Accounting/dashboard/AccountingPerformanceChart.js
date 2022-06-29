@@ -22,7 +22,7 @@ const ChartWrapper = styled.div`
   width: 100%;
   height: 300px;
 `;
-const LinkText = styled(Typography)`
+const DatasetLabelWrapper = styled.div`
   cursor: pointer;
 `;
 
@@ -55,18 +55,6 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
         },
       },
     },
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-            callback: function (value) {
-              return convertPriceFormat(value);
-            },
-          },
-        },
-      ],
-    },
   };
 
   useEffect(() => {
@@ -97,7 +85,7 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
             fill: true,
             backgroundColor: alpha(colors[0], 0.1),
             borderColor: colors[0],
-            tension: 0.4,
+            tension: 0,
             data: showRevenueChart
               ? xAxis.map((x) => data.revenueSeries[x])
               : [],
@@ -107,7 +95,7 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
             fill: true,
             backgroundColor: alpha(colors[1], 0.1),
             borderColor: colors[1],
-            tension: 0.4,
+            tension: 0,
             data: showExpenseChart
               ? xAxis.map((x) => data.expenseSeries[x])
               : [],
@@ -117,7 +105,7 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
             fill: true,
             backgroundColor: alpha(colors[2], 0.1),
             borderColor: colors[2],
-            tension: 0.4,
+            tension: 0,
             data: showProductCostChart
               ? xAxis.map((x) => data.productCostSeries[x])
               : [],
@@ -151,58 +139,88 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
               <>
                 <Grid container justifyContent="center" spacing={8}>
                   <Grid item>
-                    <LinkText
+                    <DatasetLabelWrapper
                       onClick={handleRevenueChartLabelClicked}
-                      style={{
-                        color: colors[0],
-                        textDecoration: !showRevenueChart && "line-through",
-                      }}
                     >
                       <Grid container spacing={2}>
                         <Grid item>
-                          <LocationSearchingIcon fontSize="small" />
+                          <LocationSearchingIcon
+                            fontSize="small"
+                            sx={{
+                              color: colors[0],
+                            }}
+                          />
                         </Grid>
                         <Grid item>
-                          <Typography variant="body2">Revenue</Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: colors[0],
+                              textDecoration:
+                                !showRevenueChart && "line-through",
+                            }}
+                          >
+                            Revenue
+                          </Typography>
                         </Grid>
                       </Grid>
-                    </LinkText>
+                    </DatasetLabelWrapper>
                   </Grid>
                   <Grid item>
-                    <LinkText
+                    <DatasetLabelWrapper
                       onClick={handleExpenseChartLabelClicked}
-                      style={{
-                        color: colors[1],
-                        textDecoration: !showExpenseChart && "line-through",
-                      }}
                     >
                       <Grid container spacing={2}>
                         <Grid item>
-                          <LocationSearchingIcon fontSize="small" />
+                          <LocationSearchingIcon
+                            fontSize="small"
+                            sx={{
+                              color: colors[1],
+                            }}
+                          />
                         </Grid>
                         <Grid item>
-                          <Typography variant="body2">Expense</Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: colors[1],
+                              textDecoration:
+                                !showExpenseChart && "line-through",
+                            }}
+                          >
+                            Expense
+                          </Typography>
                         </Grid>
                       </Grid>
-                    </LinkText>
+                    </DatasetLabelWrapper>
                   </Grid>
                   <Grid item>
-                    <LinkText
+                    <DatasetLabelWrapper
                       onClick={handleProductCostChartLabelClicked}
-                      style={{
-                        color: colors[2],
-                        textDecoration: !showProductCostChart && "line-through",
-                      }}
                     >
                       <Grid container spacing={2}>
                         <Grid item>
-                          <LocationSearchingIcon fontSize="small" />
+                          <LocationSearchingIcon
+                            fontSize="small"
+                            sx={{
+                              color: colors[2],
+                            }}
+                          />
                         </Grid>
                         <Grid item>
-                          <Typography variant="body2">Product Cost</Typography>
+                          <Typography
+                            variant="body2"
+                            style={{
+                              color: colors[2],
+                              textDecoration:
+                                !showProductCostChart && "line-through",
+                            }}
+                          >
+                            Product Cost
+                          </Typography>
                         </Grid>
                       </Grid>
-                    </LinkText>
+                    </DatasetLabelWrapper>
                   </Grid>
                 </Grid>
 
