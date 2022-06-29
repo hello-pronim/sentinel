@@ -8,7 +8,7 @@ function AppProvider({ children }) {
   const today = new Date();
   const [companies, setCompanies] = useState(null);
   const [markets, setMarkets] = useState(null);
-  const [showInventoryView, setShowInventoryView] = useState(true);
+  const [showAccountingView, setShowAccountingView] = useState(false);
   const [showAdminBrands, setShowAdminBrands] = useState(false);
   const defaultFilterOptions = {
     company: {
@@ -38,7 +38,7 @@ function AppProvider({ children }) {
       cacheFlags: true,
       enableAnalytics: true,
       onChange: (oldFlags, params) => {
-        setShowInventoryView(flagsmith.hasFeature("inventory_view"));
+        setShowAccountingView(flagsmith.hasFeature("accounting_view"));
         setShowAdminBrands(flagsmith.hasFeature("admin_brands"));
       },
     });
@@ -52,7 +52,7 @@ function AppProvider({ children }) {
         defaultFilterOptions,
         filterOptions,
         features: {
-          showInventoryView,
+          showAccountingView,
           showAdminBrands,
         },
         setCompanies,

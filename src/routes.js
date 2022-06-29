@@ -22,6 +22,7 @@ import AdminBrands from "./pages/main/admin/Brands";
 import Brands from "./pages/main/Brands";
 import Sales from "./pages/main/Sales";
 import Inventory from "./pages/main/Inventory";
+import Accounting from "./pages/main/Accounting";
 
 const Profile = async(() => import("./pages/main/Profile"));
 
@@ -102,6 +103,20 @@ const routes = [
       {
         path: "",
         element: <Inventory />,
+      },
+    ],
+  },
+  {
+    path: "accounting",
+    element: (
+      <AuthGuard>
+        <DashboardLayout />
+      </AuthGuard>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Accounting />,
       },
     ],
   },

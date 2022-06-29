@@ -31,7 +31,7 @@ const chartTabs = [{ label: "Shipped", value: "shipped" }];
 
 const Inventory = () => {
   const queryParamsString = window.location.search;
-  const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
+  const { companies, filterOptions } = useContext(AppContext);
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
   const [chartTitle, setChartTitle] = useState("All companies");
@@ -161,9 +161,7 @@ const Inventory = () => {
                     <InventoryChart
                       title={chartTitle}
                       data={inventoryChartData}
-                      filterOptions={filterOptions}
                       loading={loadingInventoryChartData}
-                      setFilterOptions={setFilterOptions}
                     />
                   </Grid>
                 </Grid>

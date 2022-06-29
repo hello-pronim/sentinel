@@ -30,13 +30,7 @@ const LinkText = styled(Typography)`
 
 const colors = [green[400], red[400], blue[400]];
 
-const InventoryChart = ({
-  title,
-  data,
-  filterOptions,
-  loading,
-  setFilterOptions,
-}) => {
+const InventoryChart = ({ title, data, loading }) => {
   const [chartData, setChartData] = useState(null);
   const [showCurrentShipped, setShowCurrentShipped] = useState(true);
   const [showPreviousShipped, setShowPreviousShipped] = useState(true);
