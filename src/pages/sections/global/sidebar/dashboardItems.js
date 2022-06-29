@@ -1,4 +1,5 @@
 import {
+  AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon,
   MonetizationOnOutlined as MonetizationOnOutlinedIcon,
   StorefrontOutlined as StorefrontOutlinedIcon,
   Inventory2Outlined as Inventory2OutlinedIcon,
@@ -22,6 +23,12 @@ const pagesSection = [
     href: "/inventory",
     icon: Inventory2OutlinedIcon,
     title: "Inventory",
+  },
+  {
+    slug: "accounting",
+    href: "/accounting",
+    icon: AccountBalanceWalletOutlinedIcon,
+    title: "Accounting",
   },
 ];
 

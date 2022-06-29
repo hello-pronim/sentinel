@@ -5,7 +5,7 @@ import { AppContext } from "../../../../contexts/AppContext";
 
 const SidebarNavSection = (props) => {
   const {
-    features: { showInventoryView },
+    features: { showAccountingView },
   } = useContext(AppContext);
   const {
     title,
@@ -18,11 +18,11 @@ const SidebarNavSection = (props) => {
 
   useEffect(() => {
     let visiblePages = [...pages];
-    if (!showInventoryView) {
-      visiblePages = visiblePages.filter((page) => page.slug !== "inventory");
+    if (!showAccountingView) {
+      visiblePages = visiblePages.filter((page) => page.slug !== "accounting");
     }
     setVisibleItems(visiblePages);
-  }, [showInventoryView, pages]);
+  }, [showAccountingView, pages]);
 
   return (
     <Component {...rest}>

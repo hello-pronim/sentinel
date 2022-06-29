@@ -53,6 +53,10 @@ const convertPercentFormat = (value, decimals = 2) => {
   }).format(value);
 };
 
+const convertNumberFormat = (value) => {
+  return new Intl.NumberFormat().format(value);
+};
+
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
   var color = "#";
@@ -84,6 +88,7 @@ export {
   convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
   convertPercentFormat,
+  convertNumberFormat,
   getPastDate,
   getWeekNumber,
   getDatesOfWeek,
