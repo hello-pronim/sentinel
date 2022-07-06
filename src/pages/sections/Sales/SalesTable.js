@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components/macro";
-import { getSalesExport } from "../../../services/SalesService";
+import {
+  getDailySalesExport,
+  getSalesByListingExport,
+} from "../../../services/SalesService";
 
 import {
   Alert as MuiAlert,
@@ -13,6 +16,8 @@ import {
   Chip as MuiChip,
   Grid,
   Link,
+  Menu,
+  MenuItem,
   IconButton,
   Snackbar,
   Tooltip,
@@ -54,7 +59,13 @@ const SalesTable = ({ title, data, salesType, loading }) => {
   const [selectedMarketOptions, setSelectedMarketOptions] = useState(
     filterOptions.market.selectedOptions
   );
-  const [downloadingCSV, setDownloadingCSV] = useState(false);
+  const [downloadingDailySalesCSV, setDownloadingDailySalesCSV] =
+    useState(false);
+  const [downloadingSalesByListingCSV, setDownloadingSalesByListingCSV] =
+    useState(false);
+
+  const [anchorDownloadMenu, setAnchorDownloadMenu] = useState(null);
+  const openDownloadMenu = Boolean(anchorDownloadMenu);
 
   const brandsTableColumns = [
     {
@@ -281,10 +292,11 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     return url;
   };
 
-  const downloadReport = async () => {
-    setDownloadingCSV(true);
+  const downloadDailySalesReport = async () => {
+    setAnchorDownloadMenu(null);
+    setDownloadingDailySalesCSV(true);
     const queryParamsString = window.location.search;
-    const response = await getSalesExport("csv", queryParamsString);
+    const response = await getDailySalesExport("csv", queryParamsString);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
@@ -295,11 +307,37 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     link.setAttribute("download", `${filename}`);
     document.body.appendChild(link);
     link.click();
-    setDownloadingCSV(false);
+    setDownloadingDailySalesCSV(false);
+  };
+
+  const downloadSalesByListingReport = async () => {
+    setAnchorDownloadMenu(null);
+    setDownloadingSalesByListingCSV(true);
+    const queryParamsString = window.location.search;
+    const response = await getSalesByListingExport(queryParamsString);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    const filename = response.headers["content-disposition"].replace(
+      /attachment;\sfilename=/g,
+      ""
+    );
+    link.setAttribute("download", `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+    setDownloadingSalesByListingCSV(false);
   };
 
   const handleAlertClose = () => {
-    setDownloadingCSV(false);
+    setDownloadingDailySalesCSV(false);
+    setDownloadingSalesByListingCSV(false);
+  };
+
+  const handleDownloadMenuOpen = (event) => {
+    setAnchorDownloadMenu(event.currentTarget);
+  };
+  const handleDownloadMenuClose = () => {
+    setAnchorDownloadMenu(null);
   };
 
   return (
@@ -308,15 +346,38 @@ const SalesTable = ({ title, data, salesType, loading }) => {
         <CardHeader
           title={title}
           action={
-            <Tooltip title="Daily Sales">
-              <IconButton
-                size="large"
-                onClick={downloadReport}
-                disabled={downloadingCSV}
+            <>
+              <Tooltip title="Download">
+                <IconButton
+                  id="download-button"
+                  aria-controls={openDownloadMenu ? "download-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={openDownloadMenu ? "true" : undefined}
+                  onClick={handleDownloadMenuOpen}
+                  disabled={
+                    downloadingDailySalesCSV || downloadingSalesByListingCSV
+                  }
+                >
+                  <Download />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                id="download-menu"
+                anchorEl={anchorDownloadMenu}
+                open={openDownloadMenu}
+                onClose={handleDownloadMenuClose}
+                MenuListProps={{
+                  "aria-labelledby": "download-button",
+                }}
               >
-                <Download />
-              </IconButton>
-            </Tooltip>
+                <MenuItem onClick={downloadDailySalesReport}>
+                  Daily Sales
+                </MenuItem>
+                <MenuItem onClick={downloadSalesByListingReport}>
+                  Sales by Listing
+                </MenuItem>
+              </Menu>
+            </>
           }
         />
         <Divider />
@@ -349,7 +410,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       </Card>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={downloadingCSV}
+        open={downloadingDailySalesCSV || downloadingSalesByListingCSV}
         onClose={handleAlertClose}
       >
         <Alert icon={<></>} onClose={handleAlertClose} severity="success">
