@@ -131,6 +131,7 @@ function AuthProvider({ children }) {
   }, [getSession]);
 
   useEffect(() => {
+    initialize();
     const interval = setInterval(() => {
       initialize();
     }, 10000);
