@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
-import {
-  CardContent,
-  Card as MuiCard,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { CardContent, Card as MuiCard, Grid, Typography } from "@mui/material";
 import { spacing } from "@mui/system";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { blue, red, green } from "@mui/material/colors";
@@ -28,7 +22,7 @@ const DatasetLabelWrapper = styled.div`
 
 const colors = [green[600], red[600], blue[600]];
 
-const AccountingPerformanceChart = ({ title, data, loading }) => {
+const AccountingPerformanceChart = ({ title, data }) => {
   const [chartData, setChartData] = useState(null);
   const [showRevenueChart, setShowRevenueChart] = useState(true);
   const [showExpenseChart, setShowExpenseChart] = useState(true);
@@ -110,83 +104,67 @@ const AccountingPerformanceChart = ({ title, data, loading }) => {
             <Typography variant="h3">{title}</Typography>
           </Grid>
           <Grid item xs={12}>
-            {data !== null && !loading ? (
-              <>
-                <Grid container justifyContent="center" spacing={8}>
-                  <Grid item>
-                    <DatasetLabelWrapper
-                      onClick={handleRevenueChartLabelClicked}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item>
-                          <LocationSearchingIcon
-                            fontSize="small"
-                            sx={{
-                              color: colors[0],
-                            }}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: colors[0],
-                              textDecoration:
-                                !showRevenueChart && "line-through",
-                            }}
-                          >
-                            Revenue
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </DatasetLabelWrapper>
-                  </Grid>
-                  <Grid item>
-                    <DatasetLabelWrapper
-                      onClick={handleExpenseChartLabelClicked}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item>
-                          <LocationSearchingIcon
-                            fontSize="small"
-                            sx={{
-                              color: colors[1],
-                            }}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: colors[1],
-                              textDecoration:
-                                !showExpenseChart && "line-through",
-                            }}
-                          >
-                            Expense
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </DatasetLabelWrapper>
-                  </Grid>
-                </Grid>
-
-                <Spacer mb={6} />
-
-                {chartData !== null && (
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <ChartWrapper>
-                        <Chart type="line" data={chartData} options={options} />
-                      </ChartWrapper>
+            <Grid container justifyContent="center" spacing={8}>
+              <Grid item>
+                <DatasetLabelWrapper onClick={handleRevenueChartLabelClicked}>
+                  <Grid container spacing={2}>
+                    <Grid item>
+                      <LocationSearchingIcon
+                        fontSize="small"
+                        sx={{
+                          color: colors[0],
+                        }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: colors[0],
+                          textDecoration: !showRevenueChart && "line-through",
+                        }}
+                      >
+                        Revenue
+                      </Typography>
                     </Grid>
                   </Grid>
-                )}
-              </>
-            ) : (
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <CircularProgress />
+                </DatasetLabelWrapper>
+              </Grid>
+              <Grid item>
+                <DatasetLabelWrapper onClick={handleExpenseChartLabelClicked}>
+                  <Grid container spacing={2}>
+                    <Grid item>
+                      <LocationSearchingIcon
+                        fontSize="small"
+                        sx={{
+                          color: colors[1],
+                        }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: colors[1],
+                          textDecoration: !showExpenseChart && "line-through",
+                        }}
+                      >
+                        Expense
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </DatasetLabelWrapper>
+              </Grid>
+            </Grid>
+
+            <Spacer mb={6} />
+
+            {chartData !== null && (
+              <Grid container>
+                <Grid item xs={12}>
+                  <ChartWrapper>
+                    <Chart type="line" data={chartData} options={options} />
+                  </ChartWrapper>
                 </Grid>
               </Grid>
             )}
