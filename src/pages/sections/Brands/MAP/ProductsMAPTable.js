@@ -310,7 +310,7 @@ const ProductsMAPTable = () => {
                           columns={columns}
                           options={{
                             actionsColumnIndex: -1,
-                            pageSize: 20,
+                            pageSize: 50,
                             search: true,
                             showTitle: false,
                             emptyRowsWhenPaging: false,
