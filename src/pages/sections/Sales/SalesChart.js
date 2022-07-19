@@ -173,7 +173,8 @@ const SalesChart = ({
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
-    let url = "company_ids[]=";
+    let url = "";
+    if (filterOptions.company.selectedOptions.length) url += "company_ids[]=";
     filterOptions.company.selectedOptions.forEach((opt, index) => {
       url +=
         opt.option.id +
@@ -190,11 +191,11 @@ const SalesChart = ({
       "&to=" +
       filterOptions.date.to;
     url += "&";
+    if (filterOptions.market.selectedOptions.length) url += "market_ids[]=";
     filterOptions.market.selectedOptions.forEach((opt, index) => {
       url +=
-        "market_ids[]=" +
         opt.option.id +
-        (index < filterOptions.market.selectedOptions.length - 1 ? "&" : "");
+        (index < filterOptions.market.selectedOptions.length - 1 ? "," : "");
     });
     url += "&show_returns=" + value;
 
