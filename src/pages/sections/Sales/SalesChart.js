@@ -146,14 +146,8 @@ const SalesChart = ({
             backgroundColor: "transparent",
             borderColor: colors[1],
             tension: 0.4,
-            data: showCurrentRevenue
-              ? xAxis.map((x) => data.comparisonSeries[x])
-              : [],
-          },
-          {
-            label: "Percent Change",
             data: showPreviousRevenue
-              ? xAxis.map((x) => data.changeSeries[x])
+              ? xAxis.map((x) => data.comparisonSeries[x])
               : [],
           },
           {
