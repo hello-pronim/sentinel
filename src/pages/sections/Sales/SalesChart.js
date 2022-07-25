@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 import Chart from "react-chartjs-2";
@@ -17,6 +17,8 @@ import {
 import { spacing } from "@mui/system";
 import { red, green, blue } from "@mui/material/colors";
 
+import { AuthContext } from "../../../contexts/CognitoContext";
+import { getSales } from "../../../services/SalesService";
 import {
   convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
@@ -37,20 +39,19 @@ const LinkText = styled(Typography)`
 
 const colors = [green[400], red[400], blue[400]];
 
-const SalesChart = ({
-  title,
-  data,
-  filterOptions,
-  loading,
-  setFilterOptions,
-}) => {
+const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
+  const queryParamsString = window.location.search;
   const navigate = useNavigate();
   const location = useLocation();
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
   const [chartData, setChartData] = useState(null);
   const [showCurrentRevenue, setShowCurrentRevenue] = useState(true);
   const [showPreviousRevenue, setShowPreviousRevenue] = useState(true);
   const [showForecastRevenue, setShowForecastRevenue] = useState(true);
   const [showReturns, setShowReturns] = useState(filterOptions.showReturns);
+  const [salesData, setSalesData] = useState(null);
+  const [loadingSalesData, setLoadingSalesData] = useState(false);
   const options = {
     maintainAspectRatio: false,
     interaction: {
@@ -93,14 +94,49 @@ const SalesChart = ({
   };
 
   useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
     setShowReturns(filterOptions.showReturns);
   }, [filterOptions]);
 
+  const refreshSalesData = useCallback(() => {
+    setLoadingSalesData(true);
+    getSales(queryParamsString).then((res) => {
+      const { data, parameters } = res.data.body;
+
+      setLoadingSalesData(false);
+      if (data) {
+        const _salesData = {
+          comparisonSeries: data.comparison_series,
+          revenueSeries: data.revenue_series,
+          changeSeries: data.revenue_change,
+          forecastSeries: data?.revenue_forecast || {},
+          stats: data.stats,
+          forecast48h: parameters?.forecast_48h || false,
+        };
+
+        setSalesData(_salesData);
+      }
+    });
+  }, [queryParamsString]);
+
   useEffect(() => {
-    if (data !== null && data.comparisonSeries && data.revenueSeries) {
-      let comparisonSeriesDates = Object.keys(data.comparisonSeries);
-      let revenueSeriesDates = Object.keys(data.revenueSeries);
-      let forecastSeriesDates = Object.keys(data?.forecastSeries);
+    if (isAuthenticated && isInitialized) {
+      refreshSalesData();
+    }
+  }, [isInitialized, isAuthenticated, refreshSalesData]);
+
+  useEffect(() => {
+    if (
+      salesData !== null &&
+      salesData.comparisonSeries &&
+      salesData.revenueSeries
+    ) {
+      let comparisonSeriesDates = Object.keys(salesData.comparisonSeries);
+      let revenueSeriesDates = Object.keys(salesData.revenueSeries);
+      let forecastSeriesDates = Object.keys(salesData?.forecastSeries);
       let dates = [];
       let xAxis = [];
 
@@ -137,7 +173,7 @@ const SalesChart = ({
             borderColor: colors[0],
             tension: 0.4,
             data: showCurrentRevenue
-              ? xAxis.map((x) => data.revenueSeries[x])
+              ? xAxis.map((x) => salesData.revenueSeries[x])
               : [],
           },
           {
@@ -147,7 +183,7 @@ const SalesChart = ({
             borderColor: colors[1],
             tension: 0.4,
             data: showPreviousRevenue
-              ? xAxis.map((x) => data.comparisonSeries[x])
+              ? xAxis.map((x) => salesData.comparisonSeries[x])
               : [],
           },
           {
@@ -157,13 +193,13 @@ const SalesChart = ({
             borderColor: colors[2],
             tension: 0.4,
             data: showForecastRevenue
-              ? xAxis.map((x) => data.forecastSeries[x])
+              ? xAxis.map((x) => salesData.forecastSeries[x])
               : [],
           },
         ],
       });
     }
-  }, [data, showCurrentRevenue, showPreviousRevenue, showForecastRevenue]);
+  }, [salesData, showCurrentRevenue, showPreviousRevenue, showForecastRevenue]);
 
   const handleShowReturnsChanged = (event, value) => {
     const search = location.search;
@@ -225,7 +261,7 @@ const SalesChart = ({
       <CardHeader title={title} />
       <Divider />
       <CardContent>
-        {data !== null && !loading ? (
+        {salesData !== null && !loadingSalesData ? (
           <>
             <Grid container>
               <Grid item xs={12}>
@@ -243,7 +279,7 @@ const SalesChart = ({
                   </Grid>
                   <Grid item>
                     <Typography>
-                      {convertPriceFormat(data.stats.total_revenue)}
+                      {convertPriceFormat(salesData.stats.total_revenue)}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -263,13 +299,15 @@ const SalesChart = ({
                   </Grid>
                   <Grid item>
                     <Typography>
-                      {convertPriceFormat(data.stats.total_comparison_revenue)}
+                      {convertPriceFormat(
+                        salesData.stats.total_comparison_revenue
+                      )}
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
 
-              {data.forecast48h ? (
+              {salesData.forecast48h ? (
                 <Grid item xs={12}>
                   <Grid container alignItems="center" spacing={1}>
                     <Grid item>

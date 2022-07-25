@@ -86,10 +86,15 @@ const FilterDropdown = ({
           .get("company_ids[]")
           .split(",")
           .map(Number);
-        selectedMarketIds = searchParams
-          .get("market_ids[]")
-          .split(",")
-          .map(Number);
+
+        if (searchParams.get("market_ids[]"))
+          selectedMarketIds = searchParams
+            .get("market_ids[]")
+            .split(",")
+            .map(Number);
+        else {
+          selectedMarketIds = marketList.map((mar) => mar.id);
+        }
       } else {
         selectedCompanyIds = companyList.map((comp) => comp.id);
         selectedMarketIds = marketList.map((mar) => mar.id);
@@ -372,12 +377,18 @@ const FilterDropdown = ({
         dateFilterOptions.compFrom +
         "&comp_to=" +
         dateFilterOptions.compTo;
-    url += selectedMarketOptions.length ? "&market_ids[]=" : "";
 
-    selectedMarketOptions.forEach((opt, index) => {
-      url +=
-        opt.option.id + (index < selectedMarketOptions.length - 1 ? "," : "");
-    });
+    if (
+      selectedMarketOptions.length !==
+      getCompanyMarkets(selectedCompanyOptions).length
+    ) {
+      url += selectedMarketOptions.length ? "&market_ids[]=" : "";
+
+      selectedMarketOptions.forEach((opt, index) => {
+        url +=
+          opt.option.id + (index < selectedMarketOptions.length - 1 ? "," : "");
+      });
+    }
     url += "&show_returns=" + filterOptions.showReturns;
 
     navigate(url);
@@ -418,6 +429,29 @@ const FilterDropdown = ({
     });
   };
   const onSelectedMarketOptionsChanged = (selectedOptions) => {};
+  const getCompanyMarkets = (companyOptions) => {
+    let selectedMarketIds = [];
+    const marketCategories = Object.keys(markets);
+    let companyMarkets = [];
+
+    companyOptions.forEach(
+      (opt) =>
+        opt.option?.marketplace_ids &&
+        opt.option?.marketplace_ids.forEach((id) => selectedMarketIds.push(id))
+    );
+    selectedMarketIds = [...new Set(selectedMarketIds)];
+
+    marketCategories.forEach((category) => {
+      const sameCategoryMarkets = markets[category];
+      sameCategoryMarkets.forEach((mar) => {
+        if (selectedMarketIds.includes(mar.id)) {
+          companyMarkets.push(mar);
+        }
+      });
+    });
+
+    return companyMarkets;
+  };
 
   return (
     <React.Fragment>

@@ -20,8 +20,6 @@ import { AppContext } from "../../../contexts/AppContext";
 import { AuthContext } from "../../../contexts/CognitoContext";
 import {
   getSalesPerformance,
-  getSales,
-  getSalesByCompany,
   getSalesData,
 } from "../../../services/SalesService";
 import async from "../../../components/Async";
@@ -56,14 +54,9 @@ const Sales = () => {
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
   const [salesPerformanceData, setSalesPerformanceData] = useState(null);
-  const [salesChartData, setSalesChartData] = useState(null);
-  const [salesByCompanyChartData, setSalesByCompanyChartData] = useState(null);
   const [salesTableData, setSalesTableData] = useState(null);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [loadingSalesPerformanceData, setLoadingSalesPerformanceData] =
-    useState(false);
-  const [loadingSalesChartData, setLoadingSalesChartData] = useState(false);
-  const [loadingSalesByCompanyChartData, setLoadingSalesByCompanyChartData] =
     useState(false);
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
   const [selectedChartTab, setSelectedChartTab] = useState(chartTabs[0].value);
@@ -152,38 +145,38 @@ const Sales = () => {
       }
     });
 
-    setLoadingSalesChartData(true);
-    getSales(queryParamsString).then((res) => {
-      const { data, parameters } = res.data.body;
+    // setLoadingSalesChartData(true);
+    // getSales(queryParamsString).then((res) => {
+    //   const { data, parameters } = res.data.body;
 
-      setLoadingSalesChartData(false);
-      if (data) {
-        const chartData = {
-          comparisonSeries: data.comparison_series,
-          revenueSeries: data.revenue_series,
-          changeSeries: data.revenue_change,
-          forecastSeries: data?.revenue_forecast || {},
-          stats: data.stats,
-          forecast48h: parameters?.forecast_48h || false,
-        };
+    //   setLoadingSalesChartData(false);
+    //   if (data) {
+    //     const chartData = {
+    //       comparisonSeries: data.comparison_series,
+    //       revenueSeries: data.revenue_series,
+    //       changeSeries: data.revenue_change,
+    //       forecastSeries: data?.revenue_forecast || {},
+    //       stats: data.stats,
+    //       forecast48h: parameters?.forecast_48h || false,
+    //     };
 
-        setSalesChartData(chartData);
-      }
-    });
+    //     setSalesChartData(chartData);
+    //   }
+    // });
 
-    setLoadingSalesByCompanyChartData(true);
-    getSalesByCompany(queryParamsString).then((res) => {
-      const { data } = res.data.body;
+    // setLoadingSalesByCompanyChartData(true);
+    // getSalesByCompany(queryParamsString).then((res) => {
+    //   const { data } = res.data.body;
 
-      setLoadingSalesByCompanyChartData(false);
-      if (data) {
-        const chartData = {
-          companyRevenueSeries: data.company_revenue_series,
-        };
+    //   setLoadingSalesByCompanyChartData(false);
+    //   if (data) {
+    //     const chartData = {
+    //       companyRevenueSeries: data.company_revenue_series,
+    //     };
 
-        setSalesByCompanyChartData(chartData);
-      }
-    });
+    //     setSalesByCompanyChartData(chartData);
+    //   }
+    // });
     //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
 
     //call to get the table data
@@ -231,11 +224,7 @@ const Sales = () => {
         </Grid>
         <Grid item>
           <Tooltip title="Refresh Data">
-            <Button
-              variant="contained"
-              onClick={refreshSalesData}
-              disabled={loadingSalesChartData || loadingSalesTableData}
-            >
+            <Button variant="contained" onClick={refreshSalesData}>
               <RefreshIcon />
             </Button>
           </Tooltip>
@@ -277,9 +266,7 @@ const Sales = () => {
                   <Grid item xs={12}>
                     <SalesChart
                       title={chartTitle}
-                      data={salesChartData}
                       filterOptions={filterOptions}
-                      loading={loadingSalesChartData}
                       setFilterOptions={setFilterOptions}
                     />
                   </Grid>
@@ -288,10 +275,7 @@ const Sales = () => {
               <TabPanel value="sales_by_company">
                 <Grid container>
                   <Grid item xs={12}>
-                    <SalesByCompanyChart
-                      data={salesByCompanyChartData}
-                      loading={loadingSalesByCompanyChartData}
-                    />
+                    <SalesByCompanyChart title="Sales by Company" />
                   </Grid>
                 </Grid>
               </TabPanel>
