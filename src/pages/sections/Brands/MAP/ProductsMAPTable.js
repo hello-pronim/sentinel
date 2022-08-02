@@ -11,6 +11,7 @@ import {
   Divider as MuiDivider,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   Link,
   MenuItem,
@@ -19,12 +20,14 @@ import {
   Tab,
 } from "@mui/material";
 import { spacing } from "@mui/system";
+import { Download } from "@mui/icons-material";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
 
 import {
   getCurrentViolationsData,
+  getCurrentViolationsExport,
   updateMAPStatus,
 } from "../../../../services/MAPService";
 import {
@@ -57,6 +60,7 @@ const ProductsMAPTable = () => {
   const [currentViolationsData, setCurrentViolationsData] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [isStatusUpdateSuccess, setIsStatusUpdateSuccess] = useState(false);
+  const [downloadingCSV, setDownloadingCSV] = useState(false);
   const columns = [
     {
       field: "name",
@@ -279,6 +283,23 @@ const ProductsMAPTable = () => {
     setIsStatusUpdateSuccess(false);
   };
 
+  const downloadReport = async () => {
+    setDownloadingCSV(true);
+    const queryParamsString = window.location.search;
+    const response = await getCurrentViolationsExport(queryParamsString);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    const filename = response.headers["content-disposition"].replace(
+      /attachment;\sfilename=/g,
+      ""
+    );
+    link.setAttribute("download", `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+    setDownloadingCSV(false);
+  };
+
   return (
     <React.Fragment>
       <Card variant="outlined">
@@ -318,29 +339,44 @@ const ProductsMAPTable = () => {
                           }}
                           components={{
                             Action: (props) => (
-                              <FormControl
-                                sx={{ m: 1, minWidth: 240 }}
-                                variant="standard"
-                                size="small"
-                              >
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                  value={statusFilter}
-                                  onChange={handleStatusFilterChanged}
-                                >
-                                  <MenuItem value="all">All</MenuItem>
-                                  <MenuItem value="Contacted">
-                                    Contacted
-                                  </MenuItem>
-                                  <MenuItem value="Ignored">Ignored</MenuItem>
-                                  <MenuItem value="Investigating">
-                                    Investigating
-                                  </MenuItem>
-                                  <MenuItem value="">
-                                    <em>None</em>
-                                  </MenuItem>
-                                </Select>
-                              </FormControl>
+                              <Grid container alignItems="end" spacing={4}>
+                                <Grid item>
+                                  <FormControl
+                                    sx={{ m: 1, minWidth: 240 }}
+                                    variant="standard"
+                                    size="small"
+                                  >
+                                    <InputLabel>Status</InputLabel>
+                                    <Select
+                                      value={statusFilter}
+                                      onChange={handleStatusFilterChanged}
+                                    >
+                                      <MenuItem value="all">All</MenuItem>
+                                      <MenuItem value="Contacted">
+                                        Contacted
+                                      </MenuItem>
+                                      <MenuItem value="Ignored">
+                                        Ignored
+                                      </MenuItem>
+                                      <MenuItem value="Investigating">
+                                        Investigating
+                                      </MenuItem>
+                                      <MenuItem value="">
+                                        <em>None</em>
+                                      </MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
+                                <Grid item>
+                                  <IconButton
+                                    size="large"
+                                    onClick={downloadReport}
+                                    disabled={downloadingCSV}
+                                  >
+                                    <Download />
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
                             ),
                           }}
                           actions={[
@@ -373,6 +409,15 @@ const ProductsMAPTable = () => {
       >
         <Alert onClose={handleAlertClose} severity="success">
           The MAP status has been updated successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={downloadingCSV}
+        onClose={handleAlertClose}
+      >
+        <Alert icon={<></>} onClose={handleAlertClose} severity="success">
+          Preparing download, please wait...
         </Alert>
       </Snackbar>
     </React.Fragment>

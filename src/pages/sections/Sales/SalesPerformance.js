@@ -20,7 +20,7 @@ const SalesPerformance = ({ title, data }) => {
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Grid container spacing={8}>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={12} md={12} lg={4}>
                 <SalesChangeCard
                   label={mtdSalesChangeData.label}
                   description="vs Prior Period"
@@ -33,7 +33,7 @@ const SalesPerformance = ({ title, data }) => {
                   negativeColor={red[500]}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={12} md={12} lg={4}>
                 <SalesChangeCard
                   label={ytdSalesChangeData.label}
                   description="vs Prior Period"
@@ -46,7 +46,7 @@ const SalesPerformance = ({ title, data }) => {
                   negativeColor={red[500]}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={12} md={12} lg={4}>
                 <SalesChangeCard
                   label={estimatedSalesChangeData.label}
                   description="vs Last Month's Sales"
