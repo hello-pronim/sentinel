@@ -145,40 +145,6 @@ const Sales = () => {
       }
     });
 
-    // setLoadingSalesChartData(true);
-    // getSales(queryParamsString).then((res) => {
-    //   const { data, parameters } = res.data.body;
-
-    //   setLoadingSalesChartData(false);
-    //   if (data) {
-    //     const chartData = {
-    //       comparisonSeries: data.comparison_series,
-    //       revenueSeries: data.revenue_series,
-    //       changeSeries: data.revenue_change,
-    //       forecastSeries: data?.revenue_forecast || {},
-    //       stats: data.stats,
-    //       forecast48h: parameters?.forecast_48h || false,
-    //     };
-
-    //     setSalesChartData(chartData);
-    //   }
-    // });
-
-    // setLoadingSalesByCompanyChartData(true);
-    // getSalesByCompany(queryParamsString).then((res) => {
-    //   const { data } = res.data.body;
-
-    //   setLoadingSalesByCompanyChartData(false);
-    //   if (data) {
-    //     const chartData = {
-    //       companyRevenueSeries: data.company_revenue_series,
-    //     };
-
-    //     setSalesByCompanyChartData(chartData);
-    //   }
-    // });
-    //TODO: Use the router URL params above here. Hopefully that will make it easy and keep everything consistent
-
     //call to get the table data
     setLoadingSalesTableData(true);
     getSalesData(queryParamsString).then((res) => {

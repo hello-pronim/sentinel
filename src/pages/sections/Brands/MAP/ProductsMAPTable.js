@@ -65,7 +65,6 @@ const ProductsMAPTable = () => {
     {
       field: "name",
       title: "Listing",
-      width: "30%",
       render: (rowData) => {
         const { name, url } = rowData;
 
@@ -90,7 +89,6 @@ const ProductsMAPTable = () => {
     {
       field: "marketId",
       title: "ID",
-      width: "10%",
       render: (rowData) => {
         const { marketId } = rowData;
 
@@ -100,7 +98,6 @@ const ProductsMAPTable = () => {
     {
       field: "marketplace",
       title: "Market",
-      width: "10%",
       render: (rowData) => {
         const { marketplace } = rowData;
 
@@ -110,7 +107,6 @@ const ProductsMAPTable = () => {
     {
       field: "seller",
       title: "Seller",
-      width: "10%",
       render: (rowData) => {
         const { seller } = rowData;
 
@@ -121,7 +117,6 @@ const ProductsMAPTable = () => {
       field: "currentPrice",
       title: "Current Price",
       customSort: (a, b) => a.currentPrice - b.currentPrice,
-      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -138,7 +133,6 @@ const ProductsMAPTable = () => {
       field: "mapPrice",
       title: "MAP Price",
       customSort: (a, b) => a.mapPrice - b.mapPrice,
-      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -155,7 +149,6 @@ const ProductsMAPTable = () => {
       field: "priceDiff",
       title: "Price Diff",
       customSort: (a, b) => a.priceDiff - b.priceDiff,
-      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -169,9 +162,18 @@ const ProductsMAPTable = () => {
       },
     },
     {
+      field: "observedDate",
+      title: "Observed Date",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+    },
+    {
       field: "status",
       title: "Status",
-      width: "10%",
       headerStyle: {
         textAlign: "center",
       },
@@ -234,6 +236,7 @@ const ProductsMAPTable = () => {
             priceId: item.price_id,
             companyId: item?.company_id,
             url: item.url,
+            observedDate: item?.observed_date,
             status: item.status,
           };
         });
