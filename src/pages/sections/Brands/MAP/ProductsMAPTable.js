@@ -326,6 +326,7 @@ const ProductsMAPTable = () => {
                       {currentViolationsData !== null &&
                       !loadingCurrentViolationsData ? (
                         <MaterialTable
+                          style={{ width: "100%", overflow: "auto" }}
                           data={currentViolationsData.filter(
                             (item) =>
                               statusList[item.priceId] === statusFilter ||
@@ -333,23 +334,24 @@ const ProductsMAPTable = () => {
                           )}
                           columns={columns}
                           options={{
-                            actionsColumnIndex: -1,
+                            // actionsColumnIndex: -1,
                             pageSize: 50,
                             search: true,
                             showTitle: false,
                             emptyRowsWhenPaging: false,
-                            toolbarButtonAlignment: "left",
+                            tableLayout: "fixed",
+                            // toolbarButtonAlignment: "left",
                           }}
                           components={{
                             Action: (props) => (
-                              <Grid container alignItems="end" spacing={4}>
+                              <Grid container alignItems="end" spacing={0}>
                                 <Grid item>
                                   <FormControl
                                     sx={{ m: 1, minWidth: 240 }}
                                     variant="standard"
                                     size="small"
                                   >
-                                    <InputLabel>Status</InputLabel>
+                                    {/* <InputLabel>Status</InputLabel> */}
                                     <Select
                                       value={statusFilter}
                                       onChange={handleStatusFilterChanged}
@@ -375,6 +377,7 @@ const ProductsMAPTable = () => {
                                     size="large"
                                     onClick={downloadReport}
                                     disabled={downloadingCSV}
+                                    sx={{ padding: 0 }}
                                   >
                                     <Download />
                                   </IconButton>
