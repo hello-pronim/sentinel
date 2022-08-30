@@ -5,25 +5,35 @@ import MaterialTable from "@material-table/core";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Alert as MuiAlert,
+  Button,
   Card,
   CardContent,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider as MuiDivider,
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   Link,
   MenuItem,
   Select,
+  Slide,
   Snackbar,
   Tab,
+  Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
-import { Download } from "@mui/icons-material";
+import { Comment, Download } from "@mui/icons-material";
 import LaunchIcon from "@mui/icons-material/Launch";
+import { grey } from "@mui/material/colors";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
+
+import CommentEditor from "../../../../components/commentEditor";
 
 import {
   getCurrentViolationsData,
@@ -31,14 +41,33 @@ import {
   updateMAPStatus,
 } from "../../../../services/MAPService";
 import {
+  convertDateToFormattedDateString,
   convertPercentFormat,
   convertPriceFormat,
 } from "../../../../utils/functions";
 
+import { comments } from "./mock";
+
+const CommentText = styled.div`
+  > p {
+    padding: 0;
+    margin: 0;
+  }
+`;
 const Divider = styled(MuiDivider)(spacing);
+const CommentWrapper = styled.div`
+  width: 100%;
+  height: 320px;
+  padding: 0 20px;
+  overflow-y: scroll;
+`;
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const ProductsMAPTable = () => {
@@ -52,6 +81,7 @@ const ProductsMAPTable = () => {
       value: "current_listing_violations",
     },
   ];
+
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
   const [statusFilter, setStatusFilter] = useState("all");
   const [statusList, setStatusList] = useState({});
@@ -61,6 +91,8 @@ const ProductsMAPTable = () => {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [isStatusUpdateSuccess, setIsStatusUpdateSuccess] = useState(false);
   const [downloadingCSV, setDownloadingCSV] = useState(false);
+  const [commentDlgOpen, setCommentDlgOpen] = useState(false);
+  const [commentList, setCommentList] = useState(comments);
   const columns = [
     {
       field: "name",
@@ -205,6 +237,22 @@ const ProductsMAPTable = () => {
         );
       },
     },
+    {
+      title: "Action",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+      },
+      render: (rowData) => {
+        return (
+          <IconButton onClick={handleCommentDialogOpen} color="success">
+            <Comment />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   const initializeProductsMAPData = useCallback(() => {
@@ -303,6 +351,24 @@ const ProductsMAPTable = () => {
     setDownloadingCSV(false);
   };
 
+  const handleCommentDialogOpen = () => {
+    setCommentDlgOpen(true);
+  };
+
+  const handleCommentDialogClose = () => {
+    setCommentDlgOpen(false);
+  };
+
+  const handleCommentPost = (newComment) => {
+    const _comments = [...commentList];
+
+    _comments.push({
+      comment: newComment,
+      date: convertDateToFormattedDateString(new Date(), false),
+    });
+    setCommentList([..._comments]);
+  };
+
   return (
     <React.Fragment>
       <Card variant="outlined">
@@ -336,6 +402,7 @@ const ProductsMAPTable = () => {
                           options={{
                             // actionsColumnIndex: -1,
                             pageSize: 50,
+                            pageSizeOptions: [5, 10, 20, 50, 100],
                             search: true,
                             showTitle: false,
                             emptyRowsWhenPaging: false,
@@ -426,6 +493,64 @@ const ProductsMAPTable = () => {
           Preparing download, please wait...
         </Alert>
       </Snackbar>
+      <Dialog
+        open={commentDlgOpen}
+        maxWidth="sm"
+        TransitionComponent={Transition}
+        onClose={handleCommentDialogClose}
+        aria-describedby="comment-dialog-description"
+        fullWidth
+        keepMounted
+      >
+        <DialogTitle>Add or View comments</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <DialogContentText id="comment-dialog-description"></DialogContentText>
+          <Grid container spacing={4}>
+            <Grid item xs={12}>
+              <CommentEditor handleCommentPost={handleCommentPost} />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider>Comments</Divider>
+            </Grid>
+            <Grid item xs={12}>
+              <CommentWrapper>
+                <Grid container spacing={3}>
+                  {[...commentList].reverse().map((item, index) => (
+                    <Grid key={index} item xs={12}>
+                      <Grid
+                        key={index}
+                        container
+                        justifyContent="space-between"
+                      >
+                        <Grid item xs={9}>
+                          <CommentText
+                            dangerouslySetInnerHTML={{ __html: item.comment }}
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Grid container justifyContent="flex-end">
+                            <Typography
+                              variant="caption"
+                              sx={{ color: grey[700] }}
+                            >
+                              {item.date}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </CommentWrapper>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Button onClick={handleCommentDialogClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 };

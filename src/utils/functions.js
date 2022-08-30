@@ -16,6 +16,18 @@ function convertMMDDYYYYDateStringToTime(dateString) {
   return time;
 }
 
+function convertDateToFormattedDateString(date, showSeconds = true) {
+  const dateObject = new Date(date);
+  const dd = String(dateObject.getDate()).padStart(2, "0");
+  const mm = String(dateObject.getMonth() + 1).padStart(2, "0");
+  const yy = String(dateObject.getFullYear()).substring(-2);
+  const hh = String(dateObject.getHours()).padStart(2, "0");
+  const ii = String(dateObject.getMinutes()).padStart(2, "0");
+  const ss = String(dateObject.getSeconds()).substring(2, "0");
+
+  return mm + "-" + dd + "-" + yy + " " + hh + ":" + ii;
+}
+
 const getPastDate = (date, days) => {
   return new Date().setDate(date.getDate() - days);
 };
@@ -85,6 +97,7 @@ function getColorFromString(string) {
 
 export {
   convertDateToMMDDYY,
+  convertDateToFormattedDateString,
   convertMMDDYYYYDateStringToTime,
   convertPriceFormat,
   convertPercentFormat,
