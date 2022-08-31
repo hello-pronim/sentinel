@@ -11,9 +11,9 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Divider } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/lab";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 import {
   convertDateToMMDDYY,
