@@ -25,7 +25,18 @@ function convertDateToFormattedDateString(date, showSeconds = true) {
   const ii = String(dateObject.getMinutes()).padStart(2, "0");
   const ss = String(dateObject.getSeconds()).substring(2, "0");
 
-  return mm + "-" + dd + "-" + yy + " " + hh + ":" + ii;
+  return (
+    mm +
+    "-" +
+    dd +
+    "-" +
+    yy +
+    " " +
+    hh +
+    ":" +
+    ii +
+    (showSeconds ? ":" + ss : "")
+  );
 }
 
 const getPastDate = (date, days) => {

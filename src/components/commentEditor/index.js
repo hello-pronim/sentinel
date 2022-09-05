@@ -97,8 +97,15 @@ const CommentEditor = ({ handleCommentPost }) => {
 
   const handleCommentSave = () => {
     handleCommentPost(stateToHTML(initial.getCurrentContent()));
-    setInitial(emptyContent);
-    setTempEditor(emptyContent);
+
+    //reset the editor to be empty
+    const emptyContent = ContentState.createFromText("");
+    const emptyEditor = EditorState.createWithContent(emptyContent);
+
+    setComment("");
+    setCursorPosition(0);
+    setInitial(emptyEditor);
+    setTempEditor(JSON.stringify(convertToRaw(emptyContent)));
   };
 
   return (
@@ -128,7 +135,7 @@ const CommentEditor = ({ handleCommentPost }) => {
                   },
                 },
               ]}
-              defaultValue={tempEditor}
+              value={tempEditor}
               onChange={(data) => handleCommentChanged(data)}
             />
             {showPicker && (

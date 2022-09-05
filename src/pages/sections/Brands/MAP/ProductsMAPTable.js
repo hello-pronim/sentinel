@@ -93,6 +93,7 @@ const ProductsMAPTable = () => {
   const [downloadingCSV, setDownloadingCSV] = useState(false);
   const [commentDlgOpen, setCommentDlgOpen] = useState(false);
   const [commentList, setCommentList] = useState(comments);
+  const [selectedSeller, setSelectedSeller] = useState("");
   const columns = [
     {
       field: "name",
@@ -246,8 +247,13 @@ const ProductsMAPTable = () => {
         textAlign: "center",
       },
       render: (rowData) => {
+        const { seller } = rowData;
+
         return (
-          <IconButton onClick={handleCommentDialogOpen} color="success">
+          <IconButton
+            onClick={() => handleCommentDialogOpen(seller)}
+            color="success"
+          >
             <Comment />
           </IconButton>
         );
@@ -351,12 +357,14 @@ const ProductsMAPTable = () => {
     setDownloadingCSV(false);
   };
 
-  const handleCommentDialogOpen = () => {
+  const handleCommentDialogOpen = (seller) => {
     setCommentDlgOpen(true);
+    setSelectedSeller(seller);
   };
 
   const handleCommentDialogClose = () => {
     setCommentDlgOpen(false);
+    setSelectedSeller("");
   };
 
   const handleCommentPost = (newComment) => {
@@ -502,7 +510,7 @@ const ProductsMAPTable = () => {
         fullWidth
         keepMounted
       >
-        <DialogTitle>Add or View comments</DialogTitle>
+        <DialogTitle>{selectedSeller} Notes</DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="comment-dialog-description"></DialogContentText>
@@ -511,7 +519,7 @@ const ProductsMAPTable = () => {
               <CommentEditor handleCommentPost={handleCommentPost} />
             </Grid>
             <Grid item xs={12}>
-              <Divider>Comments</Divider>
+              <Divider>Notes</Divider>
             </Grid>
             <Grid item xs={12}>
               <CommentWrapper>
