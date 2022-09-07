@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components/macro";
+import ShowMoreText from "react-show-more-text";
 import MaterialTable from "@material-table/core";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -377,6 +378,10 @@ const ProductsMAPTable = () => {
     setCommentList([..._comments]);
   };
 
+  const handleShowMoreClicked = (isExpanded) => {
+    console.log(isExpanded);
+  };
+
   return (
     <React.Fragment>
       <Card variant="outlined">
@@ -532,9 +537,18 @@ const ProductsMAPTable = () => {
                         justifyContent="space-between"
                       >
                         <Grid item xs={9}>
-                          <CommentText
-                            dangerouslySetInnerHTML={{ __html: item.comment }}
-                          />
+                          <ShowMoreText
+                            lines={2}
+                            more="More"
+                            less="Less"
+                            onClick={handleShowMoreClicked}
+                            expanded={false}
+                            truncatedEndingComponent={"... "}
+                          >
+                            <CommentText
+                              dangerouslySetInnerHTML={{ __html: item.comment }}
+                            />
+                          </ShowMoreText>
                         </Grid>
                         <Grid item xs={3}>
                           <Grid container justifyContent="flex-end">
