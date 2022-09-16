@@ -1,5 +1,12 @@
 import axios from "../utils/axios";
 
+const addSellerNote = (sellerId, comment) => {
+  return axios.post(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/seller/notes`,
+    { seller_id: sellerId, comment }
+  );
+};
+
 const getMAPOveralls = (paramsString) => {
   return axios.get(
     `/api/${process.env.REACT_APP_API_ENV || "dev"}/map${paramsString}`
@@ -26,6 +33,13 @@ const getCurrentViolationsExport = (paramsString) => {
   );
 };
 
+const getSellerNotes = (sellerId) => {
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/seller/notes`,
+    { seller_id: sellerId }
+  );
+};
+
 const updateMAPStatus = (status, priceId) => {
   const formData = new FormData();
   formData.append("status", status);
@@ -36,9 +50,11 @@ const updateMAPStatus = (status, priceId) => {
 };
 
 export {
+  addSellerNote,
   getMAPOveralls,
   getBrandsMAPData,
   getCurrentViolationsData,
   getCurrentViolationsExport,
+  getSellerNotes,
   updateMAPStatus,
 };

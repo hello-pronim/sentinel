@@ -3,12 +3,9 @@ import styled from "styled-components/macro";
 import ShowMoreText from "react-show-more-text";
 import MaterialTable from "@material-table/core";
 
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Alert as MuiAlert,
   Button,
-  Card,
-  CardContent,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -24,7 +21,6 @@ import {
   Select,
   Slide,
   Snackbar,
-  Tab,
   Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
@@ -37,8 +33,10 @@ import { AuthContext } from "../../../../contexts/CognitoContext";
 import CommentEditor from "../../../../components/commentEditor";
 
 import {
+  addSellerNote,
   getCurrentViolationsData,
   getCurrentViolationsExport,
+  getSellerNotes,
   updateMAPStatus,
 } from "../../../../services/MAPService";
 import {
@@ -46,8 +44,6 @@ import {
   convertPercentFormat,
   convertPriceFormat,
 } from "../../../../utils/functions";
-
-import { comments } from "./mock";
 
 const CommentText = styled.div`
   > p {
@@ -71,30 +67,24 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ProductsMAPTable = () => {
+const BuyboxSuppressionsTable = () => {
   const queryParamsString = window.location.search;
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
-  const tabs = [
-    {
-      id: 0,
-      label: "Current Listing Violations",
-      value: "current_listing_violations",
-    },
-  ];
-
-  const [selectedTab, setSelectedTab] = useState(tabs[0].value);
   const [statusFilter, setStatusFilter] = useState("all");
   const [statusList, setStatusList] = useState({});
-  const [loadingCurrentViolationsData, setLoadingCurrentViolationsData] =
-    useState(false);
-  const [currentViolationsData, setCurrentViolationsData] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
+  const [data, setData] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [isStatusUpdateSuccess, setIsStatusUpdateSuccess] = useState(false);
+  const [suppressionsData, setSuppressionsData] = useState(null);
+  const [loadingSuppressionsData, setLoadingSuppresionsData] = useState(false);
   const [downloadingCSV, setDownloadingCSV] = useState(false);
   const [commentDlgOpen, setCommentDlgOpen] = useState(false);
-  const [commentList, setCommentList] = useState(comments);
-  const [selectedSeller, setSelectedSeller] = useState("");
+  const [selectedMAPData, setSelectedMAPData] = useState(null);
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  const [notes, setNotes] = useState([]);
+
   const columns = [
     {
       field: "name",
@@ -248,11 +238,9 @@ const ProductsMAPTable = () => {
         textAlign: "center",
       },
       render: (rowData) => {
-        const { seller } = rowData;
-
         return (
           <IconButton
-            onClick={() => handleCommentDialogOpen(seller)}
+            onClick={() => handleCommentDialogOpen(rowData)}
             color="success"
           >
             <Comment />
@@ -262,9 +250,9 @@ const ProductsMAPTable = () => {
     },
   ];
 
-  const initializeProductsMAPData = useCallback(() => {
+  const initializeTableData = useCallback(() => {
     //call to get the table data
-    setLoadingCurrentViolationsData(true);
+    setLoadingData(true);
     getCurrentViolationsData(queryParamsString).then((res) => {
       const {
         data: {
@@ -273,8 +261,9 @@ const ProductsMAPTable = () => {
           },
         },
       } = res;
+      console.log(listings);
 
-      setLoadingCurrentViolationsData(false);
+      setLoadingData(false);
       if (listings) {
         let newStatusList = { ...statusList };
         const tableData = listings.map((item) => {
@@ -297,7 +286,7 @@ const ProductsMAPTable = () => {
         });
 
         setStatusList(newStatusList);
-        setCurrentViolationsData(tableData);
+        setData(tableData);
       }
     });
   }, [queryParamsString]);
@@ -308,13 +297,26 @@ const ProductsMAPTable = () => {
 
   useEffect(() => {
     if (isAuthenticated && isInitialized) {
-      initializeProductsMAPData();
+      initializeTableData();
     }
-  }, [isAuthenticated, isInitialized, initializeProductsMAPData]);
+  }, [isAuthenticated, isInitialized, initializeTableData]);
 
-  const handleTabChanged = (event, value) => {
-    setSelectedTab(value);
-  };
+  useEffect(() => {
+    if (selectedMAPData !== null) {
+      setLoadingNotes(true);
+      getSellerNotes(selectedMAPData.seller).then((res) => {
+        const {
+          data: {
+            body: { data: _notes },
+          },
+        } = res;
+
+        setLoadingNotes(false);
+        setNotes(_notes);
+      });
+    }
+  }, [selectedMAPData]);
+
   const handleStatusFilterChanged = (e) => {
     setStatusFilter(e.target.value);
   };
@@ -358,24 +360,26 @@ const ProductsMAPTable = () => {
     setDownloadingCSV(false);
   };
 
-  const handleCommentDialogOpen = (seller) => {
+  const handleCommentDialogOpen = (selected) => {
     setCommentDlgOpen(true);
-    setSelectedSeller(seller);
+    setSelectedMAPData(selected);
   };
 
   const handleCommentDialogClose = () => {
     setCommentDlgOpen(false);
-    setSelectedSeller("");
+    setSelectedMAPData(null);
   };
 
   const handleCommentPost = (newComment) => {
-    const _comments = [...commentList];
+    const newNotes = [...notes];
 
-    _comments.push({
+    newNotes.push({
       comment: newComment,
-      date: convertDateToFormattedDateString(new Date(), false),
+      created_at: new Date(),
     });
-    setCommentList([..._comments]);
+    setNotes([...newNotes]);
+
+    addSellerNote(selectedMAPData.seller, newComment);
   };
 
   const handleShowMoreClicked = (isExpanded) => {
@@ -384,109 +388,76 @@ const ProductsMAPTable = () => {
 
   return (
     <React.Fragment>
-      <Card variant="outlined">
-        <CardContent>
-          <Grid container>
-            <Grid item xs={12}>
-              <TabContext value={selectedTab}>
-                <TabList
-                  onChange={handleTabChanged}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                >
-                  {tabs.map((tab) => (
-                    <Tab key={tab.value} label={tab.label} value={tab.value} />
-                  ))}
-                </TabList>
-                <Divider />
-                <TabPanel value="current_listing_violations">
-                  <Grid container>
-                    <Grid item xs={12}>
-                      {currentViolationsData !== null &&
-                      !loadingCurrentViolationsData ? (
-                        <MaterialTable
-                          style={{ width: "100%", overflow: "auto" }}
-                          data={currentViolationsData.filter(
-                            (item) =>
-                              statusList[item.priceId] === statusFilter ||
-                              statusFilter === "all"
-                          )}
-                          columns={columns}
-                          options={{
-                            // actionsColumnIndex: -1,
-                            pageSize: 50,
-                            pageSizeOptions: [5, 10, 20, 50, 100],
-                            search: true,
-                            showTitle: false,
-                            emptyRowsWhenPaging: false,
-                            tableLayout: "fixed",
-                            // toolbarButtonAlignment: "left",
-                          }}
-                          components={{
-                            Action: (props) => (
-                              <Grid container alignItems="end" spacing={0}>
-                                <Grid item>
-                                  <FormControl
-                                    sx={{ m: 1, minWidth: 240 }}
-                                    variant="standard"
-                                    size="small"
-                                  >
-                                    {/* <InputLabel>Status</InputLabel> */}
-                                    <Select
-                                      value={statusFilter}
-                                      onChange={handleStatusFilterChanged}
-                                    >
-                                      <MenuItem value="all">All</MenuItem>
-                                      <MenuItem value="Contacted">
-                                        Contacted
-                                      </MenuItem>
-                                      <MenuItem value="Ignored">
-                                        Ignored
-                                      </MenuItem>
-                                      <MenuItem value="Investigating">
-                                        Investigating
-                                      </MenuItem>
-                                      <MenuItem value="">
-                                        <em>None</em>
-                                      </MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                </Grid>
-                                <Grid item>
-                                  <IconButton
-                                    size="large"
-                                    onClick={downloadReport}
-                                    disabled={downloadingCSV}
-                                    sx={{ padding: 0 }}
-                                  >
-                                    <Download />
-                                  </IconButton>
-                                </Grid>
-                              </Grid>
-                            ),
-                          }}
-                          actions={[
-                            {
-                              onClick: (event, rowData) => alert("something"),
-                              isFreeAction: true,
-                            },
-                          ]}
-                        />
-                      ) : (
-                        <Grid container justifyContent="center">
-                          <Grid item>
-                            <CircularProgress />
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Grid>
-                </TabPanel>
-              </TabContext>
-            </Grid>
+      {data !== null && !loadingData ? (
+        <MaterialTable
+          style={{ width: "100%", overflow: "auto" }}
+          data={data.filter(
+            (item) =>
+              statusList[item.priceId] === statusFilter ||
+              statusFilter === "all"
+          )}
+          columns={columns}
+          options={{
+            // actionsColumnIndex: -1,
+            pageSize: 50,
+            pageSizeOptions: [5, 10, 20, 50, 100],
+            search: true,
+            showTitle: false,
+            emptyRowsWhenPaging: false,
+            tableLayout: "fixed",
+            // toolbarButtonAlignment: "left",
+          }}
+          components={{
+            Action: (props) => (
+              <Grid container alignItems="end" spacing={0}>
+                <Grid item>
+                  <FormControl
+                    sx={{ m: 1, minWidth: 240 }}
+                    variant="standard"
+                    size="small"
+                  >
+                    {/* <InputLabel>Status</InputLabel> */}
+                    <Select
+                      value={statusFilter}
+                      onChange={handleStatusFilterChanged}
+                    >
+                      <MenuItem value="all">All</MenuItem>
+                      <MenuItem value="Contacted">Contacted</MenuItem>
+                      <MenuItem value="Ignored">Ignored</MenuItem>
+                      <MenuItem value="Investigating">Investigating</MenuItem>
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    size="large"
+                    onClick={downloadReport}
+                    disabled={downloadingCSV}
+                    sx={{ padding: 0 }}
+                  >
+                    <Download />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ),
+          }}
+          actions={[
+            {
+              onClick: (event, rowData) => alert("something"),
+              isFreeAction: true,
+            },
+          ]}
+        />
+      ) : (
+        <Grid container justifyContent="center">
+          <Grid item>
+            <CircularProgress />
           </Grid>
-        </CardContent>
-      </Card>
+        </Grid>
+      )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         autoHideDuration={3000}
@@ -506,6 +477,7 @@ const ProductsMAPTable = () => {
           Preparing download, please wait...
         </Alert>
       </Snackbar>
+
       <Dialog
         open={commentDlgOpen}
         maxWidth="sm"
@@ -515,7 +487,7 @@ const ProductsMAPTable = () => {
         fullWidth
         keepMounted
       >
-        <DialogTitle>{selectedSeller} Notes</DialogTitle>
+        <DialogTitle>{selectedMAPData?.seller} Notes</DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="comment-dialog-description"></DialogContentText>
@@ -527,44 +499,57 @@ const ProductsMAPTable = () => {
               <Divider>Notes</Divider>
             </Grid>
             <Grid item xs={12}>
-              <CommentWrapper>
-                <Grid container spacing={3}>
-                  {[...commentList].reverse().map((item, index) => (
-                    <Grid key={index} item xs={12}>
-                      <Grid
-                        key={index}
-                        container
-                        justifyContent="space-between"
-                      >
-                        <Grid item xs={9}>
-                          <ShowMoreText
-                            lines={2}
-                            more="More"
-                            less="Less"
-                            onClick={handleShowMoreClicked}
-                            expanded={false}
-                            truncatedEndingComponent={"... "}
-                          >
-                            <CommentText
-                              dangerouslySetInnerHTML={{ __html: item.comment }}
-                            />
-                          </ShowMoreText>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Grid container justifyContent="flex-end">
-                            <Typography
-                              variant="caption"
-                              sx={{ color: grey[700] }}
+              {!loadingNotes ? (
+                <CommentWrapper>
+                  <Grid container spacing={3}>
+                    {[...notes].reverse().map((item, index) => (
+                      <Grid key={index} item xs={12}>
+                        <Grid
+                          key={index}
+                          container
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={9}>
+                            <ShowMoreText
+                              lines={2}
+                              more="More"
+                              less="Less"
+                              onClick={handleShowMoreClicked}
+                              expanded={false}
+                              truncatedEndingComponent={"... "}
                             >
-                              {item.date}
-                            </Typography>
+                              <CommentText
+                                dangerouslySetInnerHTML={{
+                                  __html: item.comment,
+                                }}
+                              />
+                            </ShowMoreText>
+                          </Grid>
+                          <Grid item xs={3}>
+                            <Grid container justifyContent="flex-end">
+                              <Typography
+                                variant="caption"
+                                sx={{ color: grey[700] }}
+                              >
+                                {convertDateToFormattedDateString(
+                                  new Date(item.created_at),
+                                  false
+                                )}
+                              </Typography>
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                  ))}
+                    ))}
+                  </Grid>
+                </CommentWrapper>
+              ) : (
+                <Grid container justifyContent="center">
+                  <Grid item>
+                    <CircularProgress />
+                  </Grid>
                 </Grid>
-              </CommentWrapper>
+              )}
             </Grid>
           </Grid>
         </DialogContent>
@@ -577,4 +562,4 @@ const ProductsMAPTable = () => {
   );
 };
 
-export default ProductsMAPTable;
+export default BuyboxSuppressionsTable;
