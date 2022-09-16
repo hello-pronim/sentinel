@@ -46,4 +46,37 @@ const comments = [
   },
 ];
 
-export { comments };
+const suppressions = [
+  {
+    product_id: 1,
+    product_title: "ProductA",
+    product_url: "https://www.amazon.com/dp/BASDFF333",
+    observed_at: "2022-09-04",
+  },
+  {
+    product_id: 2,
+    product_title: "ProductB",
+    product_url: "https://www.amazon.com/dp/BASDFF333",
+    observed_at: "2022-09-04",
+  },
+  {
+    product_id: 3,
+    product_title: "ProductC",
+    product_url: "https://www.amazon.com/dp/BASDFF333",
+    observed_at: "2022-09-04",
+  },
+  {
+    product_id: 4,
+    product_title: "ProductD",
+    product_url: "https://www.amazon.com/dp/BASDFF333",
+    observed_at: "2022-09-04",
+  },
+  {
+    product_id: 5,
+    product_title: "ProductE",
+    product_url: "https://www.amazon.com/dp/BASDFF333",
+    observed_at: "2022-09-04",
+  },
+];
+
+export { comments, suppressions };
