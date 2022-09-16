@@ -1,0 +1,132 @@
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import MaterialTable from "@material-table/core";
+
+import {
+  Alert as MuiAlert,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Link,
+  Snackbar,
+} from "@mui/material";
+import { Download } from "@mui/icons-material";
+
+import { AuthContext } from "../../../../contexts/CognitoContext";
+import { suppressions } from "./mock";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const BuyboxSuppressionsTable = () => {
+  const queryParamsString = window.location.search;
+  const { isInitialized, isAuthenticated, initialize } =
+    useContext(AuthContext);
+  const [loadingData, setLoadingData] = useState(false);
+  const [data, setData] = useState(suppressions);
+  const [downloadingCSV, setDownloadingCSV] = useState(false);
+
+  const columns = [
+    {
+      field: "product_title",
+      title: "Product Name",
+    },
+    {
+      field: "product_url",
+      title: "Product URL",
+      render: (rowData) => {
+        const { product_url: url } = rowData;
+
+        return (
+          <Link component="button" onClick={() => window.open(url)}>
+            {url}
+          </Link>
+        );
+      },
+    },
+    {
+      field: "observed_at",
+      title: "Suppressed Date",
+    },
+  ];
+
+  const initializeTableData = useCallback(() => {
+    //call to get the table data
+    // setLoadingData(true);
+    // getBuyboxSuppressionsData(queryParamsString).then((res) => {
+    //   setLoadingData(false);
+    // });
+  }, [queryParamsString]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    if (isAuthenticated && isInitialized) {
+      initializeTableData();
+    }
+  }, [isAuthenticated, isInitialized, initializeTableData]);
+
+  const downloadReport = async () => {};
+  const handleAlertClose = () => {};
+
+  return (
+    <React.Fragment>
+      {data !== null && !loadingData ? (
+        <MaterialTable
+          style={{ width: "100%", overflow: "auto" }}
+          data={data}
+          columns={columns}
+          options={{
+            pageSize: 10,
+            pageSizeOptions: [5, 10, 20, 50, 100],
+            search: true,
+            showTitle: false,
+            emptyRowsWhenPaging: false,
+            tableLayout: "fixed",
+          }}
+          components={{
+            Action: (props) => (
+              <Grid container alignItems="end" spacing={0}>
+                <Grid item>
+                  <IconButton
+                    size="large"
+                    onClick={downloadReport}
+                    disabled={downloadingCSV}
+                    sx={{ padding: 0 }}
+                  >
+                    <Download />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ),
+          }}
+          actions={[
+            {
+              onClick: (event, rowData) => alert("something"),
+              isFreeAction: true,
+            },
+          ]}
+        />
+      ) : (
+        <Grid container justifyContent="center">
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      )}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={downloadingCSV}
+        onClose={handleAlertClose}
+      >
+        <Alert icon={<></>} onClose={handleAlertClose} severity="success">
+          Preparing download, please wait...
+        </Alert>
+      </Snackbar>
+    </React.Fragment>
+  );
+};
+
+export default BuyboxSuppressionsTable;

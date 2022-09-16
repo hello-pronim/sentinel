@@ -11,7 +11,7 @@ import {
 } from "../../../../services/MAPService";
 import OverallMAPs from "./OverallMAPs";
 import BrandsMAPTable from "./BrandsMAPTable";
-import ProductsMAPTable from "./ProductsMAPTable";
+import MapListings from "./MapListings";
 
 const MAP = () => {
   const queryParamsString = window.location.search;
@@ -98,7 +98,7 @@ const MAP = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <ProductsMAPTable />
+          <MapListings />
         </Grid>
       </Grid>
     </React.Fragment>
