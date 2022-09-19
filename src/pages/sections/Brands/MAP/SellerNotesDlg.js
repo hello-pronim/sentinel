@@ -113,49 +113,59 @@ const SellerNotesDlg = ({ open, selectedMAPData, handleClose }) => {
             </Grid>
             <Grid item xs={12}>
               {!loadingNotes ? (
-                <CommentWrapper>
-                  <Grid container spacing={3}>
-                    {[...notes].reverse().map((item, index) => (
-                      <Grid key={index} item xs={12}>
-                        <Grid
-                          key={index}
-                          container
-                          justifyContent="space-between"
-                        >
-                          <Grid item xs={9}>
-                            <ShowMoreText
-                              lines={2}
-                              more="More"
-                              less="Less"
-                              onClick={handleShowMoreClicked}
-                              expanded={false}
-                              truncatedEndingComponent={"... "}
-                            >
-                              <CommentText
-                                dangerouslySetInnerHTML={{
-                                  __html: item.comment,
-                                }}
-                              />
-                            </ShowMoreText>
-                          </Grid>
-                          <Grid item xs={3}>
-                            <Grid container justifyContent="flex-end">
-                              <Typography
-                                variant="caption"
-                                sx={{ color: grey[700] }}
+                notes.length ? (
+                  <CommentWrapper>
+                    <Grid container spacing={3}>
+                      {[...notes].reverse().map((item, index) => (
+                        <Grid key={index} item xs={12}>
+                          <Grid
+                            key={index}
+                            container
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={9}>
+                              <ShowMoreText
+                                lines={2}
+                                more="More"
+                                less="Less"
+                                onClick={handleShowMoreClicked}
+                                expanded={false}
+                                truncatedEndingComponent={"... "}
                               >
-                                {convertDateToFormattedDateString(
-                                  new Date(item.created_at),
-                                  false
-                                )}
-                              </Typography>
+                                <CommentText
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.comment,
+                                  }}
+                                />
+                              </ShowMoreText>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Grid container justifyContent="flex-end">
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: grey[700] }}
+                                >
+                                  {convertDateToFormattedDateString(
+                                    new Date(item.created_at),
+                                    false
+                                  )}
+                                </Typography>
+                              </Grid>
                             </Grid>
                           </Grid>
                         </Grid>
-                      </Grid>
-                    ))}
+                      ))}
+                    </Grid>
+                  </CommentWrapper>
+                ) : (
+                  <Grid container alignItems="center" justifyContent="center">
+                    <Grid item>
+                      <Typography variant="h3" sx={{ color: grey[400] }}>
+                        No notes yet
+                      </Typography>
+                    </Grid>
                   </Grid>
-                </CommentWrapper>
+                )
               ) : (
                 <Grid container justifyContent="center">
                   <Grid item>

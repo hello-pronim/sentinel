@@ -35,8 +35,9 @@ const getCurrentViolationsExport = (paramsString) => {
 
 const getSellerNotes = (sellerId) => {
   return axios.get(
-    `/api/${process.env.REACT_APP_API_ENV || "dev"}/seller/notes?seller_id=${sellerId}`,
-    { seller_id: sellerId }
+    `/api/${
+      process.env.REACT_APP_API_ENV || "dev"
+    }/seller/notes?seller_id=${sellerId}`
   );
 };
 
