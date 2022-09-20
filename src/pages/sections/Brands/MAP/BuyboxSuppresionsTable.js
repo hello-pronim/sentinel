@@ -61,7 +61,6 @@ const BuyboxSuppressionsTable = () => {
     //call to get the table data
     setLoadingData(true);
     getSuppressionsData(queryParamsString).then((res) => {
-      console.log(res);
       const {
         data: {
           body: { data: _suppressions },
