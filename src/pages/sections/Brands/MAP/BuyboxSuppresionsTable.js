@@ -12,9 +12,11 @@ import {
 import { Download } from "@mui/icons-material";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
-import { getSuppressionsData } from "../../../../services/MAPService";
+import {
+  getSuppressionsData,
+  getSuppressionsExport,
+} from "../../../../services/MAPService";
 import { convertDateToMMDDYY } from "../../../../utils/functions";
-// import { suppressions } from "./mock";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -82,7 +84,22 @@ const BuyboxSuppressionsTable = () => {
     }
   }, [isAuthenticated, isInitialized, initializeTableData]);
 
-  const downloadReport = async () => {};
+  const downloadReport = async () => {
+    setDownloadingCSV(true);
+    const queryParamsString = window.location.search;
+    const response = await getSuppressionsExport(queryParamsString);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    const filename = response.headers["content-disposition"].replace(
+      /attachment;\sfilename=/g,
+      ""
+    );
+    link.setAttribute("download", `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+    setDownloadingCSV(false);
+  };
   const handleAlertClose = () => {};
 
   return (
