@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import ShowMoreText from "react-show-more-text";
 import {
   Alert as MuiAlert,
+  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -14,11 +15,14 @@ import {
   Grid,
   Slide,
   Snackbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { spacing } from "@mui/system";
 import { grey } from "@mui/material/colors";
+import ShortTextIcon from "@mui/icons-material/ShortText";
 
+import useAuth from "../../../../hooks/useAuth";
 import CommentEditor from "../../../../components/commentEditor";
 import { addSellerNote, getSellerNotes } from "../../../../services/MAPService";
 import { convertDateToFormattedDateString } from "../../../../utils/functions";
@@ -46,6 +50,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const SellerNotesDlg = ({ open, selectedMAPData, handleClose }) => {
+  const { user } = useAuth();
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [notes, setNotes] = useState([]);
   const [postingNotes, setPostingNotes] = useState(false);
@@ -70,6 +75,7 @@ const SellerNotesDlg = ({ open, selectedMAPData, handleClose }) => {
     const newNotes = [...notes];
 
     newNotes.push({
+      user_email: user.email,
       comment: newComment,
       created_at: new Date(),
     });
@@ -123,34 +129,72 @@ const SellerNotesDlg = ({ open, selectedMAPData, handleClose }) => {
                             container
                             justifyContent="space-between"
                           >
-                            <Grid item xs={9}>
-                              <ShowMoreText
-                                lines={2}
-                                more="More"
-                                less="Less"
-                                onClick={handleShowMoreClicked}
-                                expanded={false}
-                                truncatedEndingComponent={"... "}
+                            <Grid item xs={12}>
+                              <Grid
+                                container
+                                alignItems="center"
+                                justifyContent="space-between"
                               >
-                                <CommentText
-                                  dangerouslySetInnerHTML={{
-                                    __html: item.comment,
-                                  }}
-                                />
-                              </ShowMoreText>
-                            </Grid>
-                            <Grid item xs={3}>
-                              <Grid container justifyContent="flex-end">
-                                <Typography
-                                  variant="caption"
-                                  sx={{ color: grey[700] }}
-                                >
-                                  {convertDateToFormattedDateString(
-                                    new Date(item.created_at),
-                                    false
-                                  )}
-                                </Typography>
+                                <Grid item>
+                                  <Tooltip
+                                    title={item.user_email}
+                                    placement="right-start"
+                                  >
+                                    <Grid
+                                      container
+                                      alignItems="center"
+                                      spacing={2}
+                                    >
+                                      <Grid item>
+                                        <ShortTextIcon
+                                          fontSize="small"
+                                          sx={{ pt: 1 }}
+                                        />
+                                      </Grid>
+                                      <Grid item>
+                                        <Typography
+                                          component="span"
+                                          variant="h6"
+                                          sx={{ fontWeight: "bold" }}
+                                        >
+                                          {item.user_email.split("@")[0]}
+                                        </Typography>
+                                      </Grid>
+                                    </Grid>
+                                  </Tooltip>
+                                </Grid>
+                                <Grid item>
+                                  <Grid container justifyContent="flex-end">
+                                    <Typography
+                                      variant="caption"
+                                      sx={{ color: grey[700] }}
+                                    >
+                                      {convertDateToFormattedDateString(
+                                        new Date(item.created_at),
+                                        false
+                                      )}
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
                               </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Box pl={4}>
+                                <ShowMoreText
+                                  lines={2}
+                                  more="More"
+                                  less="Less"
+                                  onClick={handleShowMoreClicked}
+                                  expanded={false}
+                                  truncatedEndingComponent={"... "}
+                                >
+                                  <CommentText
+                                    dangerouslySetInnerHTML={{
+                                      __html: item.comment,
+                                    }}
+                                  />
+                                </ShowMoreText>
+                              </Box>
                             </Grid>
                           </Grid>
                         </Grid>

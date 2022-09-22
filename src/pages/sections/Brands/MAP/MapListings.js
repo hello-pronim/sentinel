@@ -23,11 +23,11 @@ const ProductsMAPTable = () => {
       label: "Current Listing Violations",
       value: "current_listing_violations",
     },
-    {
-      id: 1,
-      label: "Buybox Suppressions",
-      value: "buybox_suppressions",
-    },
+    // {
+    //   id: 1,
+    //   label: "Buybox Suppressions",
+    //   value: "buybox_suppressions",
+    // },
   ];
 
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
@@ -60,13 +60,13 @@ const ProductsMAPTable = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                <TabPanel value="buybox_suppressions">
+                {/* <TabPanel value="buybox_suppressions">
                   <Grid container>
                     <Grid item xs={12}>
                       <BuyboxSuppresionsTable />
                     </Grid>
                   </Grid>
-                </TabPanel>
+                </TabPanel> */}
               </TabContext>
             </Grid>
           </Grid>
