@@ -10,6 +10,7 @@ function AppProvider({ children }) {
   const [markets, setMarkets] = useState(null);
   const [showAccountingView, setShowAccountingView] = useState(false);
   const [showAdminBrands, setShowAdminBrands] = useState(false);
+  const [showSuppressions, setShowSuppressions] = useState(false);
   const defaultFilterOptions = {
     company: {
       selected: [],
@@ -40,6 +41,7 @@ function AppProvider({ children }) {
       onChange: (oldFlags, params) => {
         setShowAccountingView(flagsmith.hasFeature("accounting_view"));
         setShowAdminBrands(flagsmith.hasFeature("admin_brands"));
+        setShowSuppressions(flagsmith.hasFeature("buybox_suppressed_tab"));
       },
     });
   }, []);
@@ -54,6 +56,7 @@ function AppProvider({ children }) {
         features: {
           showAccountingView,
           showAdminBrands,
+          showSuppressions,
         },
         setCompanies,
         setMarkets,

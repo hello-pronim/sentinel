@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components/macro";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -11,23 +11,29 @@ import {
 } from "@mui/material";
 import { spacing } from "@mui/system";
 
+import { AppContext } from "../../../../contexts/AppContext";
 import BuyboxSuppresionsTable from "./BuyboxSuppresionsTable";
 import MapListingsTable from "./MapListingsTable";
 
 const Divider = styled(MuiDivider)(spacing);
 
 const ProductsMAPTable = () => {
+  const {
+    features: { showSuppressions },
+  } = useContext(AppContext);
   const tabs = [
     {
       id: 0,
       label: "Current Listing Violations",
       value: "current_listing_violations",
+      show: true,
     },
-    // {
-    //   id: 1,
-    //   label: "Buybox Suppressions",
-    //   value: "buybox_suppressions",
-    // },
+    {
+      id: 1,
+      label: "Buybox Suppressions",
+      value: "buybox_suppressions",
+      show: showSuppressions,
+    },
   ];
 
   const [selectedTab, setSelectedTab] = useState(tabs[0].value);
@@ -48,9 +54,16 @@ const ProductsMAPTable = () => {
                   variant="scrollable"
                   scrollButtons="auto"
                 >
-                  {tabs.map((tab) => (
-                    <Tab key={tab.value} label={tab.label} value={tab.value} />
-                  ))}
+                  {tabs.map(
+                    (tab) =>
+                      tab.show && (
+                        <Tab
+                          key={tab.value}
+                          label={tab.label}
+                          value={tab.value}
+                        />
+                      )
+                  )}
                 </TabList>
                 <Divider />
                 <TabPanel value="current_listing_violations">
@@ -60,13 +73,13 @@ const ProductsMAPTable = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                {/* <TabPanel value="buybox_suppressions">
+                <TabPanel value="buybox_suppressions">
                   <Grid container>
                     <Grid item xs={12}>
                       <BuyboxSuppresionsTable />
                     </Grid>
                   </Grid>
-                </TabPanel> */}
+                </TabPanel>
               </TabContext>
             </Grid>
           </Grid>
