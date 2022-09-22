@@ -110,7 +110,7 @@ const BuyboxSuppressionsTable = () => {
           data={data}
           columns={columns}
           options={{
-            pageSize: 10,
+            pageSize: 50,
             pageSizeOptions: [5, 10, 20, 50, 100],
             search: true,
             showTitle: false,
