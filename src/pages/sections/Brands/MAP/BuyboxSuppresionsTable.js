@@ -12,7 +12,9 @@ import {
 import { Download } from "@mui/icons-material";
 
 import { AuthContext } from "../../../../contexts/CognitoContext";
-import { suppressions } from "./mock";
+import { getSuppressionsData } from "../../../../services/MAPService";
+import { convertDateToMMDDYY } from "../../../../utils/functions";
+// import { suppressions } from "./mock";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -23,19 +25,19 @@ const BuyboxSuppressionsTable = () => {
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
   const [loadingData, setLoadingData] = useState(false);
-  const [data, setData] = useState(suppressions);
+  const [data, setData] = useState(null);
   const [downloadingCSV, setDownloadingCSV] = useState(false);
 
   const columns = [
     {
-      field: "product_title",
+      field: "name",
       title: "Product Name",
     },
     {
-      field: "product_url",
+      field: "url",
       title: "Product URL",
       render: (rowData) => {
-        const { product_url: url } = rowData;
+        const { url } = rowData;
 
         return (
           <Link component="button" onClick={() => window.open(url)}>
@@ -45,17 +47,29 @@ const BuyboxSuppressionsTable = () => {
       },
     },
     {
-      field: "observed_at",
+      field: "suppressed_date",
       title: "Suppressed Date",
+      render: (rowData) => {
+        const { suppressed_date: date } = rowData;
+
+        return convertDateToMMDDYY(date);
+      },
     },
   ];
 
   const initializeTableData = useCallback(() => {
     //call to get the table data
-    // setLoadingData(true);
-    // getBuyboxSuppressionsData(queryParamsString).then((res) => {
-    //   setLoadingData(false);
-    // });
+    setLoadingData(true);
+    getSuppressionsData(queryParamsString).then((res) => {
+      const {
+        data: {
+          body: { data: _suppressions },
+        },
+      } = res;
+
+      setData(_suppressions);
+      setLoadingData(false);
+    });
   }, [queryParamsString]);
 
   useEffect(() => {

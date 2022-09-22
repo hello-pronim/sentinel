@@ -221,7 +221,6 @@ const MapListingsTable = () => {
           },
         },
       } = res;
-      console.log(listings);
 
       setLoadingData(false);
       if (listings) {
