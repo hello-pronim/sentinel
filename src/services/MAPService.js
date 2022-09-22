@@ -49,6 +49,14 @@ const getSuppressionsData = (paramsString) => {
   );
 };
 
+const getSuppressionsExport = (paramsString) => {
+  return axios.get(
+    `/api/${
+      process.env.REACT_APP_API_ENV || "dev"
+    }/listings/suppressed/export${paramsString}`
+  );
+};
+
 const updateMAPStatus = (status, priceId) => {
   const formData = new FormData();
   formData.append("status", status);
@@ -66,5 +74,6 @@ export {
   getCurrentViolationsExport,
   getSellerNotes,
   getSuppressionsData,
+  getSuppressionsExport,
   updateMAPStatus,
 };
