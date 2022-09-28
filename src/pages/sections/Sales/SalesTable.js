@@ -88,7 +88,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "revenue",
-      title: "Revenue",
+      title: "Gross Sales",
       type: "currency",
       currencySetting: {
         currencyCode: "$",
@@ -109,7 +109,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "comparisonRevenue",
-      title: "Comparison Revenue",
+      title: "Comparison Gross Sales",
       type: "currency",
       currencySetting: {
         currencyCode: "$",
@@ -130,7 +130,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "revenueChange",
-      title: "Revenue Change",
+      title: "Gross Sales Change",
       customSort: (a, b) => a.revenueChange - b.revenueChange,
       width: "15%",
       headerStyle: {
@@ -207,7 +207,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "comparisonRevenue",
-      title: "Comparison Revenue",
+      title: "Comparison Gross Sales",
       type: "currency",
       currencySetting: {
         currencyCode: "$",
@@ -229,7 +229,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "revenueChange",
-      title: "Revenue Change",
+      title: "Gross Sales Change",
       customSort: (a, b) => a.revenueChange - b.revenueChange,
       width: "15%",
       headerStyle: {
