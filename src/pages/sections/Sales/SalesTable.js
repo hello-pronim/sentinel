@@ -96,10 +96,10 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       customSort: (a, b) => a.revenue - b.revenue,
       width: "15%",
       headerStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       cellStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       render: (rowData) => {
         const { revenue } = rowData;
@@ -117,10 +117,10 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       customSort: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
       width: "15%",
       headerStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       cellStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       render: (rowData) => {
         const { comparisonRevenue } = rowData;
@@ -186,7 +186,7 @@ const SalesTable = ({ title, data, salesType, loading }) => {
     },
     {
       field: "revenue",
-      title: "Revenue",
+      title: "Gross Sales",
       type: "currency",
       currencySetting: {
         currencyCode: "$",
@@ -194,10 +194,10 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       customSort: (a, b) => a.revenue - b.revenue,
       width: "15%",
       headerStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       cellStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       render: (rowData) => {
         const { revenue } = rowData;
@@ -215,10 +215,10 @@ const SalesTable = ({ title, data, salesType, loading }) => {
       customSort: (a, b) => a.comparisonRevenue - b.comparisonRevenue,
       width: "15%",
       headerStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       cellStyle: {
-        textAlign: "center",
+        textAlign: "right",
       },
       defaultSort: "desc",
       render: (rowData) => {
