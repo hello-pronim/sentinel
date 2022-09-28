@@ -185,7 +185,7 @@ const Sales = () => {
       <Grid justifyContent="space-between" container spacing={10}>
         <Grid item>
           <Typography variant="h3" gutterBottom display="inline">
-            Sales
+            Sales Dashboard
           </Typography>
         </Grid>
         <Grid item>
@@ -203,7 +203,7 @@ const Sales = () => {
         <Grid item xs={12}>
           {salesPerformanceData !== null && !loadingSalesPerformanceData ? (
             <SalesPerformance
-              title="My Portfolio's Performance"
+              title="Portfolio Performance"
               data={salesPerformanceData}
             />
           ) : (
