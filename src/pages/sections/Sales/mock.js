@@ -1,9 +1,9 @@
 const estimatedSalesChangeData = {
-  label: "Estimated Sales for April",
+  label: "Estimated Gross Sales for April",
   data: { revenue: 5871138.214283597, revenueChange: -0.131 },
 };
 const mtdSalesChangeData = {
-  label: "MTD Total Sales",
+  label: "MTD Total Gross Sales",
   data: {
     revenue: 4109796.7499985173,
     revenueChange: -0.131,
@@ -98,27 +98,27 @@ const mtdSalesChangeData = {
 const salesChanges = [
   {
     id: 0,
-    label: "Sales 1 Week",
+    label: "Gross Sales 1 Week",
     data: { revenue: 1388901.649999834, revenueChange: -0.0811 },
   },
   {
     id: 1,
-    label: "Sales 1 Month",
+    label: "Gross Sales 1 Month",
     data: { revenue: 6435775.769998869, revenueChange: -0.1056 },
   },
   {
     id: 2,
-    label: "Sales 3 Months",
+    label: "Gross Sales 3 Months",
     data: { revenue: 20046404.850086108, revenueChange: -0.1218 },
   },
   {
     id: 3,
-    label: "Sales 6 Months",
+    label: "Gross Sales 6 Months",
     data: { revenue: 45916716.77016907, revenueChange: 0.1824 },
   },
   {
     id: 4,
-    label: "Sales 1 Year",
+    label: "Gross Sales 1 Year",
     data: { revenue: 85817534.95887892, revenueChange: 0.0654 },
   },
   {
