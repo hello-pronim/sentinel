@@ -177,7 +177,7 @@ const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
               : [],
           },
           {
-            label: "Previous Revenue",
+            label: "Previous Gross Sales",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[1],
@@ -187,7 +187,7 @@ const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
               : [],
           },
           {
-            label: "Forecast Revenue",
+            label: "Forecast Gross Sales",
             fill: true,
             backgroundColor: "transparent",
             borderColor: colors[2],
@@ -274,7 +274,7 @@ const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
                         textDecoration: !showCurrentRevenue && "line-through",
                       }}
                     >
-                      Total Revenue:
+                      Total Gross Sales:
                     </LinkText>
                   </Grid>
                   <Grid item>
@@ -294,7 +294,7 @@ const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
                         textDecoration: !showPreviousRevenue && "line-through",
                       }}
                     >
-                      Previous Revenue:
+                      Previous Gross Sales:
                     </LinkText>
                   </Grid>
                   <Grid item>
@@ -319,7 +319,7 @@ const SalesChart = ({ title, filterOptions, setFilterOptions }) => {
                             !showForecastRevenue && "line-through",
                         }}
                       >
-                        Forecast Revenue
+                        Forecast Gross Sales
                       </LinkText>
                     </Grid>
                   </Grid>

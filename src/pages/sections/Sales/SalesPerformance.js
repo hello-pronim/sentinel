@@ -49,7 +49,7 @@ const SalesPerformance = ({ title, data }) => {
               <Grid item xs={12} sm={12} md={12} lg={4}>
                 <SalesChangeCard
                   label={estimatedSalesChangeData.label}
-                  description="vs Last Month's Sales"
+                  description="vs Last Month's Gross Sales"
                   data={estimatedSalesChangeData.data}
                   hasTrendLine={false}
                   variant="contained"

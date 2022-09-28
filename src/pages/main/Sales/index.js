@@ -34,15 +34,15 @@ const SalesByCompanyChart = async(() =>
 const Divider = styled(MuiDivider)(spacing);
 
 const salesPerformanceItems = [
-  { key: "week", label: "Sales 1 Week" },
-  { key: "month", label: "Sales 1 Month" },
-  { key: "3_month", label: "Sales 3 Months" },
-  { key: "6_month", label: "Sales 6 Months" },
-  { key: "year", label: "Sales 1 Year" },
+  { key: "week", label: "Gross Sales 1 Week" },
+  { key: "month", label: "Gross Sales 1 Month" },
+  { key: "3_month", label: "Gross Sales 3 Months" },
+  { key: "6_month", label: "Gross Sales 6 Months" },
+  { key: "year", label: "Gross Sales 1 Year" },
   { key: "ytd", label: "Year to Date" },
 ];
 const chartTabs = [
-  { label: "Sales", value: "sales" },
+  { label: "Gross Sales", value: "sales" },
   { label: "Sales by Company", value: "sales_by_company" },
 ];
 
@@ -107,7 +107,7 @@ const Sales = () => {
         const performanceData = {
           estimatedSalesChangeData: {
             label:
-              "Estimated Sales for " +
+              "Estimated Gross Sales for " +
               new Intl.DateTimeFormat("en", { month: "long" }).format(
                 new Date()
               ),
@@ -117,7 +117,7 @@ const Sales = () => {
             },
           },
           mtdSalesChangeData: {
-            label: "MTD Total Sales",
+            label: "MTD Total Gross Sales",
             data: {
               revenue: data["mtd"]?.revenue ?? 0,
               revenueChange: data["mtd"]?.revenue_change ?? 0,
@@ -125,7 +125,7 @@ const Sales = () => {
             trendLineData: data["sales_mtd_change_series"],
           },
           ytdSalesChangeData: {
-            label: "YTD Total Sales",
+            label: "YTD Total Gross Sales",
             data: {
               revenue: data["ytd"]?.revenue ?? 0,
               revenueChange: data["ytd"]?.revenue_change ?? 0,
