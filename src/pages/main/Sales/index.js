@@ -26,6 +26,7 @@ import async from "../../../components/Async";
 
 import SalesTable from "../../sections/Sales/SalesTable";
 import SalesPerformance from "../../sections/Sales/SalesPerformance";
+import Sources from "../../sections/Sales/Sources";
 const SalesChart = async(() => import("../../sections/Sales/SalesChart"));
 const SalesByCompanyChart = async(() =>
   import("../../sections/Sales/SalesByCompanyChart")
@@ -44,6 +45,7 @@ const salesPerformanceItems = [
 const chartTabs = [
   { label: "Gross Sales", value: "sales" },
   { label: "Sales by Company", value: "sales_by_company" },
+  { label: "Sources", value: "sources" },
 ];
 
 const Sales = () => {
@@ -242,6 +244,13 @@ const Sales = () => {
                 <Grid container>
                   <Grid item xs={12}>
                     <SalesByCompanyChart title="Sales by Company" />
+                  </Grid>
+                </Grid>
+              </TabPanel>
+              <TabPanel value="sources">
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Sources title="Datasource Status(Data Last Received)" />
                   </Grid>
                 </Grid>
               </TabPanel>

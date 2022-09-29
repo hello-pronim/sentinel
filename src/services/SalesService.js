@@ -1,10 +1,15 @@
 import axios from "../utils/axios";
 
-const getSalesPerformance = (paramsString) => {
+const getDailySalesExport = (file_type, paramsString) => {
+  const params = file_type + paramsString;
   return axios.get(
-    `/api/${
-      process.env.REACT_APP_API_ENV || "dev"
-    }/sales/performance${paramsString}`
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/export/${params}`
+  );
+};
+
+const getDataSources = () => {
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/audit/sales`
   );
 };
 
@@ -22,19 +27,6 @@ const getSalesByCompany = (paramsString) => {
   );
 };
 
-const getSalesData = (paramsString) => {
-  return axios.get(
-    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/data${paramsString}`
-  );
-};
-
-const getDailySalesExport = (file_type, paramsString) => {
-  const params = file_type + paramsString;
-  return axios.get(
-    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/export/${params}`
-  );
-};
-
 const getSalesByListingExport = (paramsString) => {
   return axios.get(
     `/api/${
@@ -43,11 +35,25 @@ const getSalesByListingExport = (paramsString) => {
   );
 };
 
+const getSalesData = (paramsString) => {
+  return axios.get(
+    `/api/${process.env.REACT_APP_API_ENV || "dev"}/sales/data${paramsString}`
+  );
+};
+
+const getSalesPerformance = (paramsString) => {
+  return axios.get(
+    `/api/${
+      process.env.REACT_APP_API_ENV || "dev"
+    }/sales/performance${paramsString}`
+  );
+};
 export {
-  getSalesPerformance,
+  getDailySalesExport,
+  getDataSources,
   getSales,
   getSalesByCompany,
-  getSalesData,
-  getDailySalesExport,
   getSalesByListingExport,
+  getSalesData,
+  getSalesPerformance,
 };
