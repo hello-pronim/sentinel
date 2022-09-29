@@ -11,6 +11,8 @@ function AppProvider({ children }) {
   const [showAccountingView, setShowAccountingView] = useState(false);
   const [showAdminBrands, setShowAdminBrands] = useState(false);
   const [showSuppressions, setShowSuppressions] = useState(false);
+  const [showSalesSource, setShowSalesSource] = useState(false);
+
   const defaultFilterOptions = {
     company: {
       selected: [],
@@ -42,6 +44,7 @@ function AppProvider({ children }) {
         setShowAccountingView(flagsmith.hasFeature("accounting_view"));
         setShowAdminBrands(flagsmith.hasFeature("admin_brands"));
         setShowSuppressions(flagsmith.hasFeature("buybox_suppressed_tab"));
+        setShowSalesSource(flagsmith.hasFeature("sales_source_audit_tab"));
       },
     });
   }, []);
@@ -57,6 +60,7 @@ function AppProvider({ children }) {
           showAccountingView,
           showAdminBrands,
           showSuppressions,
+          showSalesSource,
         },
         setCompanies,
         setMarkets,

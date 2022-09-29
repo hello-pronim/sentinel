@@ -41,7 +41,6 @@ const Sources = ({ title }) => {
     getDataSources().then((res) => {
       const { data } = res.data.body;
       const { "audit/daily-sales": dailySales } = data;
-      console.log(dailySales);
 
       setLoading(false);
       if (dailySales?.length) {
@@ -49,10 +48,8 @@ const Sources = ({ title }) => {
         const auditDate = Object.keys(lastSalesData)[0];
         const auditData = lastSalesData[auditDate];
         const yesterdayDate = getPastDate(new Date(), 1);
-        console.log(auditDate, convertDateToMMDDYY(yesterdayDate, "-"));
 
         if (auditDate === convertDateToMMDDYY(yesterdayDate, "-")) {
-          console.log(auditData);
           setData(auditData);
         }
       }

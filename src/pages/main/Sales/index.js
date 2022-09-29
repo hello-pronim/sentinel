@@ -42,17 +42,22 @@ const salesPerformanceItems = [
   { key: "year", label: "Gross Sales 1 Year" },
   { key: "ytd", label: "Year to Date" },
 ];
-const chartTabs = [
-  { label: "Gross Sales", value: "sales" },
-  { label: "Sales by Company", value: "sales_by_company" },
-  { label: "Sources", value: "sources" },
-];
 
 const Sales = () => {
   const queryParamsString = window.location.search;
-  const { companies, filterOptions, setFilterOptions } = useContext(AppContext);
+  const {
+    companies,
+    filterOptions,
+    features: { showSalesSource },
+    setFilterOptions,
+  } = useContext(AppContext);
   const { isInitialized, isAuthenticated, initialize } =
     useContext(AuthContext);
+  const salesTabs = [
+    { label: "Gross Sales", value: "sales", show: true },
+    { label: "Sales by Company", value: "sales_by_company", show: true },
+    { label: "Sources", value: "sources", show: showSalesSource },
+  ];
   const [chartTitle, setChartTitle] = useState("All companies");
   const [tableTitle, setTableTitle] = useState("Sales");
   const [salesPerformanceData, setSalesPerformanceData] = useState(null);
@@ -61,7 +66,7 @@ const Sales = () => {
   const [loadingSalesPerformanceData, setLoadingSalesPerformanceData] =
     useState(false);
   const [loadingSalesTableData, setLoadingSalesTableData] = useState(false);
-  const [selectedChartTab, setSelectedChartTab] = useState(chartTabs[0].value);
+  const [selectedChartTab, setSelectedChartTab] = useState(salesTabs[0].value);
 
   useEffect(() => {
     initialize();
@@ -224,9 +229,16 @@ const Sales = () => {
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {chartTabs.map((tab) => (
-                  <Tab key={tab.value} label={tab.label} value={tab.value} />
-                ))}
+                {salesTabs.map(
+                  (tab) =>
+                    tab.show && (
+                      <Tab
+                        key={tab.value}
+                        label={tab.label}
+                        value={tab.value}
+                      />
+                    )
+                )}
               </TabList>
               <Divider />
               <TabPanel value="sales">
