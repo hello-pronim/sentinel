@@ -67,11 +67,6 @@ const Sources = ({ title }) => {
 
   const getStatusColor = (market) => {
     const yesterdayDate = getPastDate(new Date(), 1);
-    console.log(
-      market.marketplace,
-      market.last_sale,
-      convertDateToMMDDYY(yesterdayDate, "-")
-    );
 
     if (
       market.last_sale !== null &&
